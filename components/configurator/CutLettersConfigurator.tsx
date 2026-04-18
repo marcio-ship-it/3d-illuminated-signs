@@ -26,13 +26,13 @@ interface ThemeConfig {
 }
 
 const DEFAULT_THEME: ThemeConfig = {
-  primary: "#d4a017",
-  primaryText: "#000000",
-  bg: "#0a0a0a",
-  cardBg: "#111111",
-  border: "#1f1f1f",
-  text: "#f5f5f5",
-  muted: "#9ca3af",
+  primary: "#c8960c",
+  primaryText: "#ffffff",
+  bg: "#f9f8f6",
+  cardBg: "#ffffff",
+  border: "#e8e6e1",
+  text: "#1c1c1e",
+  muted: "#8e8e93",
   brandName: "3D Illuminated Signs",
   ctaLabel: "Request Quote",
   ctaUrl: "/contact",

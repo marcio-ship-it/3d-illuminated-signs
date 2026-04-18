@@ -188,39 +188,36 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
   if (!service) notFound();
 
   return (
-    <div className="pt-16">
-      {/* Hero */}
-      <section className="py-24 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#0a0a0a]">
+    <div className="pt-[68px]">
+      {/* Hero — dark strip */}
+      <section className="py-20 px-5 bg-[#1c1c1e]">
         <div className="max-w-4xl mx-auto">
-          <nav className="text-sm text-gray-500 mb-6">
-            <Link href="/" className="hover:text-[#d4a017]">Home</Link>
+          <nav className="text-sm text-[#8e8e93] mb-6">
+            <Link href="/" className="hover:text-[#c8960c] transition-colors">Home</Link>
             <span className="mx-2">/</span>
-            <span className="text-gray-300">{service.title}</span>
+            <span className="text-white">{service.title}</span>
           </nav>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-            <span className="text-[#d4a017]">{service.title.split(" ")[0]}</span>{" "}
-            {service.title.split(" ").slice(1).join(" ")}
-          </h1>
-          <p className="text-[#d4a017] font-medium text-lg mb-4">{service.tagline}</p>
-          <p className="text-gray-400 text-lg max-w-2xl leading-relaxed mb-8">{service.description}</p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <p className="eyebrow text-[#c8960c] mb-4">{service.tagline}</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-5">{service.title}</h1>
+          <p className="text-[#a0a0a5] text-lg max-w-2xl leading-relaxed mb-8">{service.description}</p>
+          <div className="flex flex-col sm:flex-row gap-3">
             <Link href="/contact" className="btn-gold px-8 py-3">Get a Free Quote</Link>
-            <a href="tel:1300448608" className="btn-outline px-8 py-3">Call 1300 448 608</a>
+            <a href="tel:1300448608" className="btn-outline-gold px-8 py-3">Call 1300 448 608</a>
           </div>
         </div>
       </section>
 
       {/* Styles */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-5 bg-white">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-10">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#1c1c1e] mb-10 tracking-tight">
             {service.title === "3D Illuminated Signs" ? "Illumination Styles" : "Options"}
           </h2>
-          <div className="grid sm:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-2 gap-5">
             {service.styles.map((s) => (
-              <div key={s.name} className="card-dark p-6">
-                <h3 className="text-[#d4a017] font-semibold text-lg mb-2">{s.name}</h3>
-                <p className="text-gray-400">{s.desc}</p>
+              <div key={s.name} className="card p-6">
+                <h3 className="text-[#c8960c] font-bold text-lg mb-2">{s.name}</h3>
+                <p className="text-[#3d3d3f]">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -228,14 +225,14 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       </section>
 
       {/* Materials */}
-      <section className="py-20 px-4 bg-[#0d0d0d]">
+      <section className="py-20 px-5 bg-[#f9f8f6]">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-10">Materials & Finishes</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-[#1c1c1e] mb-10 tracking-tight">Materials & Finishes</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {service.materials.map((m) => (
-              <div key={m.name} className="card-dark p-5">
-                <h3 className="text-white font-semibold mb-2">{m.name}</h3>
-                <p className="text-gray-400 text-sm">{m.desc}</p>
+              <div key={m.name} className="card-soft p-5">
+                <h3 className="text-[#1c1c1e] font-semibold mb-2">{m.name}</h3>
+                <p className="text-[#8e8e93] text-sm">{m.desc}</p>
               </div>
             ))}
           </div>
@@ -243,14 +240,14 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       </section>
 
       {/* FAQ */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-5 bg-white">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-10">Frequently Asked Questions</h2>
-          <div className="space-y-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#1c1c1e] mb-10 tracking-tight">Frequently Asked Questions</h2>
+          <div className="space-y-3">
             {service.faqs.map((f) => (
-              <div key={f.q} className="card-dark p-6">
-                <h3 className="text-white font-semibold mb-2">{f.q}</h3>
-                <p className="text-gray-400 text-sm">{f.a}</p>
+              <div key={f.q} className="card p-6">
+                <h3 className="text-[#1c1c1e] font-semibold mb-2">{f.q}</h3>
+                <p className="text-[#8e8e93] text-sm">{f.a}</p>
               </div>
             ))}
           </div>

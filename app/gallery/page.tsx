@@ -55,15 +55,16 @@ export default function GalleryPage() {
   const filtered = active === "All" ? projects : projects.filter((p) => p.category === active);
 
   return (
-    <div className="pt-16">
-      <section className="py-20 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#0a0a0a]">
+    <div className="pt-[68px]">
+      <section className="py-20 px-5 bg-white">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Our <span className="text-[#d4a017]">Work</span>
-          </h1>
-          <p className="text-gray-400 text-lg mb-10 max-w-xl">
-            Over 5,000 signs installed for leading brands across Australia.
-          </p>
+          <div className="mb-10">
+            <p className="eyebrow mb-3">Portfolio</p>
+            <h1 className="text-4xl md:text-5xl font-bold text-[#1c1c1e] tracking-tight mb-2">Our Work</h1>
+            <p className="text-[#8e8e93] text-lg max-w-xl">
+              Over 5,000 signs installed for leading brands across Australia.
+            </p>
+          </div>
 
           {/* Filters */}
           <div className="flex flex-wrap gap-2 mb-10">
@@ -73,8 +74,8 @@ export default function GalleryPage() {
                 onClick={() => setActive(cat)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
                   active === cat
-                    ? "bg-[#d4a017] text-black border-[#d4a017]"
-                    : "bg-transparent text-gray-400 border-[#1f1f1f] hover:border-[#d4a017]/40 hover:text-white"
+                    ? "bg-[#c8960c] text-white border-[#c8960c]"
+                    : "bg-white text-[#3d3d3f] border-[#e8e6e1] hover:border-[#c8960c] hover:text-[#c8960c]"
                 }`}
               >
                 {cat}
@@ -88,7 +89,7 @@ export default function GalleryPage() {
               <button
                 key={p.img}
                 onClick={() => setLightbox(p.img)}
-                className="group relative aspect-square overflow-hidden rounded-xl border border-[#1f1f1f] hover:border-[#d4a017]/40 transition-all"
+                className="group relative aspect-square overflow-hidden rounded-xl border border-[#e8e6e1] hover:border-[#c8960c] transition-all"
               >
                 <Image
                   src={p.img}

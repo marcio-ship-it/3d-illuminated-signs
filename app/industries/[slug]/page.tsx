@@ -23,7 +23,7 @@ const industryData: Record<string, {
   },
   events: {
     title: "Events Signage",
-    description: "Create unforgettable experiences with custom event signage. Whether it&apos;s a product launch, gala dinner or brand activation — we deliver signs that photograph beautifully and get shared on social media.",
+    description: "Create unforgettable experiences with custom event signage. Whether it's a product launch, gala dinner or brand activation — we deliver signs that photograph beautifully and get shared on social media.",
     applications: ["Stage backdrops", "Photo walls", "Neon installations", "Entrance arches", "Sponsor recognition boards", "Directional event signage"],
     benefits: ["Instagram-worthy moments", "Rapid turnaround available", "Hire or purchase options", "Reusable and transportable"],
   },
@@ -67,41 +67,44 @@ export default async function IndustryPage({ params }: { params: Promise<{ slug:
   if (!industry) notFound();
 
   return (
-    <div className="pt-16">
-      <section className="py-24 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#0a0a0a]">
+    <div className="pt-[68px]">
+      {/* Hero */}
+      <section className="py-20 px-5 bg-[#1c1c1e]">
         <div className="max-w-4xl mx-auto">
-          <nav className="text-sm text-gray-500 mb-6">
-            <Link href="/" className="hover:text-[#d4a017]">Home</Link>
+          <nav className="text-sm text-[#8e8e93] mb-6">
+            <Link href="/" className="hover:text-[#c8960c] transition-colors">Home</Link>
             <span className="mx-2">/</span>
-            <span className="text-gray-300">{industry.title}</span>
+            <span className="text-white">{industry.title}</span>
           </nav>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            <span className="text-[#d4a017]">{industry.title.split(" ")[0]}</span>{" "}
-            {industry.title.split(" ").slice(1).join(" ")}
-          </h1>
-          <p className="text-gray-400 text-lg leading-relaxed mb-8 max-w-2xl">{industry.description}</p>
-          <Link href="/contact" className="btn-gold px-8 py-3">Get a Free Quote</Link>
+          <p className="eyebrow text-[#c8960c] mb-4">Industry Solutions</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-5">{industry.title}</h1>
+          <p className="text-[#a0a0a5] text-lg leading-relaxed mb-8 max-w-2xl">{industry.description}</p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link href="/contact" className="btn-gold px-8 py-3">Get a Free Quote</Link>
+            <a href="tel:1300448608" className="btn-outline-gold px-8 py-3">Call 1300 448 608</a>
+          </div>
         </div>
       </section>
 
-      <section className="py-20 px-4">
+      {/* Applications + Benefits */}
+      <section className="py-20 px-5 bg-white">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
           <div>
-            <h2 className="text-2xl font-bold text-white mb-6">Typical Applications</h2>
+            <h2 className="text-2xl font-bold text-[#1c1c1e] mb-6 tracking-tight">Typical Applications</h2>
             <ul className="space-y-3">
               {industry.applications.map((a) => (
-                <li key={a} className="flex items-center gap-3 text-gray-400">
-                  <span className="text-[#d4a017]">→</span> {a}
+                <li key={a} className="flex items-center gap-3 text-[#3d3d3f]">
+                  <span className="text-[#c8960c] font-bold">→</span> {a}
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-white mb-6">Key Benefits</h2>
+            <h2 className="text-2xl font-bold text-[#1c1c1e] mb-6 tracking-tight">Key Benefits</h2>
             <ul className="space-y-3">
               {industry.benefits.map((b) => (
-                <li key={b} className="flex items-center gap-3 text-gray-400">
-                  <span className="text-[#d4a017]">✓</span> {b}
+                <li key={b} className="flex items-center gap-3 text-[#3d3d3f]">
+                  <span className="text-[#c8960c] font-bold">✓</span> {b}
                 </li>
               ))}
             </ul>

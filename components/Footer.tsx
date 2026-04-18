@@ -13,51 +13,44 @@ const serviceLinks = [
 const industryLinks = [
   { label: "Corporate", href: "/industries/corporate" },
   { label: "Retail", href: "/industries/retail" },
-  { label: "Events", href: "/industries/events" },
-  { label: "Exhibitions", href: "/industries/exhibitions" },
+  { label: "Events & Exhibitions", href: "/industries/events" },
   { label: "Logo & Reception", href: "/industries/logo-reception" },
   { label: "Wayfinding", href: "/industries/wayfinding" },
 ];
 
-const quickLinks = [
-  { label: "Gallery", href: "/gallery" },
-  { label: "About Us", href: "/about" },
-  { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/contact" },
-];
-
 export default function Footer() {
   return (
-    <footer className="bg-[#050505] border-t border-[#1f1f1f] pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="bg-[#f9f8f6] border-t border-[#e8e6e1] pt-16 pb-8">
+      <div className="max-w-7xl mx-auto px-5 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+
           {/* Brand */}
           <div>
             <div className="mb-4">
-              <p className="text-white font-bold text-lg">3D Illuminated Signs</p>
-              <p className="text-[#d4a017] text-sm">by Platinum Signs</p>
+              <p className="text-[#1c1c1e] font-bold text-[1.05rem] tracking-tight">3D Illuminated Signs</p>
+              <p className="text-[#c8960c] text-[0.65rem] font-semibold tracking-widest uppercase mt-0.5">by Platinum Signs</p>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed mb-4">
-              Australia&apos;s premier 3D illuminated signage specialists. Custom-designed signs built to last.
+            <p className="text-[#8e8e93] text-sm leading-relaxed mb-5">
+              Australia&apos;s premier 3D illuminated signage specialists. Built in Sydney, installed nationwide.
             </p>
-            <div className="space-y-1">
-              <a href="tel:1300448608" className="block text-gray-400 hover:text-[#d4a017] text-sm transition-colors">
-                📞 1300 448 608
+            <div className="space-y-2">
+              <a href="tel:1300448608" className="flex items-center gap-2 text-sm text-[#3d3d3f] hover:text-[#c8960c] transition-colors font-medium">
+                1300 448 608
               </a>
-              <a href="mailto:info@3dilluminatedsigns.com.au" className="block text-gray-400 hover:text-[#d4a017] text-sm transition-colors">
-                ✉️ info@3dilluminatedsigns.com.au
+              <a href="mailto:info@3dilluminatedsigns.com.au" className="flex items-center gap-2 text-sm text-[#3d3d3f] hover:text-[#c8960c] transition-colors">
+                info@3dilluminatedsigns.com.au
               </a>
-              <p className="text-gray-400 text-sm">📍 Sydney, NSW — Nationwide installation</p>
+              <p className="text-sm text-[#8e8e93]">Sydney, NSW — Nationwide installation</p>
             </div>
           </div>
 
           {/* Services */}
           <div>
-            <p className="text-white font-semibold mb-4">Services</p>
-            <ul className="space-y-2">
+            <p className="eyebrow mb-4">Services</p>
+            <ul className="space-y-2.5">
               {serviceLinks.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-gray-400 hover:text-[#d4a017] text-sm transition-colors">
+                  <Link href={l.href} className="text-sm text-[#3d3d3f] hover:text-[#c8960c] transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -67,11 +60,11 @@ export default function Footer() {
 
           {/* Industries */}
           <div>
-            <p className="text-white font-semibold mb-4">Industries</p>
-            <ul className="space-y-2">
+            <p className="eyebrow mb-4">Industries</p>
+            <ul className="space-y-2.5">
               {industryLinks.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-gray-400 hover:text-[#d4a017] text-sm transition-colors">
+                  <Link href={l.href} className="text-sm text-[#3d3d3f] hover:text-[#c8960c] transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -81,11 +74,16 @@ export default function Footer() {
 
           {/* Quick Links + CTA */}
           <div>
-            <p className="text-white font-semibold mb-4">Quick Links</p>
-            <ul className="space-y-2 mb-6">
-              {quickLinks.map((l) => (
+            <p className="eyebrow mb-4">Quick Links</p>
+            <ul className="space-y-2.5 mb-7">
+              {[
+                { label: "Our Work", href: "/gallery" },
+                { label: "About Us", href: "/about" },
+                { label: "Price Calculator", href: "/configurator/cut-letters" },
+                { label: "Contact", href: "/contact" },
+              ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-gray-400 hover:text-[#d4a017] text-sm transition-colors">
+                  <Link href={l.href} className="text-sm text-[#3d3d3f] hover:text-[#c8960c] transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -97,13 +95,13 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-[#1f1f1f] pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} 3D Illuminated Signs by Platinum Signs. All rights reserved.
+        <div className="border-t border-[#e8e6e1] pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+          <p className="text-[#8e8e93] text-xs">
+            © {new Date().getFullYear()} 3D Illuminated Signs by Platinum Signs Pty Ltd. All rights reserved.
           </p>
-          <div className="flex gap-4">
-            <Link href="/privacy" className="text-gray-500 hover:text-gray-300 text-sm">Privacy Policy</Link>
-            <Link href="/terms" className="text-gray-500 hover:text-gray-300 text-sm">Terms of Service</Link>
+          <div className="flex gap-5">
+            <Link href="/privacy" className="text-[#8e8e93] hover:text-[#3d3d3f] text-xs transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="text-[#8e8e93] hover:text-[#3d3d3f] text-xs transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

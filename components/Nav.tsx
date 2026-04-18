@@ -16,8 +16,7 @@ const services = [
 const industries = [
   { label: "Corporate", href: "/industries/corporate" },
   { label: "Retail", href: "/industries/retail" },
-  { label: "Events", href: "/industries/events" },
-  { label: "Exhibitions", href: "/industries/exhibitions" },
+  { label: "Events & Exhibitions", href: "/industries/events" },
   { label: "Logo & Reception", href: "/industries/logo-reception" },
   { label: "Wayfinding", href: "/industries/wayfinding" },
 ];
@@ -27,67 +26,75 @@ export default function Nav() {
   const [servicesOpen, setServicesOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/95 backdrop-blur border-b border-[#1f1f1f]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#e8e6e1]">
+      <div className="max-w-7xl mx-auto px-5 lg:px-8">
+        <div className="flex items-center justify-between h-[68px]">
+
           {/* Logo */}
-          <Link href="/" className="flex flex-col leading-tight">
-            <span className="text-white font-bold text-lg">3D Illuminated Signs</span>
-            <span className="text-[#d4a017] text-xs font-medium">by Platinum Signs</span>
+          <Link href="/" className="flex flex-col leading-tight shrink-0">
+            <span className="text-[#1c1c1e] font-bold text-[1.05rem] tracking-tight">3D Illuminated Signs</span>
+            <span className="text-[#c8960c] text-[0.65rem] font-semibold tracking-widest uppercase">by Platinum Signs</span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-6">
-            {/* Services dropdown */}
+          <nav className="hidden lg:flex items-center gap-7">
             <div
               className="relative"
               onMouseEnter={() => setServicesOpen(true)}
               onMouseLeave={() => setServicesOpen(false)}
             >
-              <button className="text-gray-300 hover:text-white text-sm font-medium flex items-center gap-1">
+              <button className="text-[#3d3d3f] hover:text-[#1c1c1e] text-sm font-medium flex items-center gap-1 transition-colors">
                 Services
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <svg className="w-3.5 h-3.5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
+
               {servicesOpen && (
-                <div className="absolute top-full left-0 mt-1 w-[480px] bg-[#111] border border-[#1f1f1f] rounded-xl shadow-2xl p-4 grid grid-cols-2 gap-2">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[460px] bg-white border border-[#e8e6e1] rounded-2xl shadow-xl p-5 grid grid-cols-2 gap-x-6 gap-y-1">
                   <div>
-                    <p className="text-xs font-bold text-[#d4a017] uppercase tracking-wider mb-2">Sign Types</p>
+                    <p className="eyebrow mb-3">Sign Types</p>
                     {services.map((s) => (
-                      <Link key={s.href} href={s.href} className="block text-sm text-gray-300 hover:text-white py-1 hover:text-[#d4a017] transition-colors">
+                      <Link key={s.href} href={s.href} className="block text-sm text-[#3d3d3f] hover:text-[#c8960c] py-1.5 transition-colors font-medium">
                         {s.label}
                       </Link>
                     ))}
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-[#d4a017] uppercase tracking-wider mb-2">By Industry</p>
+                    <p className="eyebrow mb-3">By Industry</p>
                     {industries.map((i) => (
-                      <Link key={i.href} href={i.href} className="block text-sm text-gray-300 hover:text-[#d4a017] py-1 transition-colors">
+                      <Link key={i.href} href={i.href} className="block text-sm text-[#3d3d3f] hover:text-[#c8960c] py-1.5 transition-colors font-medium">
                         {i.label}
                       </Link>
                     ))}
+                    <div className="mt-4 pt-4 border-t border-[#e8e6e1]">
+                      <Link href="/configurator/cut-letters" className="flex items-center gap-2 text-sm font-semibold text-[#c8960c] hover:text-[#a87b08] transition-colors">
+                        <span className="text-xs bg-[#fdf6e3] border border-[#c8960c]/20 rounded px-2 py-0.5">New</span>
+                        Price Calculator
+                      </Link>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
 
-            <Link href="/gallery" className="text-gray-300 hover:text-white text-sm font-medium">Gallery</Link>
-            <Link href="/configurator/cut-letters" className="text-[#d4a017] hover:text-white text-sm font-medium border border-[#d4a017]/30 rounded-full px-3 py-1 hover:bg-[#d4a017]/10 transition-all">
-              ✦ Price Calculator
-            </Link>
-            <Link href="/about" className="text-gray-300 hover:text-white text-sm font-medium">About</Link>
-            <Link href="/contact" className="text-gray-300 hover:text-white text-sm font-medium">Contact</Link>
+            <Link href="/gallery" className="text-[#3d3d3f] hover:text-[#1c1c1e] text-sm font-medium transition-colors">Gallery</Link>
+            <Link href="/about" className="text-[#3d3d3f] hover:text-[#1c1c1e] text-sm font-medium transition-colors">About</Link>
+            <Link href="/contact" className="text-[#3d3d3f] hover:text-[#1c1c1e] text-sm font-medium transition-colors">Contact</Link>
           </nav>
 
-          {/* Right side */}
-          <div className="hidden md:flex items-center gap-4">
-            <a href="tel:1300448608" className="text-gray-300 hover:text-white text-sm">1300 448 608</a>
-            <Link href="/contact" className="btn-gold text-sm py-2 px-4">Get a Quote</Link>
+          {/* Right */}
+          <div className="hidden lg:flex items-center gap-4">
+            <a href="tel:1300448608" className="text-sm font-medium text-[#3d3d3f] hover:text-[#1c1c1e] transition-colors">
+              1300 448 608
+            </a>
+            <Link href="/contact" className="btn-gold text-sm px-5 py-2.5">
+              Get a Quote
+            </Link>
           </div>
 
           {/* Mobile toggle */}
-          <button className="md:hidden text-gray-300" onClick={() => setMenuOpen(!menuOpen)}>
+          <button className="lg:hidden text-[#1c1c1e] p-1" onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? (
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -103,21 +110,28 @@ export default function Nav() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-[#111] border-t border-[#1f1f1f] px-4 py-4 space-y-3">
-          <p className="text-xs font-bold text-[#d4a017] uppercase tracking-wider">Services</p>
+        <div className="lg:hidden bg-white border-t border-[#e8e6e1] px-5 py-5 space-y-1">
+          <p className="eyebrow mb-3 pt-1">Services</p>
           {services.map((s) => (
-            <Link key={s.href} href={s.href} onClick={() => setMenuOpen(false)} className="block text-sm text-gray-300 hover:text-white py-1">
+            <Link key={s.href} href={s.href} onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] hover:text-[#c8960c] py-2 font-medium">
               {s.label}
             </Link>
           ))}
-          <hr className="border-[#1f1f1f]" />
-          <Link href="/gallery" onClick={() => setMenuOpen(false)} className="block text-sm text-gray-300 hover:text-white py-1">Gallery</Link>
-          <Link href="/about" onClick={() => setMenuOpen(false)} className="block text-sm text-gray-300 hover:text-white py-1">About</Link>
-          <Link href="/blog" onClick={() => setMenuOpen(false)} className="block text-sm text-gray-300 hover:text-white py-1">Blog</Link>
-          <Link href="/contact" onClick={() => setMenuOpen(false)} className="block text-sm text-gray-300 hover:text-white py-1">Contact</Link>
-          <hr className="border-[#1f1f1f]" />
-          <a href="tel:1300448608" className="block text-sm text-gray-300 py-1">1300 448 608</a>
-          <Link href="/contact" onClick={() => setMenuOpen(false)} className="btn-gold block text-center text-sm">Get a Quote</Link>
+          <hr className="divider my-3" />
+          <p className="eyebrow mb-3">Industries</p>
+          {industries.map((i) => (
+            <Link key={i.href} href={i.href} onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] hover:text-[#c8960c] py-2 font-medium">
+              {i.label}
+            </Link>
+          ))}
+          <hr className="divider my-3" />
+          <Link href="/gallery" onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] py-2 font-medium">Gallery</Link>
+          <Link href="/about" onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] py-2 font-medium">About</Link>
+          <Link href="/configurator/cut-letters" onClick={() => setMenuOpen(false)} className="block text-sm text-[#c8960c] py-2 font-semibold">✦ Price Calculator</Link>
+          <Link href="/contact" onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] py-2 font-medium">Contact</Link>
+          <hr className="divider my-3" />
+          <a href="tel:1300448608" className="block text-sm font-medium text-[#3d3d3f] py-2">1300 448 608</a>
+          <Link href="/contact" onClick={() => setMenuOpen(false)} className="btn-gold block text-center mt-2">Get a Quote</Link>
         </div>
       )}
     </header>

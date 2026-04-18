@@ -73,8 +73,10 @@ export default function Nav() {
             </div>
 
             <Link href="/gallery" className="text-gray-300 hover:text-white text-sm font-medium">Gallery</Link>
+            <Link href="/configurator/cut-letters" className="text-[#d4a017] hover:text-white text-sm font-medium border border-[#d4a017]/30 rounded-full px-3 py-1 hover:bg-[#d4a017]/10 transition-all">
+              ✦ Price Calculator
+            </Link>
             <Link href="/about" className="text-gray-300 hover:text-white text-sm font-medium">About</Link>
-            <Link href="/blog" className="text-gray-300 hover:text-white text-sm font-medium">Blog</Link>
             <Link href="/contact" className="text-gray-300 hover:text-white text-sm font-medium">Contact</Link>
           </nav>
 

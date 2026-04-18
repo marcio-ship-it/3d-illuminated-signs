@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import CtaSection from "@/components/CtaSection";
 
 const stats = [
@@ -64,12 +65,12 @@ const howItWorks = [
 ];
 
 const projects = [
-  { name: "Fruit World", category: "3D Illuminated" },
-  { name: "Toni & Guy", category: "LED Signs" },
-  { name: "Momenti", category: "Lightbox" },
-  { name: "G-Shock", category: "3D Illuminated" },
-  { name: "Fishbowl", category: "Neon Signs" },
-  { name: "Yolk", category: "3D Illuminated" },
+  { name: "Google", category: "3D Illuminated", img: "/images/gallery/google_0141.jpg" },
+  { name: "3D Letters", category: "3D Illuminated", img: "/images/gallery/img_5237.jpg" },
+  { name: "LED Sign", category: "LED Signs", img: "/images/gallery/img_5515.jpg" },
+  { name: "Illuminated Logo", category: "3D Illuminated", img: "/images/gallery/img_4084.jpg" },
+  { name: "Neon Feature", category: "Neon Signs", img: "/images/gallery/img_5020.jpg" },
+  { name: "Custom Sign", category: "3D Illuminated", img: "/images/gallery/img_7642.jpg" },
 ];
 
 const brands = ["Mitsubishi", "NSW Government", "Asahi Beverages", "Total Fitouts"];
@@ -102,11 +103,15 @@ export default function HomePage() {
             </div>
           </div>
           <div className="hidden lg:flex justify-center">
-            <div className="w-full max-w-md aspect-video bg-[#111] rounded-2xl border border-[#1f1f1f] flex items-center justify-center">
-              <div className="text-center">
-                <p className="text-6xl mb-4">💡</p>
-                <p className="text-gray-500 text-sm">Hero image — AIA Tower 3D signage</p>
-              </div>
+            <div className="relative w-full max-w-md aspect-video rounded-2xl overflow-hidden border border-[#1f1f1f]">
+              <Image
+                src="/images/gallery/img_6127.jpg"
+                alt="3D Illuminated Sign Installation"
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 1024px) 0px, 450px"
+              />
             </div>
           </div>
         </div>
@@ -197,12 +202,11 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {projects.map((p) => (
-              <Link key={p.name} href="/gallery" className="group relative aspect-video bg-[#111] border border-[#1f1f1f] rounded-xl overflow-hidden hover:border-[#d4a017]/40 transition-all flex items-center justify-center">
-                <div className="text-center">
-                  <p className="text-gray-500 text-xs mb-1">{p.category}</p>
-                  <p className="text-white font-medium text-sm">{p.name}</p>
+              <Link key={p.img} href="/gallery" className="group relative aspect-video rounded-xl overflow-hidden border border-[#1f1f1f] hover:border-[#d4a017]/40 transition-all">
+                <Image src={p.img} alt={p.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 50vw, 33vw" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-end p-3">
+                  <p className="text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">{p.name}</p>
                 </div>
-                <div className="absolute inset-0 bg-[#d4a017]/0 group-hover:bg-[#d4a017]/5 transition-all" />
               </Link>
             ))}
           </div>

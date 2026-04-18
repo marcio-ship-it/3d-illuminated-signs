@@ -1,47 +1,56 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 const categories = ["All", "3D Illuminated", "LED Signs", "Lightboxes", "Neon Signs", "Metal Signs", "Acrylic Signs", "3D Printed"];
 
 const projects = [
-  { name: "Lounge Lovers", category: "3D Illuminated" },
-  { name: "T2 Tea", category: "Lightboxes" },
-  { name: "Deli", category: "3D Illuminated" },
-  { name: "Momenti", category: "Lightboxes" },
-  { name: "NUP Building", category: "3D Illuminated" },
-  { name: "Fruit World", category: "3D Illuminated" },
-  { name: "The Smelly Cheesecake", category: "Neon Signs" },
-  { name: "Muscle Factory", category: "LED Signs" },
-  { name: "Winners", category: "3D Illuminated" },
-  { name: "MyMac", category: "Acrylic Signs" },
-  { name: "Hugo Boss", category: "Metal Signs" },
-  { name: "AIA Tower", category: "3D Illuminated" },
-  { name: "Little Creatures", category: "Neon Signs" },
-  { name: "#eatfuh", category: "Neon Signs" },
-  { name: "Fishbowl", category: "Neon Signs" },
-  { name: "Fitting Rooms", category: "3D Illuminated" },
-  { name: "Yo-Chi", category: "3D Illuminated" },
-  { name: "Petbarn", category: "LED Signs" },
-  { name: "Oroton", category: "Metal Signs" },
-  { name: "Chemist Warehouse", category: "LED Signs" },
-  { name: "Chrome Fabricated Letters", category: "Metal Signs" },
-  { name: "NCS", category: "3D Illuminated" },
-  { name: "Yolk", category: "3D Illuminated" },
-  { name: "Metal Cut-Out Letters", category: "Metal Signs" },
-  { name: "Cheezious", category: "Neon Signs" },
-  { name: "Toni & Guy", category: "LED Signs" },
-  { name: "Essence Pilates", category: "Acrylic Signs" },
-  { name: "SAS", category: "3D Illuminated" },
-  { name: "Pure Yoga", category: "3D Illuminated" },
-  { name: "G-Shock", category: "3D Illuminated" },
-  { name: "Guzman y Gomez", category: "Lightboxes" },
-  { name: "Fitting Rooms Globes", category: "3D Printed" },
-  { name: "Illuminated Floor Logo", category: "LED Signs" },
+  { name: "3D Lettering", category: "3D Illuminated", img: "/images/gallery/3d-lettering-iii.jpg" },
+  { name: "Illuminated Sign", category: "3D Illuminated", img: "/images/gallery/img_0165.jpg" },
+  { name: "3D Letters", category: "3D Illuminated", img: "/images/gallery/img_1594.jpg" },
+  { name: "Sign Installation", category: "3D Illuminated", img: "/images/gallery/img_2084.jpg" },
+  { name: "Neon Installation", category: "Neon Signs", img: "/images/gallery/img_2289.jpg" },
+  { name: "LED Sign", category: "LED Signs", img: "/images/gallery/img_2580.jpg" },
+  { name: "Metal Letters", category: "Metal Signs", img: "/images/gallery/img_2607.jpg" },
+  { name: "Acrylic Sign", category: "Acrylic Signs", img: "/images/gallery/img_2608.jpg" },
+  { name: "3D Illuminated", category: "3D Illuminated", img: "/images/gallery/img_3078.jpg" },
+  { name: "Signage Project", category: "3D Illuminated", img: "/images/gallery/img_3310.jpg" },
+  { name: "Custom Letters", category: "3D Illuminated", img: "/images/gallery/img_3329.jpg" },
+  { name: "LED Installation", category: "LED Signs", img: "/images/gallery/img_3375.jpg" },
+  { name: "Sign Project", category: "3D Illuminated", img: "/images/gallery/img_3422.jpg" },
+  { name: "Neon Sign", category: "Neon Signs", img: "/images/gallery/img_3472.jpg" },
+  { name: "Metal Sign", category: "Metal Signs", img: "/images/gallery/img_3675.jpg" },
+  { name: "3D Letters", category: "3D Illuminated", img: "/images/gallery/img_3711.jpg" },
+  { name: "Lightbox", category: "Lightboxes", img: "/images/gallery/img_3723.jpg" },
+  { name: "Illuminated Logo", category: "3D Illuminated", img: "/images/gallery/img_4084.jpg" },
+  { name: "LED Sign", category: "LED Signs", img: "/images/gallery/img_4099.jpg" },
+  { name: "Acrylic Letters", category: "Acrylic Signs", img: "/images/gallery/img_4494.jpg" },
+  { name: "3D Sign", category: "3D Illuminated", img: "/images/gallery/img_4541.jpg" },
+  { name: "Custom Sign", category: "3D Illuminated", img: "/images/gallery/img_4751.jpg" },
+  { name: "Neon Feature", category: "Neon Signs", img: "/images/gallery/img_5020.jpg" },
+  { name: "Metal Fabricated", category: "Metal Signs", img: "/images/gallery/img_5033.jpg" },
+  { name: "Illuminated Sign", category: "3D Illuminated", img: "/images/gallery/img_5237.jpg" },
+  { name: "LED Display", category: "LED Signs", img: "/images/gallery/img_5515.jpg" },
+  { name: "3D Letters", category: "3D Illuminated", img: "/images/gallery/img_5597.jpg" },
+  { name: "Sign Install", category: "3D Illuminated", img: "/images/gallery/img_5761.jpg" },
+  { name: "Neon Sign", category: "Neon Signs", img: "/images/gallery/img_5987.jpg" },
+  { name: "Lightbox Sign", category: "Lightboxes", img: "/images/gallery/img_6003.jpg" },
+  { name: "3D Illuminated", category: "3D Illuminated", img: "/images/gallery/img_6127.jpg" },
+  { name: "Custom Letters", category: "3D Illuminated", img: "/images/gallery/img_6342.jpg" },
+  { name: "Metal Sign", category: "Metal Signs", img: "/images/gallery/img_6738.jpg" },
+  { name: "Sign Project", category: "3D Illuminated", img: "/images/gallery/img_7642.jpg" },
+  { name: "Illuminated Logo", category: "3D Illuminated", img: "/images/gallery/img_9336.jpg" },
+  { name: "Google Office", category: "3D Illuminated", img: "/images/gallery/google_0141.jpg" },
+  { name: "Platinum Signs", category: "3D Illuminated", img: "/images/gallery/sign_0070.jpg" },
+  { name: "Feature Sign", category: "3D Illuminated", img: "/images/gallery/a05c661b-f341-4b71-93eb-60f1590d7a6b.jpg" },
+  { name: "LED Feature", category: "LED Signs", img: "/images/gallery/aa2848b0-b507-423b-8e52-fe6329b0293d.jpg" },
+  { name: "Custom Sign", category: "3D Illuminated", img: "/images/gallery/b073ea46-4ffc-4ff6-a819-eab43884a114.jpg" },
 ];
 
 export default function GalleryPage() {
   const [active, setActive] = useState("All");
+  const [lightbox, setLightbox] = useState<string | null>(null);
 
   const filtered = active === "All" ? projects : projects.filter((p) => p.category === active);
 
@@ -74,25 +83,41 @@ export default function GalleryPage() {
           </div>
 
           {/* Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {filtered.map((p) => (
-              <div
-                key={p.name}
-                className="card-dark aspect-square flex flex-col items-center justify-center hover:border-[#d4a017]/40 transition-all cursor-pointer group"
+              <button
+                key={p.img}
+                onClick={() => setLightbox(p.img)}
+                className="group relative aspect-square overflow-hidden rounded-xl border border-[#1f1f1f] hover:border-[#d4a017]/40 transition-all"
               >
-                <div className="text-center p-4">
-                  <p className="text-xs text-[#d4a017] mb-1">{p.category}</p>
-                  <p className="text-white text-sm font-medium group-hover:text-[#d4a017] transition-colors">{p.name}</p>
+                <Image
+                  src={p.img}
+                  alt={p.name}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-end p-3">
+                  <p className="text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">{p.name}</p>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
-
-          {filtered.length === 0 && (
-            <p className="text-gray-500 text-center py-20">No projects in this category yet.</p>
-          )}
         </div>
       </section>
+
+      {/* Lightbox */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onClick={() => setLightbox(null)}
+        >
+          <button className="absolute top-4 right-4 text-white text-3xl">✕</button>
+          <div className="relative max-w-4xl max-h-[90vh] w-full h-full">
+            <Image src={lightbox} alt="Gallery" fill className="object-contain" sizes="100vw" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

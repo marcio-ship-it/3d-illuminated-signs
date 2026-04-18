@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "3d-illuminated-signs",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3001"],
+      "cwd": "/Users/marciow/GitHub/3d-illuminated-signs",
+      "port": 3001
+    }
+  ]
+}

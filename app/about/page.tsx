@@ -1,3 +1,4 @@
+import Image from "next/image";
 import CtaSection from "@/components/CtaSection";
 
 const differentiators = [
@@ -44,11 +45,14 @@ export default function AboutPage() {
               Every sign leaves our workshop with a signed quality inspection checklist and is installed by our own licensed electricians — not subcontractors.
             </p>
           </div>
-          <div className="bg-[#f9f8f6] border border-[#e8e6e1] rounded-2xl aspect-video flex items-center justify-center">
-            <div className="text-center">
-              <p className="text-5xl mb-3">🏭</p>
-              <p className="text-[#8e8e93] text-sm">Workshop / team photo</p>
-            </div>
+          <div className="relative rounded-2xl aspect-video overflow-hidden">
+            <Image
+              src="/images/gallery/img_5987.jpg"
+              alt="Our Sydney workshop"
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
           </div>
         </div>
       </section>

@@ -87,8 +87,8 @@ export async function POST(req: NextRequest) {
     lead_score: 55,
     lead_flags: ["satellite_site", BUSINESS_UNIT],
     lead_reasoning: [`Submitted via ${BRAND} website and routed to Platinum admin.`],
-    lead_status: "new",
-    qualification_status: "new",
+    lead_status: "reviewing",
+    qualification_status: "needs_review",
     status: "pending",
   });
 

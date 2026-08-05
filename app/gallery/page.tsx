@@ -1,11 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const categories = ["All", "3D Illuminated", "LED Signs", "Lightboxes", "Neon Signs", "Metal Signs", "Acrylic Signs", "3D Printed"];
 
 const projects = [
+  { name: "Ureshii — illuminated shopfront letters", category: "3D Illuminated", img: "/images/project-library/ureshii-illuminated-shopfront.webp" },
+  { name: "Ureshii — halo-lit interior feature", category: "3D Illuminated", img: "/images/project-library/ureshii-halo-lit-interior.webp" },
+  { name: "One Mile — halo-lit retail lettering", category: "3D Illuminated", img: "/images/project-library/one-mile-halo-lettering.webp" },
+  { name: "One Mile — projecting lightbox", category: "Lightboxes", img: "/images/project-library/one-mile-projecting-lightbox.webp" },
+  { name: "Hali — rectangular LED lightbox", category: "Lightboxes", img: "/images/project-library/hali-rectangular-lightbox.webp" },
+  { name: "Hali — round projecting lightbox", category: "Lightboxes", img: "/images/project-library/hali-round-lightbox.webp" },
+  { name: "Byrons — illuminated reception identity", category: "3D Illuminated", img: "/images/project-library/byrons-illuminated-reception.webp" },
+  { name: "Claudio's Seafoods — backlit fascia letters", category: "3D Illuminated", img: "/images/project-library/claudios-backlit-fascia.webp" },
+  { name: "Callaway — suspended illuminated sign", category: "3D Illuminated", img: "/images/project-library/callaway-suspended-sign.webp" },
+  { name: "Mizuno — illuminated retail logo", category: "LED Signs", img: "/images/project-library/mizuno-illuminated-logo.webp" },
+  { name: "TaylorMade — face-lit department signage", category: "3D Illuminated", img: "/images/project-library/taylormade-illuminated-sign.webp" },
+  { name: "Titleist — halo-lit script lettering", category: "3D Illuminated", img: "/images/project-library/titleist-halo-lit-script.webp" },
+  { name: "Tip Top Meats — colour-changing letters", category: "LED Signs", img: "/images/project-library/tip-top-colour-changing-letters.webp" },
+  { name: "Lounge Lovers — halo-lit facade letters", category: "3D Illuminated", img: "/images/project-library/lounge-lovers-halo-lit-facade.webp" },
+  { name: "Pure Touch — face-lit shopfront letters", category: "3D Illuminated", img: "/images/project-library/pure-touch-face-lit-letters.webp" },
+  { name: "Billy's — custom LED neon", category: "Neon Signs", img: "/images/project-library/billys-led-neon.webp" },
   { name: "3D Lettering", category: "3D Illuminated", img: "/images/gallery/3d-lettering-iii.jpg" },
   { name: "Illuminated Sign", category: "3D Illuminated", img: "/images/gallery/img_0165.jpg" },
   { name: "3D Letters", category: "3D Illuminated", img: "/images/gallery/img_1594.jpg" },
@@ -50,9 +66,26 @@ const projects = [
 
 export default function GalleryPage() {
   const [active, setActive] = useState("All");
-  const [lightbox, setLightbox] = useState<string | null>(null);
+  const [lightbox, setLightbox] = useState<(typeof projects)[number] | null>(null);
 
   const filtered = active === "All" ? projects : projects.filter((p) => p.category === active);
+
+  useEffect(() => {
+    if (!lightbox) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setLightbox(null);
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [lightbox]);
 
   return (
     <div className="pt-[76px] bg-[#fbfaf6]">
@@ -91,7 +124,7 @@ export default function GalleryPage() {
             {filtered.map((p, index) => (
               <button
                 key={p.img}
-                onClick={() => setLightbox(p.img)}
+                onClick={() => setLightbox(p)}
                 aria-label={`Open ${p.name} project image`}
                 className={`group relative overflow-hidden bg-[#e4e1d8] ${index % 9 === 0 ? "col-span-2 row-span-2" : "col-span-1 row-span-1"}`}
               >
@@ -121,10 +154,17 @@ export default function GalleryPage() {
         <div
           className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
           onClick={() => setLightbox(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={lightbox.name}
         >
           <button className="absolute top-4 right-4 grid h-11 w-11 place-items-center border border-white/35 text-white text-xl" aria-label="Close image">✕</button>
-          <div className="relative max-w-4xl max-h-[90vh] w-full h-full">
-            <Image src={lightbox} alt="Gallery" fill className="object-contain" sizes="100vw" />
+          <div className="relative max-w-5xl max-h-[90vh] w-full h-full" onClick={(event) => event.stopPropagation()}>
+            <Image src={lightbox.img} alt={lightbox.name} fill className="object-contain pb-16" sizes="100vw" />
+            <div className="absolute inset-x-0 bottom-0 text-center text-white">
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-white/55">{lightbox.category}</p>
+              <p className="mt-1 text-sm font-semibold">{lightbox.name}</p>
+            </div>
           </div>
         </div>
       )}

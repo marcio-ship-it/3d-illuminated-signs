@@ -18,15 +18,15 @@ const selectedWork = [
     className: "lg:col-span-7 lg:row-span-2",
   },
   {
-    client: "Bupa Optical",
-    detail: "Reception identity",
-    image: "/images/gallery/img_5237.jpg",
+    client: "Ureshii",
+    detail: "Face-lit shopfront lettering",
+    image: "/images/project-library/ureshii-illuminated-shopfront.webp",
     className: "lg:col-span-5",
   },
   {
-    client: "Canada Goose",
-    detail: "Custom illuminated emblem",
-    image: "/images/gallery/img_9336.jpg",
+    client: "One Mile",
+    detail: "Warm halo-lit retail letters",
+    image: "/images/project-library/one-mile-halo-lettering.webp",
     className: "lg:col-span-5",
   },
 ];
@@ -37,21 +37,21 @@ const services = [
     title: "3D & illuminated signs",
     description: "Face-lit, halo-lit and fabricated letters engineered around your brand and site.",
     href: "/illuminated-signs/",
-    image: "/images/gallery/img_9336.jpg",
+    image: "/images/project-library/pure-touch-face-lit-letters.webp",
   },
   {
     number: "02",
     title: "Reception & office signage",
     description: "Dimensional logos, feature walls and wayfinding that give workplace brands a physical presence.",
     href: "/reception-signs/",
-    image: "/images/gallery/img_5237.jpg",
+    image: "/images/project-library/byrons-illuminated-reception.webp",
   },
   {
     number: "03",
     title: "Lightboxes & LED signage",
     description: "Clean, efficient illuminated formats for retail, hospitality and commercial environments.",
     href: "/lightbox-signs/",
-    image: "/images/gallery/sign_0070.jpg",
+    image: "/images/project-library/hali-rectangular-lightbox.webp",
   },
   {
     number: "04",
@@ -59,6 +59,57 @@ const services = [
     description: "Precision-cut materials, considered finishes and concealed fixing systems for a refined result.",
     href: "/3d-lettering/",
     image: "/images/gallery/img_2607.jpg",
+  },
+];
+
+const illuminationStyles = [
+  {
+    label: "Face-lit",
+    title: "Bright, direct recognition",
+    description: "Illumination through the letter face for crisp visibility across retail and commercial sites.",
+    image: "/images/project-library/pure-touch-face-lit-letters.webp",
+    alt: "Face-lit 3D letters installed above the Pure Touch shopfront",
+    href: "/illuminated-signs/",
+  },
+  {
+    label: "Halo-lit",
+    title: "A softer architectural glow",
+    description: "Light projected behind fabricated letters to create separation, depth and a premium finish.",
+    image: "/images/project-library/titleist-halo-lit-script.webp",
+    alt: "Halo-lit Titleist script signage with a soft white glow",
+    href: "/3d-signs/",
+  },
+  {
+    label: "Face + halo",
+    title: "Maximum presence after dark",
+    description: "Combined illumination for signage that carries colour and dimension from every viewing angle.",
+    image: "/images/project-library/tip-top-colour-changing-letters.webp",
+    alt: "Tip Top Meats colour-changing illuminated 3D letters at night",
+    href: "/illuminated-signs/",
+  },
+  {
+    label: "Lightboxes",
+    title: "Simple, dependable visibility",
+    description: "Projecting and fascia formats that give hospitality and retail brands a clear street presence.",
+    image: "/images/project-library/hali-rectangular-lightbox.webp",
+    alt: "Hali rectangular projecting LED lightbox installed in Alexandria",
+    href: "/lightbox-signs/",
+  },
+  {
+    label: "Reception features",
+    title: "A strong first impression",
+    description: "Illuminated logos and dimensional lettering resolved around the architecture of the space.",
+    image: "/images/project-library/byrons-illuminated-reception.webp",
+    alt: "Illuminated Byrons reception logo installed on a timber batten desk",
+    href: "/reception-signs/",
+  },
+  {
+    label: "LED neon",
+    title: "Expressive light and colour",
+    description: "Custom shapes and lettering with the energy of neon and the practicality of modern LED.",
+    image: "/images/project-library/billys-led-neon.webp",
+    alt: "Billy's custom white LED neon sign installed in a hospitality venue",
+    href: "/neon-signs/",
   },
 ];
 
@@ -212,6 +263,48 @@ export default function HomePage() {
                     <Image src={service.image} alt="" fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="112px" />
                   </div>
                   <span className="text-2xl text-[#2457f5] transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-[#dcd9d0] bg-white py-24 md:py-32">
+        <div className="section-shell">
+          <div className="mb-12 grid gap-8 lg:grid-cols-[1fr_0.58fr] lg:items-end">
+            <div>
+              <p className="eyebrow mb-4">Ways to illuminate</p>
+              <h2 className="font-display max-w-4xl text-balance text-5xl leading-[0.94] tracking-[-0.045em] md:text-7xl">
+                The right light changes how a brand is experienced.
+              </h2>
+            </div>
+            <p className="max-w-lg text-base leading-7 text-[#4e5049] lg:justify-self-end">
+              The best construction depends on viewing distance, ambient light, architecture, brand detail and budget. These are the formats we use most often.
+            </p>
+          </div>
+
+          <div className="grid gap-x-4 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+            {illuminationStyles.map((style) => (
+              <Link key={style.label} href={style.href} className="group block">
+                <div className="relative aspect-[4/3] overflow-hidden bg-[#e6e3dc]">
+                  <Image
+                    src={style.image}
+                    alt={style.alt}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-[1.025]"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                  <span className="absolute left-4 top-4 bg-white/95 px-3 py-2 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[#171815] backdrop-blur-sm">
+                    {style.label}
+                  </span>
+                </div>
+                <div className="border-b border-[#dcd9d0] py-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <h3 className="text-xl font-semibold tracking-[-0.025em]">{style.title}</h3>
+                    <span className="text-xl text-[#2457f5] transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+                  </div>
+                  <p className="mt-3 max-w-sm text-sm leading-6 text-[#4e5049]">{style.description}</p>
                 </div>
               </Link>
             ))}

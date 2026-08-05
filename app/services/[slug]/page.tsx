@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import CtaSection from "@/components/CtaSection";
 import type { Metadata } from "next";
@@ -8,9 +9,20 @@ export type ServiceData = {
   title: string;
   tagline: string;
   description: string;
+  image?: string;
   styles: { name: string; desc: string }[];
   materials: { name: string; desc: string }[];
   faqs: { q: string; a: string }[];
+};
+
+const serviceImages: Record<string, string> = {
+  "3D Illuminated Signs": "/images/gallery/img_9336.jpg",
+  "LED Signs": "/images/gallery/img_4099.jpg",
+  "Lightbox Signs": "/images/gallery/sign_0070.jpg",
+  "3D Printed Signs": "/images/gallery/img_5515.jpg",
+  "Metal Signs": "/images/gallery/img_2607.jpg",
+  "Acrylic Signs": "/images/gallery/img_2608.jpg",
+  "Neon Signs": "/images/gallery/img_5987.jpg",
 };
 
 export const serviceData: Record<string, ServiceData> = {
@@ -193,6 +205,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 export function ServiceView({ service, canonicalPath }: { service: ServiceData; canonicalPath: string }) {
+  const heroImage = service.image || serviceImages[service.title] || "/images/gallery/img_9336.jpg";
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -212,69 +225,87 @@ export function ServiceView({ service, canonicalPath }: { service: ServiceData; 
   };
 
   return (
-    <div className="pt-[68px]">
+    <div className="pt-[76px] bg-[#fbfaf6]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-      {/* Hero — dark strip */}
-      <section className="py-20 px-5 bg-[#1c1c1e]">
-        <div className="max-w-4xl mx-auto">
-          <nav className="text-sm text-[#8e8e93] mb-6">
-            <Link href="/" className="hover:text-[#c8960c] transition-colors">Home</Link>
+      <section className="border-b border-[#dcd9d0] bg-[#f1efe8]">
+        <div className="section-shell grid lg:grid-cols-[0.92fr_1.08fr] lg:min-h-[650px]">
+          <div className="flex flex-col justify-center py-16 md:py-24 lg:pr-16">
+          <nav className="text-xs font-semibold uppercase tracking-[0.1em] text-[#77796f] mb-10">
+            <Link href="/" className="hover:text-[#2457f5] transition-colors">Home</Link>
             <span className="mx-2">/</span>
-            <span className="text-white">{service.title}</span>
+            <span className="text-[#171815]">{service.title}</span>
           </nav>
-          <p className="eyebrow text-[#c8960c] mb-4">{service.tagline}</p>
-          <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-5">{service.title}</h1>
-          <p className="text-[#a0a0a5] text-lg max-w-2xl leading-relaxed mb-8">{service.description}</p>
+          <p className="eyebrow mb-5">{service.tagline}</p>
+          <h1 className="font-display text-balance text-6xl md:text-8xl leading-[0.88] tracking-[-0.05em] text-[#171815]">{service.title}</h1>
+          <p className="mt-7 text-base md:text-lg max-w-2xl leading-8 text-[#4e5049]">{service.description}</p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Link href="/contact-us/" className="btn-gold px-8 py-3">Get a Free Quote</Link>
-            <a href="tel:1300448608" className="btn-outline-gold px-8 py-3">Call 1300 448 608</a>
+            <Link href="/contact-us/" className="btn-gold mt-8 px-7">Request a quote <span aria-hidden="true">↗</span></Link>
+            <a href="tel:1300448608" className="btn-outline mt-8 px-7">1300 448 608</a>
+          </div>
+          </div>
+          <div className="relative min-h-[430px] lg:border-l border-[#dcd9d0] lg:my-8 lg:ml-8 overflow-hidden bg-[#e4e1d8]">
+            <Image src={heroImage} alt={`${service.title} project`} fill loading="eager" fetchPriority="high" className="object-cover" sizes="(max-width: 1024px) 100vw, 54vw" />
           </div>
         </div>
       </section>
 
-      {/* Styles */}
-      <section className="py-20 px-5 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-[#1c1c1e] mb-10 tracking-tight">
+      <section className="py-24 md:py-32 bg-white border-b border-[#dcd9d0]">
+        <div className="section-shell grid lg:grid-cols-[0.42fr_1fr] gap-12 lg:gap-24">
+          <div>
+            <p className="eyebrow mb-4">Formats</p>
+            <h2 className="font-display text-5xl md:text-6xl leading-[0.94] tracking-[-0.04em]">
             {service.title === "3D Illuminated Signs" ? "Illumination Styles" : "Options"}
-          </h2>
-          <div className="grid sm:grid-cols-2 gap-5">
-            {service.styles.map((s) => (
-              <div key={s.name} className="card p-6">
-                <h3 className="text-[#c8960c] font-bold text-lg mb-2">{s.name}</h3>
-                <p className="text-[#3d3d3f]">{s.desc}</p>
-              </div>
+            </h2>
+          </div>
+          <div className="border-t border-[#b8b4a9]">
+            {service.styles.map((s, index) => (
+              <article key={s.name} className="grid sm:grid-cols-[4rem_0.72fr_1fr] gap-4 border-b border-[#dcd9d0] py-7">
+                <span className="text-xs font-bold tracking-[0.12em] text-[#77796f]">{String(index + 1).padStart(2, "0")}</span>
+                <h3 className="font-semibold text-lg tracking-[-0.02em]">{s.name}</h3>
+                <p className="text-[#4e5049] leading-7">{s.desc}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Materials */}
-      <section className="py-20 px-5 bg-[#f9f8f6]">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-[#1c1c1e] mb-10 tracking-tight">Materials & Finishes</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {service.materials.map((m) => (
-              <div key={m.name} className="card-soft p-5">
-                <h3 className="text-[#1c1c1e] font-semibold mb-2">{m.name}</h3>
-                <p className="text-[#8e8e93] text-sm">{m.desc}</p>
-              </div>
+      <section className="py-24 md:py-32 bg-[#f1efe8] border-b border-[#dcd9d0]">
+        <div className="section-shell">
+          <div className="mb-12 grid lg:grid-cols-2 gap-7 items-end">
+            <div>
+              <p className="eyebrow mb-4">Materiality</p>
+              <h2 className="font-display text-5xl md:text-7xl leading-none tracking-[-0.045em]">Materials & finishes.</h2>
+            </div>
+            <p className="max-w-lg lg:justify-self-end text-[#4e5049] leading-7">The finish is part of the brand. We select the construction around appearance, exposure, mounting, serviceability and budget.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 border-t border-l border-[#b8b4a9]">
+            {service.materials.map((m, index) => (
+              <article key={m.name} className="min-h-56 border-b border-r border-[#b8b4a9] p-6 md:p-8">
+                <span className="text-xs font-bold tracking-[0.12em] text-[#77796f]">M{String(index + 1).padStart(2, "0")}</span>
+                <h3 className="font-display mt-12 text-3xl tracking-[-0.03em]">{m.name}</h3>
+                <p className="mt-3 text-sm leading-6 text-[#4e5049]">{m.desc}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-20 px-5 bg-white">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-[#1c1c1e] mb-10 tracking-tight">Frequently Asked Questions</h2>
-          <div className="space-y-3">
+      <section className="py-24 md:py-32 bg-white">
+        <div className="section-shell grid lg:grid-cols-[0.42fr_1fr] gap-12 lg:gap-24">
+          <div>
+            <p className="eyebrow mb-4">Practical details</p>
+            <h2 className="font-display text-5xl md:text-6xl leading-[0.94] tracking-[-0.04em]">Frequently asked.</h2>
+          </div>
+          <div className="border-t border-[#b8b4a9]">
             {service.faqs.map((f) => (
-              <div key={f.q} className="card p-6">
-                <h3 className="text-[#1c1c1e] font-semibold mb-2">{f.q}</h3>
-                <p className="text-[#8e8e93] text-sm">{f.a}</p>
-              </div>
+              <details key={f.q} className="group border-b border-[#dcd9d0] py-6">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-semibold text-lg tracking-[-0.02em]">
+                  {f.q}
+                  <span className="text-[#2457f5] transition-transform group-open:rotate-45" aria-hidden="true">＋</span>
+                </summary>
+                <p className="mt-4 max-w-2xl pr-10 text-sm leading-7 text-[#4e5049]">{f.a}</p>
+              </details>
             ))}
           </div>
         </div>

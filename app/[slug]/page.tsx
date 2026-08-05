@@ -267,41 +267,49 @@ function InfoPage({ page, slug }: { page: InfoLegacyPage; slug: string }) {
   };
 
   return (
-    <div className="pt-[68px]">
+    <div className="pt-[76px] bg-[#fbfaf6]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-      <section className="relative min-h-[520px] flex items-end overflow-hidden bg-[#1c1c1e]">
-        <Image src={page.image} alt={page.title} fill priority className="object-cover opacity-55" sizes="100vw" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/10" />
-        <div className="relative max-w-6xl mx-auto w-full px-5 lg:px-10 pb-16 pt-28">
-          <nav className="text-sm text-white/60 mb-6">
-            <Link href="/" className="hover:text-[#c8960c]">Home</Link>
+      <section className="border-b border-[#dcd9d0] bg-[#f1efe8]">
+        <div className="section-shell grid lg:grid-cols-[0.92fr_1.08fr] lg:min-h-[650px]">
+        <div className="flex flex-col justify-center py-16 md:py-24 lg:pr-16">
+          <nav className="mb-10 text-xs font-semibold uppercase tracking-[0.1em] text-[#77796f]">
+            <Link href="/" className="hover:text-[#2457f5]">Home</Link>
             <span className="mx-2">/</span>
-            <span className="text-white">{page.title}</span>
+            <span className="text-[#171815]">{page.title}</span>
           </nav>
-          <p className="eyebrow text-[#c8960c] mb-4">{page.eyebrow}</p>
-          <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight max-w-3xl mb-5">{page.title}</h1>
-          <p className="text-white/75 text-lg leading-relaxed max-w-2xl">{page.description}</p>
+          <p className="eyebrow mb-5">{page.eyebrow}</p>
+          <h1 className="font-display text-balance text-6xl md:text-8xl leading-[0.88] tracking-[-0.05em] text-[#171815]">{page.title}</h1>
+          <p className="mt-7 max-w-2xl text-base md:text-lg leading-8 text-[#4e5049]">{page.description}</p>
+        </div>
+        <div className="relative min-h-[430px] overflow-hidden bg-[#e4e1d8] lg:my-8 lg:ml-8 lg:border-l border-[#dcd9d0]">
+          <Image src={page.image} alt={page.title} fill loading="eager" fetchPriority="high" className="object-cover" sizes="(max-width: 1024px) 100vw, 54vw" />
+        </div>
         </div>
       </section>
 
-      <section className="py-20 px-5 bg-white">
-        <div className="max-w-4xl mx-auto space-y-12">
-          {page.sections.map((section) => (
-            <article key={section.heading}>
-              <h2 className="text-2xl md:text-3xl font-bold text-[#1c1c1e] mb-4 tracking-tight">{section.heading}</h2>
-              <p className="text-[#3d3d3f] leading-7">{section.body}</p>
+      <section className="py-24 md:py-32 bg-white">
+        <div className="section-shell max-w-6xl">
+          <div className="border-t border-[#b8b4a9]">
+          {page.sections.map((section, index) => (
+            <article key={section.heading} className="grid md:grid-cols-[0.12fr_0.55fr_1fr] gap-5 border-b border-[#dcd9d0] py-9 md:py-12">
+              <span className="text-xs font-bold tracking-[0.12em] text-[#77796f]">{String(index + 1).padStart(2, "0")}</span>
+              <h2 className="font-display text-3xl md:text-4xl leading-tight tracking-[-0.03em]">{section.heading}</h2>
+              <div>
+              <p className="text-[#4e5049] leading-8">{section.body}</p>
               {section.bullets && (
-                <ul className="mt-5 grid sm:grid-cols-2 gap-3">
+                <ul className="mt-6 grid gap-3 border-t border-[#dcd9d0] pt-5 sm:grid-cols-2">
                   {section.bullets.map((bullet) => (
-                    <li key={bullet} className="card-soft p-4 text-sm text-[#3d3d3f] flex gap-3">
-                      <span className="text-[#c8960c] font-bold">✓</span>
+                    <li key={bullet} className="flex gap-3 text-sm leading-6 text-[#4e5049]">
+                      <span className="text-[#2457f5] font-bold">↳</span>
                       <span>{bullet}</span>
                     </li>
                   ))}
                 </ul>
               )}
+              </div>
             </article>
           ))}
+          </div>
         </div>
       </section>
 
@@ -322,16 +330,16 @@ export default async function LegacyPage({ params }: { params: Promise<{ slug: s
       title: page.title,
       tagline: page.tagline,
       description: page.description,
+      image: page.image,
     };
     return <ServiceView service={service} canonicalPath={`/${slug}/`} />;
   }
 
   if (page.kind === "industry") {
     const base = industryData[page.source];
-    const industry: IndustryData = { ...base, title: page.title, description: page.description };
+    const industry: IndustryData = { ...base, title: page.title, description: page.description, image: page.image };
     return <IndustryView industry={industry} canonicalPath={`/${slug}/`} />;
   }
 
   return <InfoPage page={page} slug={slug} />;
 }
-

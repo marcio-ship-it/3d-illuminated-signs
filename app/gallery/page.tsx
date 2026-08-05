@@ -55,27 +55,31 @@ export default function GalleryPage() {
   const filtered = active === "All" ? projects : projects.filter((p) => p.category === active);
 
   return (
-    <div className="pt-[68px]">
-      <section className="py-20 px-5 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-10">
-            <p className="eyebrow mb-3">Portfolio</p>
-            <h1 className="text-4xl md:text-5xl font-bold text-[#1c1c1e] tracking-tight mb-2">Our Work</h1>
-            <p className="text-[#8e8e93] text-lg max-w-xl">
+    <div className="pt-[76px] bg-[#fbfaf6]">
+      <section className="border-b border-[#dcd9d0] bg-[#f1efe8] py-20 md:py-28">
+        <div className="section-shell grid lg:grid-cols-[1fr_0.55fr] gap-10 items-end">
+          <div>
+            <p className="eyebrow mb-5">Selected work</p>
+            <h1 className="font-display text-6xl md:text-8xl leading-[0.88] tracking-[-0.05em]">Made for real spaces.</h1>
+          </div>
+            <p className="text-[#4e5049] text-lg leading-8 max-w-xl">
               A selection of fabricated, illuminated, acrylic, metal and LED signage projects.
             </p>
-          </div>
+        </div>
+      </section>
 
-          {/* Filters */}
-          <div className="flex flex-wrap gap-2 mb-10">
+      <section className="py-16 md:py-24 bg-white">
+        <div className="section-shell">
+
+          <div className="flex flex-wrap gap-2 mb-12 border-b border-[#dcd9d0] pb-6">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActive(cat)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+                className={`px-4 py-2.5 rounded-[3px] text-xs font-bold uppercase tracking-[0.08em] transition-all border ${
                   active === cat
-                    ? "bg-[#c8960c] text-white border-[#c8960c]"
-                    : "bg-white text-[#3d3d3f] border-[#e8e6e1] hover:border-[#c8960c] hover:text-[#c8960c]"
+                    ? "bg-[#2457f5] text-white border-[#2457f5]"
+                    : "bg-white text-[#4e5049] border-[#dcd9d0] hover:border-[#2457f5] hover:text-[#2457f5]"
                 }`}
               >
                 {cat}
@@ -83,23 +87,28 @@ export default function GalleryPage() {
             ))}
           </div>
 
-          {/* Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {filtered.map((p) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 auto-rows-[170px] sm:auto-rows-[230px] lg:auto-rows-[260px] gap-3">
+            {filtered.map((p, index) => (
               <button
                 key={p.img}
                 onClick={() => setLightbox(p.img)}
-                className="group relative aspect-square overflow-hidden rounded-xl border border-[#e8e6e1] hover:border-[#c8960c] transition-all"
+                aria-label={`Open ${p.name} project image`}
+                className={`group relative overflow-hidden bg-[#e4e1d8] ${index % 9 === 0 ? "col-span-2 row-span-2" : "col-span-1 row-span-1"}`}
               >
                 <Image
                   src={p.img}
                   alt={p.name}
                   fill
+                  loading={index < 3 ? "eager" : "lazy"}
+                  fetchPriority={index === 0 ? "high" : "auto"}
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-end p-3">
-                  <p className="text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">{p.name}</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex items-end p-4">
+                  <div className="text-left opacity-100 md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0 transition-all">
+                    <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-white/65">{p.category}</p>
+                    <p className="mt-1 text-white text-sm font-semibold">{p.name}</p>
+                  </div>
                 </div>
               </button>
             ))}
@@ -113,7 +122,7 @@ export default function GalleryPage() {
           className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
           onClick={() => setLightbox(null)}
         >
-          <button className="absolute top-4 right-4 text-white text-3xl">✕</button>
+          <button className="absolute top-4 right-4 grid h-11 w-11 place-items-center border border-white/35 text-white text-xl" aria-label="Close image">✕</button>
           <div className="relative max-w-4xl max-h-[90vh] w-full h-full">
             <Image src={lightbox} alt="Gallery" fill className="object-contain" sizes="100vw" />
           </div>

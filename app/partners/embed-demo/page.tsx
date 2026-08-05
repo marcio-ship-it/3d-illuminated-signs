@@ -168,7 +168,7 @@ export default function EmbedDemoPage() {
                     ["muted", "9ca3af", "Secondary/muted text"],
                     ["brandName", "3D Illuminated Signs", "Shown in powered-by footer"],
                     ["ctaLabel", "Request Quote", "Label on the quote button"],
-                    ["ctaUrl", "/contact", "Where the quote button points"],
+                    ["ctaUrl", "/contact-us/", "Where the quote button points"],
                   ].map(([param, def, desc]) => (
                     <tr key={param}>
                       <td className="py-2 pr-4 font-mono text-[#d4a017] text-xs">{param}</td>
@@ -185,7 +185,7 @@ export default function EmbedDemoPage() {
           <div className="mt-12 text-center">
             <h3 className="text-white font-bold text-2xl mb-3">Ready to add this to your site?</h3>
             <p className="text-gray-400 mb-6">Contact us to set up your partner account and commission arrangement.</p>
-            <Link href="/contact" className="btn-gold text-base px-8 py-3">
+            <Link href="/contact-us/" className="btn-gold text-base px-8 py-3">
               Become a Partner
             </Link>
           </div>

@@ -35,7 +35,7 @@ const DEFAULT_THEME: ThemeConfig = {
   muted: "#8e8e93",
   brandName: "3D Illuminated Signs",
   ctaLabel: "Request Quote",
-  ctaUrl: "/contact",
+  ctaUrl: "/contact-us/",
 };
 
 interface Props {
@@ -98,7 +98,7 @@ export default function CutLettersConfigurator({ theme: themeProp, onQuote, embe
       design: "ready",
       delivery: "standard",
     });
-  }, [material, thickness, finish, mounting, text, height, quantity, letterCount, matConfig]);
+  }, [material, thickness, finish, mounting, height, quantity, letterCount, matConfig]);
 
   function handleQuote() {
     const quoteData: QuoteData = {

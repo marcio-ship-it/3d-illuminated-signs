@@ -62,7 +62,7 @@ export default function GalleryPage() {
             <p className="eyebrow mb-3">Portfolio</p>
             <h1 className="text-4xl md:text-5xl font-bold text-[#1c1c1e] tracking-tight mb-2">Our Work</h1>
             <p className="text-[#8e8e93] text-lg max-w-xl">
-              Over 5,000 signs installed for leading brands across Australia.
+              A selection of fabricated, illuminated, acrylic, metal and LED signage projects.
             </p>
           </div>
 

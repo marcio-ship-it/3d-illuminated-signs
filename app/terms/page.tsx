@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description: "Website and project terms for custom signage supplied by 3D Illuminated Signs by Platinum Signs.",
+  alternates: { canonical: "/terms/" },
+};
+
 export default function TermsPage() {
   return (
     <div className="pt-16">
@@ -12,10 +20,10 @@ export default function TermsPage() {
               { title: "2. Services", body: "3D Illuminated Signs by Platinum Signs provides custom signage design, fabrication and installation services. All projects are subject to a separate written agreement." },
               { title: "3. Quotes and Orders", body: "All quotes are valid for 30 days. Orders are confirmed upon receipt of a signed Purchase Order and deposit payment. We reserve the right to decline orders." },
               { title: "4. Intellectual Property", body: "All designs, artwork and content created by us remain our intellectual property until full payment is received. Client-supplied logos and artwork remain the property of the client." },
-              { title: "5. Warranty", body: "We provide a 5-year warranty on LED modules and a 2-year warranty on fabrication workmanship. This warranty does not cover damage from misuse, vandalism or acts of God." },
+              { title: "5. Warranty", body: "Warranty coverage varies by product, component and application. The coverage that applies to your project will be stated in the accepted written quote. Warranty does not cover misuse, unauthorised modification, vandalism or damage outside the agreed operating conditions." },
               { title: "6. Limitation of Liability", body: "Our liability is limited to the value of the goods or services supplied. We are not liable for indirect, consequential or economic loss." },
               { title: "7. Governing Law", body: "These terms are governed by the laws of New South Wales, Australia." },
-              { title: "8. Contact", body: "For questions about these terms: info@3dilluminatedsigns.com.au or 1300 448 608." },
+              { title: "8. Contact", body: "For questions about these terms: contact@3dilluminatedsigns.com.au or 1300 448 608." },
             ].map((s) => (
               <div key={s.title}>
                 <h2 className="text-xl font-semibold text-white mb-2">{s.title}</h2>

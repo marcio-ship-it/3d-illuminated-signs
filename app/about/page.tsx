@@ -2,12 +2,12 @@ import Image from "next/image";
 import CtaSection from "@/components/CtaSection";
 
 const differentiators = [
-  { title: "Quality First", desc: "We use only premium-grade materials — cast acrylic, 304 stainless, commercial LED modules rated for 50,000+ hours." },
+  { title: "Quality First", desc: "We specify fit-for-purpose acrylic, metal, finishes and commercial LED components for the project environment." },
   { title: "Expert Design", desc: "Our in-house designers handle concept, 3D visualisation, technical drawings and council submissions." },
   { title: "Precision Manufacturing", desc: "CNC routing, laser cutting and digital printing all under one roof in our Sydney workshop." },
   { title: "Professional Installation", desc: "Our licensed electricians handle all wiring, earthing and Certificates of Compliance." },
   { title: "Nationwide Service", desc: "We install across all Australian states and territories — metro and regional." },
-  { title: "Ongoing Support", desc: "5-year LED warranty and ongoing service contracts available for all installations." },
+  { title: "Ongoing Support", desc: "Project-specific warranty terms and ongoing maintenance options are set out in the written quote." },
 ];
 
 export default function AboutPage() {
@@ -36,13 +36,13 @@ export default function AboutPage() {
             <p className="eyebrow mb-3">Why Choose Us</p>
             <h2 className="text-3xl font-bold text-[#1c1c1e] mb-6 tracking-tight">The Platinum Difference</h2>
             <p className="text-[#3d3d3f] leading-relaxed mb-4">
-              Unlike sign companies that outsource fabrication, we do everything in-house. Our Sydney workshop houses CNC routers, CO₂ and fibre lasers, a 3.2m-wide UV flatbed printer and full metal fabrication capabilities.
+              Our Sydney operation combines CNC routing, laser cutting, wide-format print and fabrication capability, with specialist partners used when a project or location requires them.
             </p>
             <p className="text-[#3d3d3f] leading-relaxed mb-4">
-              This means tighter tolerances, faster turnarounds, better quality control and no margin stacking from subcontractors.
+              Keeping the core workflow close to the project team helps with quality control, practical design decisions and clear communication.
             </p>
             <p className="text-[#3d3d3f] leading-relaxed">
-              Every sign leaves our workshop with a signed quality inspection checklist and is installed by our own licensed electricians — not subcontractors.
+              Installation is planned around the site. Sydney work can be completed locally, while interstate and regional projects are coordinated through qualified installation partners.
             </p>
           </div>
           <div className="relative rounded-2xl aspect-video overflow-hidden">

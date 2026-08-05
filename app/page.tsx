@@ -1,6 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import CtaSection from "@/components/CtaSection";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: { absolute: "3D Signs Sydney | Illuminated, LED & Neon Signage" },
+  description: "Custom 3D illuminated signs, LED signage, lightboxes and neon signs made in Sydney and installed across Australia. Request a free signage consultation.",
+  alternates: { canonical: "/" },
+};
 
 const featuredWork = [
   { name: "Canada Goose", category: "Halo-Lit Logo", img: "/images/gallery/img_9336.jpg", span: "lg:col-span-2 lg:row-span-2" },
@@ -12,19 +19,19 @@ const featuredWork = [
 ];
 
 const services = [
-  { title: "3D Illuminated Signs", sub: "Face-lit · Backlit · Halo-lit", img: "/images/gallery/img_3078.jpg", href: "/services/3d-illuminated-signs", tag: "Most Popular" },
-  { title: "LED Signs", sub: "Indoor & outdoor LED", img: "/images/gallery/img_5515.jpg", href: "/services/led-signs", tag: null },
-  { title: "Lightbox Signs", sub: "Slim · Fabric · Acrylic face", img: "/images/gallery/sign_0070.jpg", href: "/services/lightbox-signs", tag: null },
+  { title: "3D Illuminated Signs", sub: "Face-lit · Backlit · Halo-lit", img: "/images/gallery/img_3078.jpg", href: "/illuminated-signs/", tag: "Most Popular" },
+  { title: "LED Signs", sub: "Indoor & outdoor LED", img: "/images/gallery/img_5515.jpg", href: "/led-signs/", tag: null },
+  { title: "Lightbox Signs", sub: "Slim · Fabric · Acrylic face", img: "/images/gallery/sign_0070.jpg", href: "/lightbox-signs/", tag: null },
   { title: "Metal Signs", sub: "Stainless · Aluminium · Brass", img: "/images/gallery/img_2607.jpg", href: "/services/metal-signs", tag: null },
-  { title: "Acrylic Signs", sub: "Laser-cut to ±0.1mm", img: "/images/gallery/img_2608.jpg", href: "/services/acrylic-signs", tag: null },
-  { title: "Neon Signs", sub: "LED neon flex · Any shape", img: "/images/gallery/img_5987.jpg", href: "/services/neon-signs", tag: "Trending" },
+  { title: "Acrylic Signs", sub: "Laser-cut letters and panels", img: "/images/gallery/img_2608.jpg", href: "/acrylic-signs/", tag: null },
+  { title: "Neon Signs", sub: "LED neon flex · Custom shapes", img: "/images/gallery/img_5987.jpg", href: "/neon-signs/", tag: "Trending" },
 ];
 
 const stats = [
   { value: "15+", label: "Years Experience" },
-  { value: "5,000+", label: "Signs Installed" },
-  { value: "500+", label: "Happy Clients" },
-  { value: "100%", label: "Australian Made" },
+  { value: "National", label: "Install Network" },
+  { value: "End-to-end", label: "Project Support" },
+  { value: "Sydney", label: "Workshop" },
 ];
 
 const brands = ["Canada Goose", "Bupa", "oOh! Media", "NSW Government", "Asahi", "Hugo Boss", "Chemist Warehouse"];
@@ -34,7 +41,7 @@ export default function HomePage() {
     <div className="pt-[68px]">
 
       {/* ── HERO ── full bleed, editorial ── */}
-      <section className="relative h-[95vh] min-h-[600px] flex items-end overflow-hidden bg-[#0a0a0a]">
+      <section className="relative min-h-[calc(100vh-68px)] flex items-center overflow-hidden bg-[#0a0a0a]">
         <Image
           src="/images/gallery/img_9336.jpg"
           alt="Canada Goose halo-lit sign"
@@ -47,10 +54,10 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-black/40 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-        <div className="relative w-full max-w-7xl mx-auto px-5 lg:px-10 pb-16 lg:pb-20">
+        <div className="relative w-full max-w-7xl mx-auto px-5 lg:px-10 py-16 lg:py-20">
           <div className="max-w-2xl">
             <p className="text-[#c8960c] text-xs font-bold uppercase tracking-[0.2em] mb-5">Premium Signage · Built in Sydney</p>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-[0.95] tracking-tight mb-8">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.95] tracking-tight mb-8">
               Signs That<br />
               <span className="text-[#c8960c]">Define</span><br />
               Your Brand
@@ -59,7 +66,7 @@ export default function HomePage() {
               Custom 3D illuminated signs for Australia&apos;s leading brands. Expert fabrication in our Sydney workshop. Installed nationwide.
             </p>
             <div className="flex flex-wrap gap-3">
-              <Link href="/contact" className="btn-gold text-base px-8 py-4">
+              <Link href="/contact-us/" className="btn-gold text-base px-8 py-4" data-tracking-location="hero">
                 Get a Free Quote
               </Link>
               <Link href="/gallery" className="px-8 py-4 border border-white/30 text-white text-base font-semibold rounded-full hover:border-white transition-colors">
@@ -173,12 +180,12 @@ export default function HomePage() {
             <div className="max-w-2xl">
               <p className="eyebrow text-[#c8960c] mb-4">Built in Sydney</p>
               <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-6">
-                Everything in-house.<br />Nothing outsourced.
+                Designed and managed<br />from our Sydney workshop.
               </h2>
               <p className="text-white/70 text-lg leading-relaxed mb-8 max-w-lg">
-                Our Sydney workshop houses CNC routers, CO₂ and fibre lasers, a UV flatbed printer and full metal fabrication. Tighter tolerances. Faster turnarounds. No subcontractors.
+                Our Sydney workshop houses CNC routers, CO₂ and fibre lasers, a UV flatbed printer and metal fabrication capability. That gives our team direct control over the critical production stages.
               </p>
-              <Link href="/about" className="btn-gold px-8 py-4">
+              <Link href="/about-platinum-signs/" className="btn-gold px-8 py-4">
                 About Our Workshop
               </Link>
             </div>
@@ -223,7 +230,7 @@ export default function HomePage() {
               { step: "01", title: "Consultation", desc: "We discuss your project, site conditions and brand requirements — no obligation." },
               { step: "02", title: "Design & 3D Proof", desc: "Our designers create a 3D visualisation for your approval before anything is made." },
               { step: "03", title: "Fabrication", desc: "Precision-built in our Sydney workshop with a full quality inspection checklist." },
-              { step: "04", title: "Installation", desc: "Professional installation by our own licensed electricians, nationwide." },
+              { step: "04", title: "Installation", desc: "Professional installation coordinated in Sydney and through qualified partners nationwide." },
             ].map((h) => (
               <div key={h.step} className="bg-[#1c1c1e] p-8">
                 <p className="text-6xl font-bold text-white/10 mb-5 leading-none">{h.step}</p>

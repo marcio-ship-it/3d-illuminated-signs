@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { pushAnalyticsEvent } from "@/components/Analytics";
 
 const serviceOptions = [
   "3D Illuminated Signs",
@@ -18,35 +20,72 @@ const whyChooseUs = [
   "Fast turnaround times",
   "Premium materials only",
   "Nationwide installation",
-  "Full electrical certification",
-  "5-year LED warranty",
+  "Electrical compliance planning",
+  "Written scope and warranty terms",
 ];
 
 const inputClass = "w-full bg-white border border-[#e8e6e1] rounded-lg px-4 py-2.5 text-[#1c1c1e] text-sm focus:outline-none focus:border-[#c8960c] transition-colors placeholder:text-[#b0b0b5]";
 
 export default function ContactPage() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [reference, setReference] = useState("");
+  const [confirmationEmailed, setConfirmationEmailed] = useState(false);
+  const startedAt = useRef(0);
+  const formStarted = useRef(false);
+
+  useEffect(() => {
+    startedAt.current = Date.now();
+  }, []);
+
+  function handleFormStart() {
+    if (!startedAt.current) startedAt.current = Date.now();
+    if (formStarted.current) return;
+    formStarted.current = true;
+    pushAnalyticsEvent("form_start", { form_name: "3d_contact_quote" });
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("loading");
+    setErrorMessage("");
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form));
+    const data = {
+      ...Object.fromEntries(new FormData(form)),
+      startedAt: startedAt.current || Date.now(),
+      submissionId: crypto.randomUUID(),
+      sourcePath: window.location.pathname,
+    };
 
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch("/api/contact/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       if (res.ok) {
+        const result = (await res.json()) as {
+          reference?: string;
+          channels?: { acknowledgement?: boolean };
+        };
+        setReference(result.reference || "");
+        setConfirmationEmailed(Boolean(result.channels?.acknowledgement));
         setStatus("success");
         form.reset();
+        pushAnalyticsEvent("generate_lead", {
+          form_name: "3d_contact_quote",
+          lead_reference: result.reference || "accepted",
+        });
       } else {
+        const result = (await res.json().catch(() => null)) as { error?: string } | null;
+        setErrorMessage(result?.error || "Something went wrong. Please try again or call us.");
         setStatus("error");
+        pushAnalyticsEvent("form_error", { form_name: "3d_contact_quote", error_status: res.status });
       }
     } catch {
+      setErrorMessage("We could not connect. Please try again or call us on 1300 448 608.");
       setStatus("error");
+      pushAnalyticsEvent("form_error", { form_name: "3d_contact_quote", error_status: "network" });
     }
   }
 
@@ -59,7 +98,7 @@ export default function ContactPage() {
           <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">
             Get a Free Quote
           </h1>
-          <p className="text-[#a0a0a5] text-lg">We respond within 24 hours — usually same day.</p>
+          <p className="text-[#a0a0a5] text-lg">Tell us what you need and we&apos;ll review the brief with you.</p>
         </div>
       </section>
 
@@ -73,35 +112,43 @@ export default function ContactPage() {
               <div className="text-center py-12">
                 <p className="text-5xl mb-4">✅</p>
                 <h3 className="text-[#1c1c1e] font-bold text-xl mb-2">Quote Request Received!</h3>
-                <p className="text-[#8e8e93]">We&apos;ll be in touch within 24 hours.</p>
+                <p className="text-[#8e8e93]">
+                  We&apos;ve received your enquiry and will review the project details.
+                  {confirmationEmailed ? " A confirmation has also been emailed to you." : ""}
+                </p>
+                {reference && <p className="text-[#3d3d3f] text-sm mt-3">Reference: <strong>{reference}</strong></p>}
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} onFocus={handleFormStart} className="space-y-4" aria-describedby="form-status">
+                <div className="absolute -left-[10000px]" aria-hidden="true">
+                  <label htmlFor="website">Website</label>
+                  <input id="website" name="website" tabIndex={-1} autoComplete="off" />
+                </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-[#3d3d3f] mb-1 font-medium">Full Name *</label>
-                    <input name="name" required placeholder="John Smith" className={inputClass} />
+                    <label htmlFor="name" className="block text-sm text-[#3d3d3f] mb-1 font-medium">Full Name *</label>
+                    <input id="name" name="name" required autoComplete="name" placeholder="John Smith" className={inputClass} />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#3d3d3f] mb-1 font-medium">Email *</label>
-                    <input name="email" type="email" required placeholder="john@company.com" className={inputClass} />
+                    <label htmlFor="email" className="block text-sm text-[#3d3d3f] mb-1 font-medium">Email *</label>
+                    <input id="email" name="email" type="email" required autoComplete="email" placeholder="john@company.com" className={inputClass} />
                   </div>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-[#3d3d3f] mb-1 font-medium">Phone</label>
-                    <input name="phone" type="tel" placeholder="04XX XXX XXX" className={inputClass} />
+                    <label htmlFor="phone" className="block text-sm text-[#3d3d3f] mb-1 font-medium">Phone *</label>
+                    <input id="phone" name="phone" type="tel" required autoComplete="tel" placeholder="04XX XXX XXX" className={inputClass} />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#3d3d3f] mb-1 font-medium">Company</label>
-                    <input name="company" placeholder="Your company" className={inputClass} />
+                    <label htmlFor="company" className="block text-sm text-[#3d3d3f] mb-1 font-medium">Company</label>
+                    <input id="company" name="company" autoComplete="organization" placeholder="Your company" className={inputClass} />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm text-[#3d3d3f] mb-1 font-medium">Signage Type</label>
-                  <select name="service" className={inputClass}>
+                  <label htmlFor="service" className="block text-sm text-[#3d3d3f] mb-1 font-medium">Signage Type</label>
+                  <select id="service" name="service" className={inputClass}>
                     <option value="">Select a service...</option>
                     {serviceOptions.map((o) => (
                       <option key={o} value={o}>{o}</option>
@@ -110,8 +157,9 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-[#3d3d3f] mb-1 font-medium">Project Details *</label>
+                  <label htmlFor="message" className="block text-sm text-[#3d3d3f] mb-1 font-medium">Project Details *</label>
                   <textarea
+                    id="message"
                     name="message"
                     required
                     rows={5}
@@ -121,7 +169,7 @@ export default function ContactPage() {
                 </div>
 
                 {status === "error" && (
-                  <p className="text-red-600 text-sm">Something went wrong. Please call us on 1300 448 608.</p>
+                  <p id="form-status" role="alert" className="text-red-600 text-sm">{errorMessage}</p>
                 )}
 
                 <button
@@ -131,6 +179,9 @@ export default function ContactPage() {
                 >
                   {status === "loading" ? "Sending..." : "Submit Quote Request"}
                 </button>
+                <p className="text-xs text-[#8e8e93] text-center">
+                  By submitting, you agree that we may contact you about this enquiry. See our <Link href="/privacy/" className="underline">privacy policy</Link>.
+                </p>
               </form>
             )}
           </div>
@@ -148,8 +199,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-[#8e8e93] text-xs uppercase tracking-wider mb-1">Email</p>
-                  <a href="mailto:info@3dilluminatedsigns.com.au" className="text-[#1c1c1e] hover:text-[#c8960c] transition-colors">
-                    info@3dilluminatedsigns.com.au
+                  <a href="mailto:contact@3dilluminatedsigns.com.au" className="text-[#1c1c1e] hover:text-[#c8960c] transition-colors">
+                    contact@3dilluminatedsigns.com.au
                   </a>
                 </div>
                 <div>

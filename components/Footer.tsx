@@ -1,20 +1,21 @@
 import Link from "next/link";
 
 const serviceLinks = [
-  { label: "3D Illuminated Signs", href: "/services/3d-illuminated-signs" },
-  { label: "LED Signs", href: "/services/led-signs" },
-  { label: "Lightbox Signs", href: "/services/lightbox-signs" },
+  { label: "3D Illuminated Signs", href: "/illuminated-signs/" },
+  { label: "3D Lettering", href: "/3d-lettering/" },
+  { label: "LED Signs", href: "/led-signs/" },
+  { label: "Lightbox Signs", href: "/lightbox-signs/" },
   { label: "3D Printed Signs", href: "/services/3d-printed-signs" },
   { label: "Metal Signs", href: "/services/metal-signs" },
-  { label: "Acrylic Signs", href: "/services/acrylic-signs" },
-  { label: "Neon Signs", href: "/services/neon-signs" },
+  { label: "Acrylic Signs", href: "/acrylic-signs/" },
+  { label: "Neon Signs", href: "/neon-signs/" },
 ];
 
 const industryLinks = [
-  { label: "Corporate", href: "/industries/corporate" },
+  { label: "Corporate", href: "/signage-in-office/" },
   { label: "Retail", href: "/industries/retail" },
   { label: "Events & Exhibitions", href: "/industries/events" },
-  { label: "Logo & Reception", href: "/industries/logo-reception" },
+  { label: "Logo & Reception", href: "/reception-signs/" },
   { label: "Wayfinding", href: "/industries/wayfinding" },
 ];
 
@@ -37,8 +38,8 @@ export default function Footer() {
               <a href="tel:1300448608" className="flex items-center gap-2 text-sm text-[#3d3d3f] hover:text-[#c8960c] transition-colors font-medium">
                 1300 448 608
               </a>
-              <a href="mailto:info@3dilluminatedsigns.com.au" className="flex items-center gap-2 text-sm text-[#3d3d3f] hover:text-[#c8960c] transition-colors">
-                info@3dilluminatedsigns.com.au
+              <a href="mailto:contact@3dilluminatedsigns.com.au" data-tracking-location="footer" className="flex items-center gap-2 text-sm text-[#3d3d3f] hover:text-[#c8960c] transition-colors">
+                contact@3dilluminatedsigns.com.au
               </a>
               <p className="text-sm text-[#8e8e93]">Sydney, NSW — Nationwide installation</p>
             </div>
@@ -78,9 +79,9 @@ export default function Footer() {
             <ul className="space-y-2.5 mb-7">
               {[
                 { label: "Our Work", href: "/gallery" },
-                { label: "About Us", href: "/about" },
+                { label: "About Us", href: "/about-platinum-signs/" },
                 { label: "Price Calculator", href: "/configurator/cut-letters" },
-                { label: "Contact", href: "/contact" },
+                { label: "Contact", href: "/contact-us/" },
               ].map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-sm text-[#3d3d3f] hover:text-[#c8960c] transition-colors">
@@ -89,7 +90,7 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-            <Link href="/contact" className="btn-gold text-sm">
+            <Link href="/contact-us/" data-tracking-location="footer" className="btn-gold text-sm">
               Get a Free Quote
             </Link>
           </div>

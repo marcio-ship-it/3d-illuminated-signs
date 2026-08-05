@@ -228,7 +228,6 @@ function getUVPrintCostPerLetter(height: number, uvPrint: string): number {
 /* ─── Pricing Constants ─── */
 
 const TAX_RATE = 0.1;
-const MIN_ORDER_EX_GST = 227.27; // $250 inc GST
 const MIN_LINE_EX_GST = 81.82;   // $90 inc GST
 
 const DESIGN_FEE: Record<string, number> = {

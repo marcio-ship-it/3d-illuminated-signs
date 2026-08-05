@@ -2,13 +2,16 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import CtaSection from "@/components/CtaSection";
 import type { Metadata } from "next";
+import { absoluteUrl } from "@/lib/site";
 
-const industryData: Record<string, {
+export type IndustryData = {
   title: string;
   description: string;
   applications: string[];
   benefits: string[];
-}> = {
+};
+
+export const industryData: Record<string, IndustryData> = {
   corporate: {
     title: "Corporate Signage",
     description: "Make a powerful first impression with premium 3D illuminated signage for corporate offices, headquarters and commercial buildings. We work with architects, interior designers and facilities managers to deliver signage that reflects your brand.",
@@ -56,18 +59,31 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const industry = industryData[slug];
   if (!industry) return {};
   return {
-    title: `${industry.title} | 3D Illuminated Signs`,
+    title: industry.title,
     description: industry.description,
+    alternates: { canonical: `/industries/${slug}/` },
+    openGraph: {
+      title: industry.title,
+      description: industry.description,
+      url: `/industries/${slug}/`,
+      images: ["/images/gallery/img_3329.jpg"],
+    },
   };
 }
 
-export default async function IndustryPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const industry = industryData[slug];
-  if (!industry) notFound();
+export function IndustryView({ industry, canonicalPath }: { industry: IndustryData; canonicalPath: string }) {
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl("/") },
+      { "@type": "ListItem", position: 2, name: industry.title, item: absoluteUrl(canonicalPath) },
+    ],
+  };
 
   return (
     <div className="pt-[68px]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {/* Hero */}
       <section className="py-20 px-5 bg-[#1c1c1e]">
         <div className="max-w-4xl mx-auto">
@@ -80,7 +96,7 @@ export default async function IndustryPage({ params }: { params: Promise<{ slug:
           <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-5">{industry.title}</h1>
           <p className="text-[#a0a0a5] text-lg leading-relaxed mb-8 max-w-2xl">{industry.description}</p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Link href="/contact" className="btn-gold px-8 py-3">Get a Free Quote</Link>
+            <Link href="/contact-us/" className="btn-gold px-8 py-3">Get a Free Quote</Link>
             <a href="tel:1300448608" className="btn-outline-gold px-8 py-3">Call 1300 448 608</a>
           </div>
         </div>
@@ -115,4 +131,11 @@ export default async function IndustryPage({ params }: { params: Promise<{ slug:
       <CtaSection heading={`Ready for Your ${industry.title}?`} />
     </div>
   );
+}
+
+export default async function IndustryPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const industry = industryData[slug];
+  if (!industry) notFound();
+  return <IndustryView industry={industry} canonicalPath={`/industries/${slug}/`} />;
 }

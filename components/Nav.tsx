@@ -4,20 +4,21 @@ import { useState } from "react";
 import Link from "next/link";
 
 const services = [
-  { label: "3D Illuminated Signs", href: "/services/3d-illuminated-signs" },
-  { label: "LED Signs", href: "/services/led-signs" },
-  { label: "Lightbox Signs", href: "/services/lightbox-signs" },
+  { label: "3D Illuminated Signs", href: "/illuminated-signs/" },
+  { label: "3D Lettering", href: "/3d-lettering/" },
+  { label: "LED Signs", href: "/led-signs/" },
+  { label: "Lightbox Signs", href: "/lightbox-signs/" },
   { label: "3D Printed Signs", href: "/services/3d-printed-signs" },
   { label: "Metal Signs", href: "/services/metal-signs" },
-  { label: "Acrylic Signs", href: "/services/acrylic-signs" },
-  { label: "Neon Signs", href: "/services/neon-signs" },
+  { label: "Acrylic Signs", href: "/acrylic-signs/" },
+  { label: "Neon Signs", href: "/neon-signs/" },
 ];
 
 const industries = [
-  { label: "Corporate", href: "/industries/corporate" },
+  { label: "Corporate", href: "/signage-in-office/" },
   { label: "Retail", href: "/industries/retail" },
   { label: "Events & Exhibitions", href: "/industries/events" },
-  { label: "Logo & Reception", href: "/industries/logo-reception" },
+  { label: "Logo & Reception", href: "/reception-signs/" },
   { label: "Wayfinding", href: "/industries/wayfinding" },
 ];
 
@@ -79,16 +80,16 @@ export default function Nav() {
             </div>
 
             <Link href="/gallery" className="text-[#3d3d3f] hover:text-[#1c1c1e] text-sm font-medium transition-colors">Gallery</Link>
-            <Link href="/about" className="text-[#3d3d3f] hover:text-[#1c1c1e] text-sm font-medium transition-colors">About</Link>
-            <Link href="/contact" className="text-[#3d3d3f] hover:text-[#1c1c1e] text-sm font-medium transition-colors">Contact</Link>
+            <Link href="/about-platinum-signs/" className="text-[#3d3d3f] hover:text-[#1c1c1e] text-sm font-medium transition-colors">About</Link>
+            <Link href="/contact-us/" className="text-[#3d3d3f] hover:text-[#1c1c1e] text-sm font-medium transition-colors">Contact</Link>
           </nav>
 
           {/* Right */}
           <div className="hidden lg:flex items-center gap-4">
-            <a href="tel:1300448608" className="text-sm font-medium text-[#3d3d3f] hover:text-[#1c1c1e] transition-colors">
+            <a href="tel:1300448608" data-tracking-location="header" className="text-sm font-medium text-[#3d3d3f] hover:text-[#1c1c1e] transition-colors">
               1300 448 608
             </a>
-            <Link href="/contact" className="btn-gold text-sm px-5 py-2.5">
+            <Link href="/contact-us/" data-tracking-location="header" className="btn-gold text-sm px-5 py-2.5">
               Get a Quote
             </Link>
           </div>
@@ -126,12 +127,12 @@ export default function Nav() {
           ))}
           <hr className="divider my-3" />
           <Link href="/gallery" onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] py-2 font-medium">Gallery</Link>
-          <Link href="/about" onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] py-2 font-medium">About</Link>
+          <Link href="/about-platinum-signs/" onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] py-2 font-medium">About</Link>
           <Link href="/configurator/cut-letters" onClick={() => setMenuOpen(false)} className="block text-sm text-[#c8960c] py-2 font-semibold">✦ Price Calculator</Link>
-          <Link href="/contact" onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] py-2 font-medium">Contact</Link>
+          <Link href="/contact-us/" onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] py-2 font-medium">Contact</Link>
           <hr className="divider my-3" />
-          <a href="tel:1300448608" className="block text-sm font-medium text-[#3d3d3f] py-2">1300 448 608</a>
-          <Link href="/contact" onClick={() => setMenuOpen(false)} className="btn-gold block text-center mt-2">Get a Quote</Link>
+          <a href="tel:1300448608" data-tracking-location="mobile_menu" className="block text-sm font-medium text-[#3d3d3f] py-2">1300 448 608</a>
+          <Link href="/contact-us/" data-tracking-location="mobile_menu" onClick={() => setMenuOpen(false)} className="btn-gold block text-center mt-2">Get a Quote</Link>
         </div>
       )}
     </header>

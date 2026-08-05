@@ -2,19 +2,22 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import CtaSection from "@/components/CtaSection";
 import type { Metadata } from "next";
+import { absoluteUrl } from "@/lib/site";
 
-const serviceData: Record<string, {
+export type ServiceData = {
   title: string;
   tagline: string;
   description: string;
   styles: { name: string; desc: string }[];
   materials: { name: string; desc: string }[];
   faqs: { q: string; a: string }[];
-}> = {
+};
+
+export const serviceData: Record<string, ServiceData> = {
   "3d-illuminated-signs": {
     title: "3D Illuminated Signs",
     tagline: "Make your brand impossible to ignore",
-    description: "Our 3D illuminated signs combine precision-fabricated lettering with professional LED lighting to create signage that commands attention day and night. Built to Australian standards with a 5-year LED warranty.",
+    description: "Our 3D illuminated signs combine fabricated lettering with professional LED lighting to create signage that commands attention day and night. Materials, electrical requirements and warranty terms are confirmed for each project.",
     styles: [
       { name: "Facelit Signs", desc: "Light shines through the face of each letter — perfect for high-visibility branding." },
       { name: "Backlit Signs", desc: "Illumination from behind creates a dramatic halo glow effect." },
@@ -28,11 +31,11 @@ const serviceData: Record<string, {
       { name: "3D Printed", desc: "Complex geometries and custom shapes made possible with our in-house printers." },
     ],
     faqs: [
-      { q: "How long do your LED signs last?", a: "Our LED modules are rated for 50,000+ hours with a 5-year warranty on all components." },
+      { q: "How long do LED signs last?", a: "Service life depends on the LED system, operating hours, ventilation and exposure. We specify commercial components and confirm the applicable warranty in the written quote." },
       { q: "Can you match our brand colours?", a: "Yes — we colour-match to Pantone, RAL, or any brand specification." },
-      { q: "What is the typical turnaround?", a: "Standard orders are 2–3 weeks from design approval. Express options available." },
-      { q: "Do you handle installation?", a: "Yes, nationwide. Our licensed electricians handle all cabling and certification." },
-      { q: "What size signs can you make?", a: "Letter heights from 50mm to over 2m. No practical upper limit on sign width." },
+      { q: "What is the typical turnaround?", a: "Timing depends on design approval, material availability, fabrication complexity and site access. We confirm a realistic programme with the quote." },
+      { q: "Do you handle installation?", a: "Yes. Sydney projects can be installed locally, and interstate work is coordinated through qualified installation partners." },
+      { q: "What size signs can you make?", a: "We produce small reception lettering through to large building signage. The practical size depends on engineering, transport, access and the mounting surface." },
     ],
   },
   "led-signs": {
@@ -51,11 +54,11 @@ const serviceData: Record<string, {
       { name: "Powder Coat", desc: "Any RAL colour — salt-spray tested for outdoor longevity." },
     ],
     faqs: [
-      { q: "How bright are your outdoor LED signs?", a: "Our outdoor modules output 6,000–8,000 nits, clearly visible in direct sunlight." },
+      { q: "How bright should an outdoor LED sign be?", a: "Brightness is specified for the viewing distance, ambient light and sign construction. We select the LED and diffuser system after reviewing the site." },
       { q: "Are they energy efficient?", a: "LED signs use up to 80% less energy than fluorescent alternatives." },
       { q: "Can they be dimmed?", a: "Yes — all signs include a dimmer controller for day/night operation." },
-      { q: "What warranty do you offer?", a: "5 years on LED modules, 2 years on drivers and controllers." },
-      { q: "Do you provide electrical certification?", a: "Yes — all installations include a Certificate of Compliance." },
+      { q: "What warranty do you offer?", a: "Warranty varies by component and application. The written quote states the exact coverage for LEDs, drivers and fabrication." },
+      { q: "Do you provide electrical certification?", a: "Where licensed electrical work is required, the project scope identifies the applicable compliance and certification requirements." },
     ],
   },
   "lightbox-signs": {
@@ -177,18 +180,41 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const service = serviceData[slug];
   if (!service) return {};
   return {
-    title: `${service.title} | 3D Illuminated Signs`,
+    title: service.title,
     description: service.description,
+    alternates: { canonical: `/services/${slug}/` },
+    openGraph: {
+      title: service.title,
+      description: service.description,
+      url: `/services/${slug}/`,
+      images: ["/images/gallery/img_9336.jpg"],
+    },
   };
 }
 
-export default async function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const service = serviceData[slug];
-  if (!service) notFound();
+export function ServiceView({ service, canonicalPath }: { service: ServiceData; canonicalPath: string }) {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: service.faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: { "@type": "Answer", text: faq.a },
+    })),
+  };
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: absoluteUrl("/") },
+      { "@type": "ListItem", position: 2, name: service.title, item: absoluteUrl(canonicalPath) },
+    ],
+  };
 
   return (
     <div className="pt-[68px]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {/* Hero — dark strip */}
       <section className="py-20 px-5 bg-[#1c1c1e]">
         <div className="max-w-4xl mx-auto">
@@ -201,7 +227,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
           <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-5">{service.title}</h1>
           <p className="text-[#a0a0a5] text-lg max-w-2xl leading-relaxed mb-8">{service.description}</p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Link href="/contact" className="btn-gold px-8 py-3">Get a Free Quote</Link>
+            <Link href="/contact-us/" className="btn-gold px-8 py-3">Get a Free Quote</Link>
             <a href="tel:1300448608" className="btn-outline-gold px-8 py-3">Call 1300 448 608</a>
           </div>
         </div>
@@ -257,4 +283,11 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       <CtaSection heading={`Ready for Custom ${service.title}?`} />
     </div>
   );
+}
+
+export default async function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const service = serviceData[slug];
+  if (!service) notFound();
+  return <ServiceView service={service} canonicalPath={`/services/${slug}/`} />;
 }

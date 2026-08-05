@@ -1,29 +1,40 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Signage Guides",
+  description: "Practical guides to signage design, artwork preparation, fabrication and installation from 3D Illuminated Signs.",
+  alternates: { canonical: "/blog/" },
+};
 
 const posts = [
   {
-    title: "Face-lit vs Halo-lit: Which 3D Sign is Right for Your Brand?",
-    excerpt: "We break down the differences between the four main illumination styles and help you choose the right one for your application.",
-    date: "April 2026",
-    category: "Design Guide",
+    title: "Signwriters Don't Actually Write Signs — They Create Them",
+    excerpt: "Modern signwriting combines design, fabrication, lighting, print, project management and installation.",
+    date: "July 2022",
+    category: "Industry Guide",
+    href: "/signwriters-dont-actually-write-signs-they-create-them/",
   },
   {
-    title: "How to Prepare Your Logo for a 3D Sign",
-    excerpt: "Vector files, minimum stroke widths, colour profiles — everything your designer needs to set up artwork for fabrication.",
-    date: "March 2026",
-    category: "Technical",
+    title: "How to Prepare Artwork for Signage",
+    excerpt: "Preferred file formats, outlined fonts, image resolution, colour matching and how to transfer large files.",
+    date: "Evergreen guide",
+    category: "Artwork",
+    href: "/artwork-specifications/",
   },
   {
-    title: "LED Neon vs Glass Neon: The Complete Comparison",
-    excerpt: "Modern LED neon flex has almost entirely replaced traditional glass neon. Here's why — and when glass still makes sense.",
-    date: "March 2026",
-    category: "Products",
+    title: "What to Include in a Sign Design Brief",
+    excerpt: "The practical information that helps a signage team recommend the right construction, finish and installation method.",
+    date: "Evergreen guide",
+    category: "Design",
+    href: "/design-service/",
   },
   {
-    title: "5 Things to Check Before Getting a Signage Quote",
-    excerpt: "Save time and get a more accurate quote by having these details ready before you call a signage company.",
-    date: "February 2026",
-    category: "Tips",
+    title: "Planning a Professional Sign Installation",
+    excerpt: "Access, mounting surfaces, electrical supply, approvals and handover requirements to consider early.",
+    date: "Evergreen guide",
+    category: "Installation",
+    href: "/signage-installation/",
   },
 ];
 
@@ -41,7 +52,7 @@ export default function BlogPage() {
 
           <div className="grid sm:grid-cols-2 gap-6">
             {posts.map((post) => (
-              <div key={post.title} className="card-dark p-6 hover:border-[#d4a017]/40 transition-all">
+              <Link key={post.title} href={post.href} className="card-dark block p-6 hover:border-[#d4a017]/40 transition-all">
                 <span className="text-xs text-[#d4a017] border border-[#d4a017]/30 rounded-full px-2.5 py-1 mb-3 inline-block">
                   {post.category}
                 </span>
@@ -49,23 +60,16 @@ export default function BlogPage() {
                 <p className="text-gray-400 text-sm mb-4">{post.excerpt}</p>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-500 text-xs">{post.date}</span>
-                  <span className="text-[#d4a017] text-sm">Coming soon →</span>
+                  <span className="text-[#d4a017] text-sm">Read guide →</span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 
           <div className="mt-16 card-dark p-8 text-center">
-            <h3 className="text-white font-bold text-xl mb-2">Want signage advice direct to your inbox?</h3>
-            <p className="text-gray-400 mb-6">We send practical guides and tips — no spam.</p>
-            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="your@email.com"
-                className="flex-1 bg-[#0a0a0a] border border-[#1f1f1f] rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#d4a017]"
-              />
-              <button type="submit" className="btn-gold text-sm whitespace-nowrap">Subscribe</button>
-            </form>
+            <h3 className="text-white font-bold text-xl mb-2">Have a signage question?</h3>
+            <p className="text-gray-400 mb-6">Send the site photos, approximate size and what you want the sign to achieve.</p>
+            <Link href="/contact-us/" className="btn-gold inline-block">Ask the signage team</Link>
           </div>
         </div>
       </section>

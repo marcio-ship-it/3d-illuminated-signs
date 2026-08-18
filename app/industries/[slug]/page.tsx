@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import CtaSection from "@/components/CtaSection";
+import { LongForm, PlatinumDifference } from "@/components/LongForm";
+import type { LongFormContent } from "@/lib/longform";
 import type { Metadata } from "next";
 import { absoluteUrl } from "@/lib/site";
 
@@ -11,6 +13,7 @@ export type IndustryData = {
   image?: string;
   applications: string[];
   benefits: string[];
+  longform?: LongFormContent;
 };
 
 const industryImages: Record<string, string> = {
@@ -144,6 +147,10 @@ export function IndustryView({ industry, canonicalPath }: { industry: IndustryDa
           </div>
         </div>
       </section>
+
+      {industry.longform && <LongForm content={industry.longform} />}
+
+      <PlatinumDifference />
 
       <CtaSection heading={`Ready for Your ${industry.title}?`} />
     </div>

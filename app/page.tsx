@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import CtaSection from "@/components/CtaSection";
+import { LongForm, PlatinumDifference } from "@/components/LongForm";
+import { homeLongform } from "@/lib/longform";
 
 export const metadata: Metadata = {
   title: { absolute: "3D Signs Sydney | Illuminated, LED & Neon Signage" },
@@ -346,6 +348,10 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <LongForm content={homeLongform} />
+
+      <PlatinumDifference />
 
       <CtaSection />
     </div>

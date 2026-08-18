@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import CtaSection from "@/components/CtaSection";
+import { LongForm, PlatinumDifference } from "@/components/LongForm";
+import type { LongFormContent } from "@/lib/longform";
 import type { Metadata } from "next";
 import { absoluteUrl } from "@/lib/site";
 
@@ -13,6 +15,7 @@ export type ServiceData = {
   styles: { name: string; desc: string }[];
   materials: { name: string; desc: string }[];
   faqs: { q: string; a: string }[];
+  longform?: LongFormContent;
 };
 
 const serviceImages: Record<string, string> = {
@@ -223,11 +226,28 @@ export function ServiceView({ service, canonicalPath }: { service: ServiceData; 
       { "@type": "ListItem", position: 2, name: service.title, item: absoluteUrl(canonicalPath) },
     ],
   };
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: service.title,
+    serviceType: service.title,
+    description: service.description,
+    url: absoluteUrl(canonicalPath),
+    areaServed: { "@type": "Country", name: "Australia" },
+    provider: {
+      "@type": "LocalBusiness",
+      name: "3D Illuminated Signs",
+      telephone: "1300 448 608",
+      url: absoluteUrl("/"),
+      address: { "@type": "PostalAddress", addressLocality: "Sydney", addressRegion: "NSW", addressCountry: "AU" },
+    },
+  };
 
   return (
     <div className="pt-[76px] bg-[#fbfaf6]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
       <section className="border-b border-[#dcd9d0] bg-[#f1efe8]">
         <div className="section-shell grid lg:grid-cols-[0.92fr_1.08fr] lg:min-h-[650px]">
           <div className="flex flex-col justify-center py-16 md:py-24 lg:pr-16">
@@ -290,6 +310,10 @@ export function ServiceView({ service, canonicalPath }: { service: ServiceData; 
           </div>
         </div>
       </section>
+
+      {service.longform && <LongForm content={service.longform} />}
+
+      <PlatinumDifference />
 
       <section className="py-24 md:py-32 bg-white">
         <div className="section-shell grid lg:grid-cols-[0.42fr_1fr] gap-12 lg:gap-24">

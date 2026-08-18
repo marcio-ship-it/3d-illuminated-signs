@@ -29,7 +29,7 @@ const coreRoutes = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date("2026-08-05T00:00:00+10:00");
+  const lastModified = new Date("2026-08-18T00:00:00+10:00");
 
   return coreRoutes.map((path) => ({
     url: `${SITE.url}${path ? `${path}/` : "/"}`,

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import CtaSection from "@/components/CtaSection";
 import { absoluteUrl } from "@/lib/site";
+import { longformContent } from "@/lib/longform";
 import { ServiceView, serviceData, type ServiceData } from "../services/[slug]/page";
 import { IndustryView, industryData, type IndustryData } from "../industries/[slug]/page";
 
@@ -15,6 +16,7 @@ type ServiceLegacyPage = {
   description: string;
   metaTitle: string;
   image: string;
+  faqs?: { q: string; a: string }[];
 };
 
 type IndustryLegacyPage = {
@@ -65,6 +67,12 @@ const legacyPages: Record<string, LegacyPage> = {
     metaTitle: "Illuminated Signs Sydney | Custom LED Signage",
     description: "Custom illuminated signs, halo-lit letters, face-lit logos and LED signage designed and made in Sydney, with installation available nationwide.",
     image: "/images/gallery/img_9336.jpg",
+    faqs: [
+      { q: "How long does illuminated signage take to manufacture?", a: "Every illuminated sign is custom-produced to a particular brief, so the timeframe depends on complexity. Once your design is approved we confirm a manufacturing and installation programme for your project — most signs fall within a 2–4 week production window." },
+      { q: "Are illuminated signs expensive to run?", a: "No. Our illuminated signs use low-voltage LED illumination, which draws very little power and needs minimal maintenance compared with older fluorescent or glass-neon signage." },
+      { q: "Which businesses suit illuminated signs?", a: "Almost any — we have produced illuminated signs for government agencies, corporate clients, events, retail and small businesses across Sydney, Melbourne and Canberra. Wherever a message needs to be visible day and night, an illuminated sign works." },
+      { q: "Can you help with the design?", a: "Yes. If you have a brand identity kit — font, colours, logo — your design can be finished quickly. If you are starting from scratch, our qualified Sydney designers will develop a unique illuminated sign expressly for your business." },
+    ],
   },
   "neon-signs": {
     kind: "service",
@@ -83,6 +91,12 @@ const legacyPages: Record<string, LegacyPage> = {
     metaTitle: "3D Signs Sydney | Custom Letters & Logos",
     description: "Custom 3D signs, fabricated letters and dimensional logos in acrylic and metal for Sydney businesses and nationwide projects.",
     image: "/images/gallery/img_1594.jpg",
+    faqs: [
+      { q: "How much does a 3D sign cost?", a: "Every 3D sign is bespoke, so pricing depends on size, material and complexity — from cost-effective acrylic letters through to fabricated metal and illuminated units. Call 1300 448 608 for a free quote on your exact design." },
+      { q: "Can you help design our 3D sign?", a: "Yes. Our designers work with you from concept onward, and can advise where simplifying a design will reduce cost without losing impact. If you already have a logo, supply it as a vector file and we take it from there." },
+      { q: "Does adding illumination change the build?", a: "Illumination adds fabrication complexity — housings, LED modules and power supply — which affects cost and lead time, but it keeps your sign working around the clock. We quote both options so you can compare." },
+      { q: "How long does a 3D sign take?", a: "Typical turnaround is 10–15 working days from artwork approval, depending on complexity and quantity. Installation is scheduled at a time that suits your business." },
+    ],
   },
   "lightbox-signs": {
     kind: "service",
@@ -138,6 +152,18 @@ const legacyPages: Record<string, LegacyPage> = {
         heading: "Built around the brief",
         body: "Every sign is custom. The team considers viewing distance, lighting, mounting surface, site access, brand colours, electrical requirements and the approval pathway before production begins.",
       },
+      {
+        heading: "Who we are",
+        body: "3D Illuminated Signs is a subsidiary of Platinum Signs, a best-in-class sign company based in Sydney with reach across Australia. We specialise in signage for businesses, nonprofits and government entities who want quality signs at affordable prices — 3D lettering and 3D signage, lightbox signs, and the newest LED-based neon signs. Our focus is how light can transform signage, including office signage, acrylic signage and illuminated displays.",
+      },
+      {
+        heading: "How we work",
+        body: "We operate on honesty, integrity and professionalism. That means realistic advice about what a sign project will cost, what it will achieve and how long it will take — and prices set so your signage delivers a genuine return on investment. From the first consultation to the completed installation, you deal with our own team.",
+      },
+      {
+        heading: "Why clients stay",
+        body: "Fast turnaround on realistic deadlines, an expert account manager rather than bots or automation, manual artwork verification and proofing to minimise errors, and in-house cutting, printing and finishing that keeps quality and lead times under our control.",
+      },
     ],
   },
   "artwork-specifications": {
@@ -157,6 +183,18 @@ const legacyPages: Record<string, LegacyPage> = {
         heading: "Images and colour",
         body: "Raster images should be supplied at an appropriate resolution for their final printed size.",
         bullets: ["Use CMYK for print artwork", "Aim for 300 dpi at final size where practical", "Provide Pantone, PMS or physical samples for critical colour matching", "Request a hard proof when colour is business-critical"],
+      },
+      {
+        heading: "Why CMYK and not RGB?",
+        body: "Monitors display colour in RGB, but print production works in CMYK — and the two do not always match. Artwork supplied in RGB is converted before printing, which can shift colours noticeably, especially vivid greens, blues and oranges. Supplying CMYK artwork from the start means what you approve is what gets produced.",
+      },
+      {
+        heading: "Critical colour matching",
+        body: "Screen colour also varies with monitor calibration, so a design that looks right on your screen may not match the physical output. For brand-critical colours, provide Pantone (PMS) references or a physical sample to match against, and request a hard proof before full production. We manually verify and proof artwork files as part of our workflow.",
+      },
+      {
+        heading: "Images from the web",
+        body: "Images saved from websites are usually 72 dpi and unsuitable for large-format signage — they become blurry and pixelated when enlarged. They may also be subject to copyright. Always supply original, high-resolution files, and remember that responsibility for the right to use supplied artwork rests with the client.",
       },
       {
         heading: "Large files",
@@ -184,6 +222,18 @@ const legacyPages: Record<string, LegacyPage> = {
         heading: "Handover and compliance",
         body: "Where electrical work is required, the installation scope identifies access, isolation and certification requirements. Completion photos and practical care advice can be provided at handover.",
       },
+      {
+        heading: "Install it yourself, or leave it to us",
+        body: "Many smaller signs — 3D letters in particular — are supplied with backing tape and easy-to-follow instructions so your own team can mount them. Larger, illuminated or high-access signage is best handled by qualified sign installers: our crews carry the access equipment, fixings and electrical licences the job requires, and every install is carried out to a safe-workplace standard.",
+      },
+      {
+        heading: "Council permits and regulations",
+        body: "External signage in most Australian councils is regulated — size, illumination and placement can all require approval. We are mindful of local council regulations from the design stage, and our team can assist in applying for any permits your sign requires before it goes up.",
+      },
+      {
+        heading: "One team, the whole way",
+        body: "Because we design, fabricate and install, nothing is lost between trades. The installers who fix your sign to the wall work from the same drawings the fabricators built it from — which is how we keep installs on schedule in Sydney, Melbourne, Canberra, Brisbane, Perth and everywhere in between.",
+      },
     ],
   },
   "design-service": {
@@ -205,6 +255,18 @@ const legacyPages: Record<string, LegacyPage> = {
       {
         heading: "Proof before production",
         body: "You receive a visual or artwork proof for approval before production. More involved concept development or site documentation is scoped separately when required.",
+      },
+      {
+        heading: "You never get a second chance at a first impression",
+        body: "Your signage is often the first contact a customer has with your business — before your website, before your staff. Good sign design makes that first impression count: legible at the real viewing distance, on-brand, and appropriate to the building it sits on. Our designers work on signage every day, industry by industry, and know what performs in each setting.",
+      },
+      {
+        heading: "Design for your industry",
+        body: "A law firm's reception sign, a café's neon, a retailer's lightbox and a warehouse's building sign all have different jobs to do. We design to the industry and the site — corporate, retail, hospitality, medical, education, government — rather than forcing one style onto every brand.",
+      },
+      {
+        heading: "When to involve design",
+        body: "Early. Design decisions determine fabrication method, material and cost, so involving our designers before you commit to a concept usually saves money and always saves time. If you already have finished artwork, we proof it against production requirements before anything is cut.",
       },
     ],
   },
@@ -331,13 +393,21 @@ export default async function LegacyPage({ params }: { params: Promise<{ slug: s
       tagline: page.tagline,
       description: page.description,
       image: page.image,
+      faqs: page.faqs ?? base.faqs,
+      longform: longformContent[slug],
     };
     return <ServiceView service={service} canonicalPath={`/${slug}/`} />;
   }
 
   if (page.kind === "industry") {
     const base = industryData[page.source];
-    const industry: IndustryData = { ...base, title: page.title, description: page.description, image: page.image };
+    const industry: IndustryData = {
+      ...base,
+      title: page.title,
+      description: page.description,
+      image: page.image,
+      longform: longformContent[slug],
+    };
     return <IndustryView industry={industry} canonicalPath={`/${slug}/`} />;
   }
 

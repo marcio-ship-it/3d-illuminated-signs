@@ -6,6 +6,7 @@ import {
 } from "../components/analytics/events.ts";
 import {
   buildWebVitalsPayload,
+  captureDocumentRoute,
   CLARITY_SCRIPT_STRATEGY,
   WEB_VITALS_EVENT_NAME,
 } from "../components/analytics/web-vitals.ts";
@@ -56,6 +57,14 @@ test("uses explicit fallbacks when optional Web Vitals context is unavailable", 
       release_sha: "unknown",
       non_interaction: true,
     },
+  );
+});
+
+test("keeps metrics attributed to the document route across client navigation", () => {
+  assert.equal(captureDocumentRoute("", "/illuminated-signs/"), "/illuminated-signs/");
+  assert.equal(
+    captureDocumentRoute("/illuminated-signs/", "/contact-us/"),
+    "/illuminated-signs/",
   );
 });
 

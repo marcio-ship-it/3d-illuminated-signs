@@ -44,6 +44,23 @@ test("site routes retain chrome, schema, and analytics", async ({ page }) => {
         }
       : null;
   })).toEqual({ page_route: "/privacy/", has_metric: true });
+
+  const metricCountBeforeNavigation = await page.evaluate(
+    () => window.dataLayer?.filter((entry) => entry.event === "web_vital").length ?? 0,
+  );
+  await page.getByRole("link", { name: /contact/i }).first().click();
+  await expect(page).toHaveURL(/\/contact-us\/$/);
+  await expect.poll(() => page.evaluate(
+    () => window.dataLayer?.filter((entry) => entry.event === "web_vital").length ?? 0,
+  )).toBeGreaterThan(metricCountBeforeNavigation);
+
+  const lateMetricRoutes = await page.evaluate((startIndex) =>
+    (window.dataLayer ?? [])
+      .filter((entry) => entry.event === "web_vital")
+      .slice(startIndex)
+      .map((entry) => entry.page_route), metricCountBeforeNavigation);
+  expect(lateMetricRoutes.length).toBeGreaterThan(0);
+  expect(new Set(lateMetricRoutes)).toEqual(new Set(["/privacy/"]));
 });
 
 test("campaign attribution survives internal navigation without a live submission", async ({ page }) => {

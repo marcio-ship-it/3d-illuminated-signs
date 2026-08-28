@@ -20,6 +20,10 @@ function cleanValue(value: string | undefined, fallback: string) {
   return cleaned || fallback;
 }
 
+export function captureDocumentRoute(capturedRoute: string, currentRoute: string) {
+  return cleanValue(capturedRoute, cleanValue(currentRoute, "/"));
+}
+
 export function buildWebVitalsPayload(metric: WebVitalsMetric, context: WebVitalsContext) {
   return {
     metric_name: metric.name,

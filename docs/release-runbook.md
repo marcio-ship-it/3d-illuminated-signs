@@ -107,9 +107,18 @@ AUDIT_REQUIRE_IDENTITY=1 \
 AUDIT_EXPECTED_PROJECT_ID="$VERCEL_PROJECT_ID" \
 AUDIT_EXPECTED_DEPLOYMENT_ID="$VERCEL_DEPLOYMENT_ID" \
 AUDIT_EXPECTED_GIT_SHA="$APPROVED_GIT_SHA" \
+AUDIT_ALLOW_VERCEL_DEPLOYMENT_NOINDEX=1 \
 VERCEL_AUTOMATION_BYPASS_SECRET="$VERCEL_AUTOMATION_BYPASS_SECRET" \
 npm run audit:site -- "$DEPLOYMENT_URL"
 ```
+
+Vercel intentionally adds `X-Robots-Tag: noindex` to its automatic
+`*.vercel.app` deployment domains. Phase 1 may exempt only the exact directive
+`noindex`, only when the tested hostname ends in `.vercel.app`, and only when
+the response also carries Vercel's `X-Vercel-Id` header. The report records an
+exemption for every affected route. `nofollow`, meta-robots blockers, custom
+domains, and Phase 2 never receive this exception; the public-host audit remains
+strict and is the authoritative indexability check.
 
 The audit must fail on release blockers, including an unreachable or timed-out response, sitemap integrity failure, non-200 sitemap URL, an indexable page with meta-robots or `X-Robots-Tag` noindex, a missing or wrong self-canonical, an excluded route that becomes indexable, broken required routes or internal assets, an oversized response, or wrong deployment identity. Informational warnings may be reported but must not be silently converted into blockers or blockers into warnings during a release.
 

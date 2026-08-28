@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import http from "node:http";
 import test from "node:test";
 
-import { auditSite } from "./site-audit.mjs";
+import { auditSite, isVercelDeploymentNoindex } from "./site-audit.mjs";
 
 const EXPECTED_IDENTITY = Object.freeze({
   projectId: "prj_fixture",
@@ -192,6 +192,33 @@ test("healthy contract passes, including the intentional noindex route", async (
 
 test("X-Robots-Tag noindex blocks an indexable route", async () => {
   assertBlocker(await runScenario("x-robots-noindex"), "indexable-x-robots");
+});
+
+test("only an explicit Vercel deployment-domain noindex can be exempted", () => {
+  assert.equal(isVercelDeploymentNoindex({
+    baseUrl: "https://site-abc123.vercel.app/",
+    headers: { "x-vercel-id": "syd1::fixture" },
+    directives: ["noindex"],
+    enabled: true,
+  }), true);
+  assert.equal(isVercelDeploymentNoindex({
+    baseUrl: "https://3dilluminatedsigns.com.au/",
+    headers: { "x-vercel-id": "syd1::fixture" },
+    directives: ["noindex"],
+    enabled: true,
+  }), false);
+  assert.equal(isVercelDeploymentNoindex({
+    baseUrl: "https://site-abc123.vercel.app/",
+    headers: {},
+    directives: ["noindex"],
+    enabled: true,
+  }), false);
+  assert.equal(isVercelDeploymentNoindex({
+    baseUrl: "https://site-abc123.vercel.app/",
+    headers: { "x-vercel-id": "syd1::fixture" },
+    directives: ["nofollow", "noindex"],
+    enabled: true,
+  }), false);
 });
 
 test("meta robots noindex blocks an indexable route", async () => {

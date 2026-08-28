@@ -386,6 +386,12 @@ function hasIndexBlocker(directives) {
   return directives.some((directive) => INDEX_BLOCKING_DIRECTIVES.has(directive));
 }
 
+export function isVercelDeploymentNoindex({ baseUrl, headers, directives, enabled }) {
+  if (!enabled || directives.length !== 1 || directives[0] !== "noindex") return false;
+  const hostname = new URL(baseUrl).hostname.toLowerCase();
+  return hostname.endsWith(".vercel.app") && Boolean(headers["x-vercel-id"]);
+}
+
 function exactUrl(value) {
   try {
     const parsed = new URL(value);
@@ -518,7 +524,7 @@ async function auditKnownNotFound(contract, request, blockers) {
   };
 }
 
-async function auditRoute(route, base, request, blockers, warnings) {
+async function auditRoute(route, base, request, blockers, warnings, exemptions, allowVercelDeploymentNoindex) {
   let response;
   try {
     response = await request(route.path);
@@ -609,7 +615,21 @@ async function auditRoute(route, base, request, blockers, warnings) {
     if (hasIndexBlocker(html.metaRobots)) {
       blockers.push(issue("indexable-meta-robots", route.path, "Indexable page is blocked by meta robots", "no noindex/nofollow", html.metaRobots));
     }
-    if (hasIndexBlocker(headerRobots)) {
+    if (hasIndexBlocker(headerRobots) && isVercelDeploymentNoindex({
+      baseUrl: base,
+      headers: response.headers,
+      directives: headerRobots,
+      enabled: allowVercelDeploymentNoindex,
+    })) {
+      result.vercelDeploymentNoindexExempted = true;
+      exemptions.push(issue(
+        "vercel-deployment-noindex",
+        route.path,
+        "Vercel's automatic deployment-domain noindex header was recorded and deferred to the strict public-host audit",
+        ["noindex"],
+        headerRobots,
+      ));
+    } else if (hasIndexBlocker(headerRobots)) {
       blockers.push(issue("indexable-x-robots", route.path, "Indexable page is blocked by X-Robots-Tag", "no noindex/nofollow", headerRobots));
     }
     if (!html.title) warnings.push(issue("missing-title", route.path, "Indexable page has no title"));
@@ -722,6 +742,7 @@ export async function auditSite(input = {}) {
 
   const blockers = [];
   const warnings = [];
+  const exemptions = [];
   try {
     const [sitemap, robots, knownNotFound] = await Promise.all([
       auditSitemap(contract, request, blockers),
@@ -729,7 +750,15 @@ export async function auditSite(input = {}) {
       auditKnownNotFound(contract, request, blockers),
     ]);
     const routeResults = await mapLimit(contract.routes, options.concurrency, (route) =>
-      auditRoute(route, base, request, blockers, warnings),
+      auditRoute(
+        route,
+        base,
+        request,
+        blockers,
+        warnings,
+        exemptions,
+        input.allowVercelDeploymentNoindex === true,
+      ),
     );
     const expectedIdentity = {
       projectId: input.expectedIdentity?.projectId || "",
@@ -767,9 +796,11 @@ export async function auditSite(input = {}) {
         sitemapUrls: contract.routes.filter((route) => route.kind === "indexable" && route.sitemap).length,
         blockers: blockers.length,
         warnings: warnings.length,
+        exemptions: exemptions.length,
       },
       blockers,
       warnings,
+      exemptions: exemptions.sort((left, right) => left.target.localeCompare(right.target)),
       sitemap,
       robots,
       knownNotFound,
@@ -801,6 +832,8 @@ async function runCli() {
       retries: process.env.AUDIT_RETRIES,
       maxResponseBytes: process.env.AUDIT_MAX_RESPONSE_BYTES,
       maxDiscoveredUrls: process.env.AUDIT_MAX_DISCOVERED_URLS,
+      allowVercelDeploymentNoindex:
+        process.env.AUDIT_ALLOW_VERCEL_DEPLOYMENT_NOINDEX === "1",
     });
     console.log(JSON.stringify(report, null, 2));
     if (!report.ok) process.exitCode = 1;

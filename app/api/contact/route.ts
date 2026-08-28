@@ -1,5 +1,16 @@
 import { createHash, randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
+import {
+  buildPipelineMetadata,
+  captureLeadAttribution,
+  parseFirstResponseSlaMinutes,
+  readDownstreamAdapterConfig,
+  sanitizeAssigneeId,
+  sanitizeAttribution,
+  sanitizeSubmittedPageUrl,
+  type DownstreamAdapterConfig,
+} from "@/lib/lead-intake-contract";
 import { readQaSession } from "@/lib/qa-session";
 
 const SOURCE_SITE = "3dilluminatedsigns.com.au";
@@ -8,9 +19,13 @@ const BRAND = "3D Illuminated Signs";
 const MAX_BODY_BYTES = 25_000;
 const MIN_FORM_TIME_MS = 2_000;
 const MAX_FORM_TIME_MS = 2 * 60 * 60 * 1_000;
+const SUPABASE_TIMEOUT_MS = 6_000;
+const EMAIL_TIMEOUT_MS = 6_000;
+const localRateLimitSalt = randomUUID();
 
 type IntakeResult = { ok: true; id: string | null; duplicate?: boolean } | { ok: false; error: string };
 type EmailResult = { ok: true; id: string | null } | { ok: false; error: string };
+type AdapterResult = { ok: true } | { ok: false; error: string; disabled?: boolean };
 
 const localRequests = new Map<string, { count: number; resetAt: number }>();
 
@@ -58,9 +73,24 @@ function allowLocalRequest(key: string, limit = 6, windowMs = 60_000): boolean {
   return current.count <= limit;
 }
 
-function hashIp(ip: string): string {
-  const secret = process.env.RATE_LIMIT_HASH_SECRET || "3d-signs-fallback-hash-salt";
-  return createHash("sha256").update(`${secret}:${ip}`).digest("hex").slice(0, 24);
+function rateLimitKey(ip: string): string {
+  return createHash("sha256").update(`${localRateLimitSalt}:${ip}`).digest("hex").slice(0, 24);
+}
+
+function privacySafeIpHash(ip: string): string | null {
+  const secret = process.env.RATE_LIMIT_HASH_SECRET || "";
+  return secret.length >= 32
+    ? createHash("sha256").update(`${secret}:${ip}`).digest("hex").slice(0, 24)
+    : null;
+}
+
+async function fetchWithTimeout(input: string | URL, init: RequestInit, timeoutMs: number): Promise<Response> {
+  return fetch(input, { ...init, signal: AbortSignal.timeout(timeoutMs) });
+}
+
+function fetchErrorCode(error: unknown, prefix: string): string {
+  const name = error instanceof Error ? error.name : "";
+  return name === "AbortError" || name === "TimeoutError" ? `${prefix}_timeout` : `${prefix}_network`;
 }
 
 function supabaseConfig() {
@@ -77,29 +107,58 @@ function supabaseHeaders(serviceRoleKey: string) {
   };
 }
 
+async function findQuoteRequest(submissionReference: string): Promise<IntakeResult> {
+  const config = supabaseConfig();
+  if (!config.configured) return { ok: false, error: "supabase_not_configured" };
+
+  const lookupUrl = new URL(`${config.url}/rest/v1/quote_requests`);
+  lookupUrl.searchParams.set("select", "id");
+  lookupUrl.searchParams.set("lead_submission_id", `eq.${submissionReference}`);
+  lookupUrl.searchParams.set("limit", "1");
+  try {
+    const response = await fetchWithTimeout(
+      lookupUrl,
+      { headers: supabaseHeaders(config.serviceRoleKey), cache: "no-store" },
+      SUPABASE_TIMEOUT_MS,
+    );
+    if (!response.ok) return { ok: false, error: `supabase_lookup_${response.status}` };
+    const existing = (await response.json().catch(() => [])) as Array<{ id?: string }>;
+    return existing[0]?.id
+      ? { ok: true, id: existing[0].id, duplicate: true }
+      : { ok: false, error: "supabase_lookup_missing" };
+  } catch (error) {
+    return { ok: false, error: fetchErrorCode(error, "supabase_lookup") };
+  }
+}
+
 async function insertPlatinumQuoteRequest(payload: Record<string, unknown>, submissionReference: string): Promise<IntakeResult> {
   const config = supabaseConfig();
   if (!config.configured) return { ok: false, error: "supabase_not_configured" };
 
-  const duplicateUrl = new URL(`${config.url}/rest/v1/quote_requests`);
-  duplicateUrl.searchParams.set("select", "id");
-  duplicateUrl.searchParams.set("details->>submission_reference", `eq.${submissionReference}`);
-  duplicateUrl.searchParams.set("limit", "1");
-  const duplicateResponse = await fetch(duplicateUrl, { headers: supabaseHeaders(config.serviceRoleKey), cache: "no-store" });
-  if (duplicateResponse.ok) {
-    const existing = (await duplicateResponse.json().catch(() => [])) as Array<{ id?: string }>;
-    if (existing[0]?.id) return { ok: true, id: existing[0].id, duplicate: true };
+  const insertUrl = new URL(`${config.url}/rest/v1/quote_requests`);
+  insertUrl.searchParams.set("on_conflict", "lead_submission_id");
+  try {
+    const response = await fetchWithTimeout(
+      insertUrl,
+      {
+        method: "POST",
+        headers: {
+          ...supabaseHeaders(config.serviceRoleKey),
+          Prefer: "resolution=ignore-duplicates,return=representation",
+        },
+        body: JSON.stringify(payload),
+        cache: "no-store",
+      },
+      SUPABASE_TIMEOUT_MS,
+    );
+    const data = (await response.json().catch(() => null)) as Array<{ id?: string }> | null;
+    if (!response.ok) return { ok: false, error: `supabase_insert_${response.status}` };
+    if (data?.[0]?.id) return { ok: true, id: data[0].id };
+    return findQuoteRequest(submissionReference);
+  } catch (error) {
+    const recovered = await findQuoteRequest(submissionReference);
+    return recovered.ok ? recovered : { ok: false, error: fetchErrorCode(error, "supabase_insert") };
   }
-
-  const response = await fetch(`${config.url}/rest/v1/quote_requests`, {
-    method: "POST",
-    headers: { ...supabaseHeaders(config.serviceRoleKey), Prefer: "return=representation" },
-    body: JSON.stringify(payload),
-    cache: "no-store",
-  });
-  const data = (await response.json().catch(() => null)) as Array<{ id?: string }> | null;
-  if (!response.ok) return { ok: false, error: `supabase_insert_${response.status}` };
-  return { ok: true, id: data?.[0]?.id || null };
 }
 
 function escapeHtml(value: string) {
@@ -115,19 +174,70 @@ function escapeHtml(value: string) {
 async function sendEmail(payload: Record<string, unknown>, idempotencyKey: string): Promise<EmailResult> {
   const apiKey = process.env.RESEND_API_KEY || "";
   if (!apiKey) return { ok: false, error: "resend_not_configured" };
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "Idempotency-Key": idempotencyKey,
-    },
-    body: JSON.stringify(payload),
-    cache: "no-store",
-  });
-  const data = (await response.json().catch(() => null)) as { id?: string; message?: string } | null;
-  if (!response.ok || !data?.id) return { ok: false, error: `resend_${response.status}` };
-  return { ok: true, id: data.id };
+  try {
+    const response = await fetchWithTimeout(
+      "https://api.resend.com/emails",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          "Idempotency-Key": idempotencyKey,
+        },
+        body: JSON.stringify(payload),
+        cache: "no-store",
+      },
+      EMAIL_TIMEOUT_MS,
+    );
+    const data = (await response.json().catch(() => null)) as { id?: string } | null;
+    if (!response.ok || !data?.id) return { ok: false, error: `resend_${response.status}` };
+    return { ok: true, id: data.id };
+  } catch (error) {
+    return { ok: false, error: fetchErrorCode(error, "resend") };
+  }
+}
+
+async function notifyDownstreamAdapter(
+  config: DownstreamAdapterConfig,
+  data: {
+    reference: string;
+    recordId: string | null;
+    acceptedAt: string;
+    firstResponseDueAt: string;
+    assigneeId: string | null;
+  },
+): Promise<AdapterResult> {
+  if (!config.enabled) return { ok: false, error: `adapter_${config.state}`, disabled: true };
+
+  try {
+    const response = await fetchWithTimeout(
+      config.url,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${config.token}`,
+          "Content-Type": "application/json",
+          "Idempotency-Key": `3d-lead/${data.reference}`,
+        },
+        body: JSON.stringify({
+          event: "lead.accepted.v1",
+          event_id: `3d-lead-accepted/${data.reference}`,
+          lead_submission_id: data.reference,
+          quote_request_id: data.recordId,
+          source_site: SOURCE_SITE,
+          business_unit: BUSINESS_UNIT,
+          accepted_at: data.acceptedAt,
+          first_response_due_at: data.firstResponseDueAt,
+          assigned_to: data.assigneeId,
+        }),
+        cache: "no-store",
+      },
+      config.timeoutMs,
+    );
+    return response.ok ? { ok: true } : { ok: false, error: `adapter_${response.status}` };
+  } catch (error) {
+    return { ok: false, error: fetchErrorCode(error, "adapter") };
+  }
 }
 
 async function sendTeamNotification(data: {
@@ -229,7 +339,7 @@ export async function POST(req: NextRequest) {
   if (contentLength > MAX_BODY_BYTES) return NextResponse.json({ error: "Request is too large" }, { status: 413 });
 
   const ip = requestIp(req);
-  if (!allowLocalRequest(hashIp(ip))) {
+  if (!allowLocalRequest(rateLimitKey(ip))) {
     return NextResponse.json({ error: "Too many requests. Please wait before trying again." }, { status: 429 });
   }
 
@@ -252,9 +362,10 @@ export async function POST(req: NextRequest) {
   const company = cleanInline(body.company, 180);
   const service = cleanInline(body.service, 180) || "3D illuminated signage";
   const message = cleanMultiline(body.message, 5000);
-  const sourcePath = cleanInline(body.sourcePath, 300) || "/contact-us/";
   const suppliedReference = cleanInline(body.submissionId, 80);
-  const reference = /^[0-9a-f-]{36}$/i.test(suppliedReference) ? suppliedReference : randomUUID();
+  const reference = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(suppliedReference)
+    ? suppliedReference
+    : randomUUID();
 
   if (!name || !validEmail(email) || !validPhone(phone) || message.length < 10) {
     return NextResponse.json({ error: "Please provide your name, a valid email and phone number, and project details." }, { status: 400 });
@@ -274,7 +385,7 @@ export async function POST(req: NextRequest) {
         ok: true,
         dryRun: true,
         reference,
-        channels: { crm: false, team_email: false, acknowledgement: false },
+        channels: { crm: false, team_email: false, acknowledgement: false, downstream_adapter: false },
       },
       {
         headers: {
@@ -285,6 +396,21 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const submittedPageUrl = sanitizeSubmittedPageUrl(
+    body.submittedPageUrl || req.headers.get("referer") || req.nextUrl.toString(),
+    req.nextUrl.origin,
+  );
+  const sourcePath = cleanInline(new URL(submittedPageUrl).pathname, 300) || "/contact-us/";
+  const attribution = sanitizeAttribution({
+    ...captureLeadAttribution(submittedPageUrl).attribution,
+    ...sanitizeAttribution(body.attribution),
+  });
+  const acceptedAt = new Date();
+  const slaMinutes = parseFirstResponseSlaMinutes(process.env.LEAD_FIRST_RESPONSE_SLA_MINUTES);
+  const assigneeId = sanitizeAssigneeId(process.env.LEAD_DEFAULT_ASSIGNEE_ID);
+  const pipeline = buildPipelineMetadata(acceptedAt, slaMinutes, assigneeId);
+  const downstreamConfig = readDownstreamAdapterConfig(process.env);
+
   const details = {
     source_site: SOURCE_SITE,
     business_unit: BUSINESS_UNIT,
@@ -293,9 +419,16 @@ export async function POST(req: NextRequest) {
     project_type: service,
     source_path: sourcePath,
     submission_reference: reference,
-    ip_hash: hashIp(ip),
+    ip_hash: privacySafeIpHash(ip),
+    pipeline: {
+      ...pipeline,
+      downstream_adapter: {
+        state: downstreamConfig.state,
+        event_contract: "lead.accepted.v1",
+      },
+    },
   };
-  const intakePromise = insertPlatinumQuoteRequest({
+  const intake = await insertPlatinumQuoteRequest({
     product: service,
     name,
     email,
@@ -303,30 +436,63 @@ export async function POST(req: NextRequest) {
     company: company || null,
     notes: message,
     details,
+    lead_submission_id: reference,
+    source_host: SOURCE_SITE,
+    submitted_page_url: submittedPageUrl,
+    attribution,
+    assigned_to: assigneeId,
     source_channel: "website_form",
     lead_verdict: "REVIEW",
     lead_score: 55,
-    lead_flags: ["satellite_site", BUSINESS_UNIT],
+    lead_flags: ["satellite_site", BUSINESS_UNIT, ...(assigneeId ? [] : ["unassigned"])],
     lead_reasoning: [`Submitted via ${BRAND} website and routed to Platinum admin.`],
     lead_status: "reviewing",
     qualification_status: "needs_review",
     status: "pending",
   }, reference);
-  const teamEmailPromise = sendTeamNotification({ reference, name, email, phone, company, service, message, sourcePath });
-  const [intake, teamEmail] = await Promise.all([intakePromise, teamEmailPromise]);
 
-  if (!intake.ok) console.error("[3d contact] CRM capture failed", intake.error, reference);
-  if (!teamEmail.ok) console.error("[3d contact] Team email failed", teamEmail.error, reference);
-  if (!intake.ok && !teamEmail.ok) {
+  if (!intake.ok) {
+    console.error("[3d contact] Durable intake failed", intake.error, reference);
     return NextResponse.json({ error: "We could not submit your enquiry. Please call 1300 448 608." }, { status: 503 });
   }
+  if (intake.duplicate) {
+    return NextResponse.json({
+      ok: true,
+      reference,
+      duplicate: true,
+      channels: { crm: true, team_email: false, acknowledgement: false, downstream_adapter: false },
+    });
+  }
 
-  const acknowledgement = await sendCustomerAcknowledgement({ name, email, reference });
-  if (!acknowledgement.ok) console.error("[3d contact] Customer acknowledgement failed", acknowledgement.error, reference);
+  after(async () => {
+    const [teamEmail, acknowledgement, downstream] = await Promise.all([
+      sendTeamNotification({ reference, name, email, phone, company, service, message, sourcePath }),
+      sendCustomerAcknowledgement({ name, email, reference }),
+      notifyDownstreamAdapter(downstreamConfig, {
+        reference,
+        recordId: intake.id,
+        acceptedAt: pipeline.accepted_at,
+        firstResponseDueAt: pipeline.first_response_due_at,
+        assigneeId,
+      }),
+    ]);
+
+    if (!teamEmail.ok) console.error("[3d contact] Team email failed", teamEmail.error, reference);
+    if (!acknowledgement.ok) console.error("[3d contact] Customer acknowledgement failed", acknowledgement.error, reference);
+    if (!downstream.ok && !downstream.disabled) console.error("[3d contact] Downstream adapter failed", downstream.error, reference);
+    if (downstreamConfig.state === "misconfigured") console.error("[3d contact] Downstream adapter is misconfigured", reference);
+  });
 
   return NextResponse.json({
     ok: true,
     reference,
-    channels: { crm: intake.ok, team_email: teamEmail.ok, acknowledgement: acknowledgement.ok },
+    duplicate: Boolean(intake.duplicate),
+    channels: {
+      crm: true,
+      team_email: false,
+      acknowledgement: false,
+      downstream_adapter: false,
+    },
+    delivery_scheduled: true,
   });
 }

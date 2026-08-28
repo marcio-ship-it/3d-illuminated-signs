@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { pushAnalyticsEvent } from "@/components/Analytics";
+import { captureSessionLeadAttribution } from "@/lib/lead-intake-contract";
 
 const serviceOptions = [
   "3D Illuminated Signs",
@@ -57,11 +58,18 @@ export default function ContactPage() {
     const form = e.currentTarget;
     if (!submissionId.current) submissionId.current = crypto.randomUUID();
     const qaRequested = qaMode.current || window.__QA_MODE__ === true;
+    const capturedAttribution = captureSessionLeadAttribution(
+      window.location.href,
+      document.referrer,
+      window.sessionStorage,
+    );
     const data = {
       ...Object.fromEntries(new FormData(form)),
       startedAt: startedAt.current || Date.now(),
       submissionId: submissionId.current,
       sourcePath: window.location.pathname,
+      submittedPageUrl: capturedAttribution.submittedPageUrl,
+      attribution: capturedAttribution.attribution,
     };
 
     try {
@@ -77,6 +85,7 @@ export default function ContactPage() {
         const result = (await res.json()) as {
           reference?: string;
           dryRun?: boolean;
+          duplicate?: boolean;
           channels?: { acknowledgement?: boolean };
         };
         setReference(result.reference || "");
@@ -84,7 +93,7 @@ export default function ContactPage() {
         setConfirmationEmailed(Boolean(result.channels?.acknowledgement));
         setStatus("success");
         form.reset();
-        if (!result.dryRun) {
+        if (!result.dryRun && !result.duplicate) {
           pushAnalyticsEvent("generate_lead", {
             form_name: "3d_contact_quote",
             lead_reference: result.reference || "accepted",

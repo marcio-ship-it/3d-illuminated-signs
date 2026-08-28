@@ -94,6 +94,8 @@ Missing identity headers are blocking on new deployments. Do not substitute buil
 
 Vercel builds a production deployment from `main` but does not assign the public domains yet. On `vercel.deployment.ready`, the workflow must:
 
+Preview-environment dispatches are ignored at the job boundary. They must not run or report the production Lane 0 status; production dispatches still run the full identity validation and fail closed on a wrong project, ref, deployment, or SHA.
+
 1. Validate the event’s Vercel project ID, deployment ID, deployment URL, and full Git SHA against the release candidate.
 2. Audit the automatic deployment URL, using the Automation Bypass Secret if protection is enabled.
 3. Require the response identity headers to match the same project ID, deployment ID, and Git SHA.

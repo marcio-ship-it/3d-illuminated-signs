@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, Manrope } from "next/font/google";
 import "./globals.css";
-import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
-import Analytics from "@/components/Analytics";
-import { SITE, absoluteUrl } from "@/lib/site";
+import { SITE } from "@/lib/site";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" });
 const instrumentSerif = Instrument_Serif({
@@ -50,25 +47,6 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-const organisationSchema = {
-  "@context": "https://schema.org",
-  "@type": ["Organization", "LocalBusiness"],
-  "@id": absoluteUrl("/#organisation"),
-  name: SITE.name,
-  legalName: SITE.legalName,
-  url: SITE.url,
-  telephone: SITE.phoneDisplay,
-  email: SITE.email,
-  image: absoluteUrl("/images/gallery/img_9336.jpg"),
-  address: { "@type": "PostalAddress", ...SITE.address },
-  areaServed: { "@type": "Country", name: "Australia" },
-  parentOrganization: {
-    "@type": "Organization",
-    name: "Platinum Signs",
-    url: "https://platinumsigns.com.au",
-  },
-};
-
 export default function RootLayout({
   children,
 }: {
@@ -83,17 +61,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${manrope.variable} ${instrumentSerif.variable}`}>
-        <div className="qa-mode-banner" role="status" aria-live="polite">
-          QA MODE — analytics disabled · form submissions are dry-run only
-        </div>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organisationSchema) }}
-        />
-        <Analytics />
-        <Nav />
-        <main>{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );

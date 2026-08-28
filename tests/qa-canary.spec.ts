@@ -83,7 +83,8 @@ test("campaign attribution survives internal navigation without a live submissio
   });
 
   await page.goto("/?utm_source=google&utm_campaign=illuminated-signs&gclid=test-click-123");
-  await page.goto("/contact-us/");
+  await page.getByRole("link", { name: /contact/i }).first().click();
+  await expect(page).toHaveURL(/\/contact-us\/$/);
 
   await page.getByLabel("Full name *").fill("Attribution QA");
   await page.getByLabel("Email *").fill("attribution@example.invalid");

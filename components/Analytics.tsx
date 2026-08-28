@@ -1,23 +1,44 @@
 "use client";
 
 import Script from "next/script";
-import { useEffect } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { SITE } from "@/lib/site";
 
 declare global {
   interface Window {
+    __QA_MODE__?: boolean;
     dataLayer?: Array<Record<string, unknown>>;
   }
 }
 
 export function pushAnalyticsEvent(event: string, values: Record<string, unknown> = {}) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || window.__QA_MODE__) return;
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ event, ...values });
 }
 
+function subscribeToQaMode() {
+  return () => undefined;
+}
+
+function clientAnalyticsEnabled() {
+  return window.__QA_MODE__ !== true;
+}
+
+function serverAnalyticsEnabled() {
+  return false;
+}
+
 export default function Analytics() {
+  const analyticsEnabled = useSyncExternalStore(
+    subscribeToQaMode,
+    clientAnalyticsEnabled,
+    serverAnalyticsEnabled,
+  );
+
   useEffect(() => {
+    if (!analyticsEnabled) return;
+
     const handleClick = (event: MouseEvent) => {
       const anchor = (event.target as Element | null)?.closest("a");
       if (!anchor) return;
@@ -34,12 +55,14 @@ export default function Analytics() {
 
     document.addEventListener("click", handleClick);
     return () => document.removeEventListener("click", handleClick);
-  }, []);
+  }, [analyticsEnabled]);
+
+  if (!analyticsEnabled) return null;
 
   return (
     <>
       <Script id="gtm-bootstrap" strategy="afterInteractive">
-        {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${SITE.gtmId}');`}
+        {`if(!window.__QA_MODE__){(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${SITE.gtmId}');}`}
       </Script>
       {/*
         Microsoft Clarity — session recordings and heatmaps. Loaded here rather
@@ -55,9 +78,8 @@ export default function Analytics() {
         which is indistinguishable from "nobody visited".
       */}
       <Script id="clarity-bootstrap" strategy="afterInteractive">
-        {`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${SITE.clarityId}");`}
+        {`if(!window.__QA_MODE__){(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${SITE.clarityId}");}`}
       </Script>
     </>
   );
 }
-

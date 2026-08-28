@@ -40,36 +40,32 @@ const posts = [
 
 export default function BlogPage() {
   return (
-    <div className="pt-16">
-      <section className="py-24 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#0a0a0a]">
-        <div className="max-w-5xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Signage <span className="text-[#d4a017]">Blog</span>
-          </h1>
-          <p className="text-gray-400 text-lg mb-14 max-w-xl">
-            Guides, tips and insights from Australia&apos;s 3D illuminated signage specialists.
-          </p>
+    <div className="pt-[76px] bg-[#fbfaf6]">
+      <section className="border-b border-[#dcd9d0] bg-[#f1efe8] py-20 md:py-28">
+        <div className="section-shell">
+          <p className="eyebrow mb-5">Knowledge</p>
+          <h1 className="font-display text-6xl md:text-8xl leading-[0.88] tracking-[-0.05em]">Signage, explained.</h1>
+          <p className="mt-7 max-w-2xl text-lg leading-8 text-[#4e5049]">Practical guidance on briefing, artwork, materials, fabrication and installation.</p>
+        </div>
+      </section>
 
-          <div className="grid sm:grid-cols-2 gap-6">
-            {posts.map((post) => (
-              <Link key={post.title} href={post.href} className="card-dark block p-6 hover:border-[#d4a017]/40 transition-all">
-                <span className="text-xs text-[#d4a017] border border-[#d4a017]/30 rounded-full px-2.5 py-1 mb-3 inline-block">
-                  {post.category}
-                </span>
-                <h2 className="text-white font-semibold text-lg mb-2 leading-snug">{post.title}</h2>
-                <p className="text-gray-400 text-sm mb-4">{post.excerpt}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-500 text-xs">{post.date}</span>
-                  <span className="text-[#d4a017] text-sm">Read guide →</span>
+      <section className="py-24 md:py-32 bg-white">
+        <div className="section-shell">
+          <div className="border-t border-[#b8b4a9]">
+            {posts.map((post, index) => (
+              <Link key={post.title} href={post.href} className="group grid md:grid-cols-[0.12fr_0.7fr_1fr_0.22fr] gap-5 items-start border-b border-[#dcd9d0] py-8 md:py-10">
+                <span className="text-xs font-bold tracking-[0.12em] text-[#77796f]">0{index + 1}</span>
+                <div>
+                  <span className="text-[0.68rem] font-bold uppercase tracking-[0.12em] text-[#2457f5]">{post.category}</span>
+                  <h2 className="font-display mt-2 text-3xl md:text-4xl leading-[1.02] tracking-[-0.03em]">{post.title}</h2>
+                </div>
+                <p className="text-sm leading-7 text-[#4e5049]">{post.excerpt}</p>
+                <div className="text-right">
+                  <span className="block text-xs text-[#77796f]">{post.date}</span>
+                  <span className="mt-5 inline-block text-2xl text-[#2457f5] transition-transform group-hover:translate-x-1">→</span>
                 </div>
               </Link>
             ))}
-          </div>
-
-          <div className="mt-16 card-dark p-8 text-center">
-            <h3 className="text-white font-bold text-xl mb-2">Have a signage question?</h3>
-            <p className="text-gray-400 mb-6">Send the site photos, approximate size and what you want the sign to achieve.</p>
-            <Link href="/contact-us/" className="btn-gold inline-block">Ask the signage team</Link>
           </div>
         </div>
       </section>

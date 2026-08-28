@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { readQaSession } from "@/lib/qa-session";
 
 const SOURCE_SITE = "3dilluminatedsigns.com.au";
 const BUSINESS_UNIT = "3d_illuminated_signs";
@@ -111,12 +112,16 @@ function escapeHtml(value: string) {
   })[character] || character);
 }
 
-async function sendEmail(payload: Record<string, unknown>): Promise<EmailResult> {
+async function sendEmail(payload: Record<string, unknown>, idempotencyKey: string): Promise<EmailResult> {
   const apiKey = process.env.RESEND_API_KEY || "";
   if (!apiKey) return { ok: false, error: "resend_not_configured" };
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      "Idempotency-Key": idempotencyKey,
+    },
     body: JSON.stringify(payload),
     cache: "no-store",
   });
@@ -175,15 +180,18 @@ async function sendTeamNotification(data: {
     data.message,
   ].join("\n");
 
-  return sendEmail({
-    from,
-    to: recipients,
-    ...(bcc.length ? { bcc } : {}),
-    reply_to: data.email,
-    subject: `[3D SIGNS LEAD] ${data.service} — ${data.name}`,
-    html,
-    text,
-  });
+  return sendEmail(
+    {
+      from,
+      to: recipients,
+      ...(bcc.length ? { bcc } : {}),
+      reply_to: data.email,
+      subject: `[3D SIGNS LEAD] ${data.service} — ${data.name}`,
+      html,
+      text,
+    },
+    `3d-team/${data.reference}`,
+  );
 }
 
 async function sendCustomerAcknowledgement(data: { name: string; email: string; reference: string }): Promise<EmailResult> {
@@ -202,14 +210,17 @@ async function sendCustomerAcknowledgement(data: { name: string; email: string; 
         <p>3D Illuminated Signs by Platinum Signs<br>1300 448 608</p>
       </div>
     </div>`;
-  return sendEmail({
-    from,
-    to: [data.email],
-    reply_to: "contact@3dilluminatedsigns.com.au",
-    subject: `We received your signage enquiry — ${data.reference}`,
-    html,
-    text: `Hi ${data.name.trim().split(/\s+/)[0] || "there"},\n\nThanks for getting in touch. We received your signage enquiry. Your reference is ${data.reference}.\n\nIf you need to add photos or artwork, reply with the files or a Drive, Dropbox or WeTransfer link.\n\n3D Illuminated Signs by Platinum Signs\n1300 448 608`,
-  });
+  return sendEmail(
+    {
+      from,
+      to: [data.email],
+      reply_to: "contact@3dilluminatedsigns.com.au",
+      subject: `We received your signage enquiry — ${data.reference}`,
+      html,
+      text: `Hi ${data.name.trim().split(/\s+/)[0] || "there"},\n\nThanks for getting in touch. We received your signage enquiry. Your reference is ${data.reference}.\n\nIf you need to add photos or artwork, reply with the files or a Drive, Dropbox or WeTransfer link.\n\n3D Illuminated Signs by Platinum Signs\n1300 448 608`,
+    },
+    `3d-ack/${data.reference}`,
+  );
 }
 
 export async function POST(req: NextRequest) {
@@ -247,6 +258,31 @@ export async function POST(req: NextRequest) {
 
   if (!name || !validEmail(email) || !validPhone(phone) || message.length < 10) {
     return NextResponse.json({ error: "Please provide your name, a valid email and phone number, and project details." }, { status: 400 });
+  }
+
+  const qaRequested = req.headers.get("x-qa-mode") === "dry-run";
+  const qaSession = readQaSession(req.cookies);
+  if (qaRequested && !qaSession) {
+    return NextResponse.json(
+      { error: "QA session is missing or expired. No enquiry was submitted." },
+      { status: 403, headers: { "Cache-Control": "no-store, max-age=0" } },
+    );
+  }
+  if (qaSession) {
+    return NextResponse.json(
+      {
+        ok: true,
+        dryRun: true,
+        reference,
+        channels: { crm: false, team_email: false, acknowledgement: false },
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, max-age=0",
+          "X-QA-Mode": "dry-run",
+        },
+      },
+    );
   }
 
   const details = {

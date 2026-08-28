@@ -1,12 +1,26 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Instrument_Serif, Manrope } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Analytics from "@/components/Analytics";
 import { SITE, absoluteUrl } from "@/lib/site";
 
-const inter = Inter({ subsets: ["latin"] });
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" });
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-display",
+});
+
+const qaModeBootstrap = `
+(function () {
+  var qaMode = document.cookie.split(";").some(function (cookie) {
+    return cookie.trim() === "__Host-3d-qa-ui=1";
+  });
+  window.__QA_MODE__ = qaMode;
+  if (qaMode) document.documentElement.dataset.qaMode = "true";
+})();`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -61,17 +75,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <noscript>
-          <iframe
-            src={`https://www.googletagmanager.com/ns.html?id=${SITE.gtmId}`}
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-            title="Google Tag Manager"
-          />
-        </noscript>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          id="qa-mode-bootstrap"
+          dangerouslySetInnerHTML={{ __html: qaModeBootstrap }}
+        />
+      </head>
+      <body className={`${manrope.variable} ${instrumentSerif.variable}`}>
+        <div className="qa-mode-banner" role="status" aria-live="polite">
+          QA MODE — analytics disabled · form submissions are dry-run only
+        </div>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organisationSchema) }}

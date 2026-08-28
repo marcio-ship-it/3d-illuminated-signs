@@ -45,6 +45,12 @@ Allowlisted campaign values are retained in same-origin `sessionStorage`, so a v
 | `LEAD_DOWNSTREAM_ADAPTER_TOKEN` | Only when adapter enabled | Bearer token of at least 32 characters. |
 | `LEAD_DOWNSTREAM_ADAPTER_TIMEOUT_MS` | No | Integer from 500 to 10,000; defaults to 3,000 ms. |
 
+## Approved operating defaults
+
+As approved by Marcio on 2026-08-29, the website uses a 60-minute first-response SLA. `LEAD_FIRST_RESPONSE_SLA_MINUTES=60` is configured for Production and the release preview branch in Vercel.
+
+Leads remain deliberately unassigned in the database until an active assignee UUID is approved for `LEAD_DEFAULT_ASSIGNEE_ID`. Marcio owns the operational unassigned queue and is responsible for monitoring new accepted leads, first-response deadlines, and SLA breaches during this interim state.
+
 The adapter sends a privacy-minimised `lead.accepted.v1` envelope containing only event/submission/row IDs, source identifiers, acceptance/SLA timestamps and assignee ID. It does not send customer name, contact details, message or attribution. A receiver that needs those fields must retrieve the row using its separately authorised, audited database integration. This repository does not contain or infer Pipedrive credentials and does not write to Pipedrive directly.
 
 ## Blocking release gates

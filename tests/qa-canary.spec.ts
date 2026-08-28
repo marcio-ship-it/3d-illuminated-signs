@@ -21,6 +21,94 @@ function contactPayload(submissionId = randomUUID()) {
   };
 }
 
+test("site routes retain chrome, schema, and analytics", async ({ page }) => {
+  await page.route("**/*", (route) => {
+    const hostname = new URL(route.request().url()).hostname;
+    return trackingHostPattern.test(hostname) ? route.abort() : route.continue();
+  });
+  await page.goto("/privacy/");
+
+  await expect(page.locator("header")).toHaveCount(1);
+  await expect(page.locator("footer")).toHaveCount(1);
+  await expect(page.locator("main")).toHaveCount(1);
+  await expect(page.locator(".qa-mode-banner")).toHaveCount(1);
+  await expect(page.locator("#organisation-schema")).toHaveCount(1);
+  await expect(page.locator("#gtm-bootstrap")).toHaveCount(1);
+  await expect(page.locator("#clarity-bootstrap")).toHaveCount(1);
+  await expect.poll(() => page.evaluate(() => {
+    const event = window.dataLayer?.find((entry) => entry.event === "web_vital");
+    return event
+      ? {
+          page_route: event.page_route,
+          has_metric: typeof event.metric_name === "string" && typeof event.metric_value === "number",
+        }
+      : null;
+  })).toEqual({ page_route: "/privacy/", has_metric: true });
+});
+
+test("campaign attribution survives internal navigation without a live submission", async ({ page }) => {
+  await page.route("**/*", async (route) => {
+    const requestUrl = new URL(route.request().url());
+    if (trackingHostPattern.test(requestUrl.hostname)) return route.abort();
+    if (requestUrl.pathname === "/api/contact/") {
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          ok: true,
+          reference: "00000000-0000-4000-8000-000000000001",
+          channels: { crm: true, team_email: false, acknowledgement: false, downstream_adapter: false },
+          delivery_scheduled: true,
+        }),
+      });
+    }
+    return route.continue();
+  });
+
+  await page.goto("/?utm_source=google&utm_campaign=illuminated-signs&gclid=test-click-123");
+  await page.goto("/contact-us/");
+
+  await page.getByLabel("Full name *").fill("Attribution QA");
+  await page.getByLabel("Email *").fill("attribution@example.invalid");
+  await page.getByLabel("Phone *").fill("0400000000");
+  await page.getByLabel("Project details *").fill("Attribution-only intercepted browser test.");
+  await page.waitForTimeout(2_100);
+
+  const requestPromise = page.waitForRequest((request) => new URL(request.url()).pathname === "/api/contact/");
+  await page.getByRole("button", { name: /send project enquiry/i }).click();
+  const request = await requestPromise;
+  const payload = request.postDataJSON() as {
+    submittedPageUrl: string;
+    attribution: Record<string, string>;
+  };
+
+  expect(payload.submittedPageUrl).toBe(`${new URL(page.url()).origin}/contact-us/`);
+  expect(payload.attribution).toEqual({
+    utm_source: "google",
+    utm_campaign: "illuminated-signs",
+    gclid: "test-click-123",
+  });
+});
+
+test("embed routes exclude site chrome, schema, and analytics", async ({ page }) => {
+  const trackingRequests: string[] = [];
+  page.on("request", (request) => {
+    const hostname = new URL(request.url()).hostname;
+    if (trackingHostPattern.test(hostname)) trackingRequests.push(request.url());
+  });
+  await page.route("**/*", (route) => {
+    const hostname = new URL(route.request().url()).hostname;
+    return trackingHostPattern.test(hostname) ? route.abort() : route.continue();
+  });
+
+  await page.goto("/embed/cut-letters/");
+  await expect(page.getByRole("heading", { name: "Cut-Out Letters — Instant Price Calculator" })).toBeVisible();
+  await expect(page.locator("header, footer, main, .qa-mode-banner")).toHaveCount(0);
+  await expect(page.locator("#organisation-schema, #gtm-bootstrap, #clarity-bootstrap")).toHaveCount(0);
+  await page.waitForTimeout(250);
+  expect(trackingRequests).toEqual([]);
+});
+
 test("signed QA mode suppresses analytics and dry-runs the contact form", async ({ page }) => {
   const trackingRequests: string[] = [];
   page.on("request", (request) => {

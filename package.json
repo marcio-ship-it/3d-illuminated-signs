@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test:audit": "node --test work/site-audit.test.mjs",
+    "test:audit": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test work/*.test.mjs",
+    "test:analytics": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test work/analytics.test.mjs",
+    "test:lead-intake": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test work/lead-intake-contract.test.mjs",
     "audit:site": "node work/site-audit.mjs",
     "test:e2e": "playwright test",
     "release:record": "node work/write-release-record.mjs"

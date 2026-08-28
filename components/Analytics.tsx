@@ -1,21 +1,15 @@
 "use client";
 
 import Script from "next/script";
+import { usePathname } from "next/navigation";
 import { useEffect, useSyncExternalStore } from "react";
 import { SITE } from "@/lib/site";
+import { captureSessionLeadAttribution } from "@/lib/lead-intake-contract";
+import WebVitals from "@/components/analytics/WebVitals";
+import { pushAnalyticsEvent } from "@/components/analytics/events";
+import { CLARITY_SCRIPT_STRATEGY } from "@/components/analytics/web-vitals";
 
-declare global {
-  interface Window {
-    __QA_MODE__?: boolean;
-    dataLayer?: Array<Record<string, unknown>>;
-  }
-}
-
-export function pushAnalyticsEvent(event: string, values: Record<string, unknown> = {}) {
-  if (typeof window === "undefined" || window.__QA_MODE__) return;
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event, ...values });
-}
+export { pushAnalyticsEvent } from "@/components/analytics/events";
 
 function subscribeToQaMode() {
   return () => undefined;
@@ -29,12 +23,18 @@ function serverAnalyticsEnabled() {
   return false;
 }
 
-export default function Analytics() {
+export default function Analytics({ releaseSha }: { releaseSha?: string }) {
+  const pathname = usePathname();
   const analyticsEnabled = useSyncExternalStore(
     subscribeToQaMode,
     clientAnalyticsEnabled,
     serverAnalyticsEnabled,
   );
+
+  useEffect(() => {
+    if (!analyticsEnabled) return;
+    captureSessionLeadAttribution(window.location.href, document.referrer, window.sessionStorage);
+  }, [analyticsEnabled, pathname]);
 
   useEffect(() => {
     if (!analyticsEnabled) return;
@@ -61,6 +61,7 @@ export default function Analytics() {
 
   return (
     <>
+      <WebVitals releaseSha={releaseSha} />
       <Script id="gtm-bootstrap" strategy="afterInteractive">
         {`if(!window.__QA_MODE__){(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${SITE.gtmId}');}`}
       </Script>
@@ -77,7 +78,7 @@ export default function Analytics() {
         the script it injects is blocked, and the dashboard shows zero sessions,
         which is indistinguishable from "nobody visited".
       */}
-      <Script id="clarity-bootstrap" strategy="afterInteractive">
+      <Script id="clarity-bootstrap" strategy={CLARITY_SCRIPT_STRATEGY}>
         {`if(!window.__QA_MODE__){(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${SITE.clarityId}");}`}
       </Script>
     </>

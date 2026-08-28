@@ -1,139 +1,150 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 const services = [
-  { label: "3D Illuminated Signs", href: "/illuminated-signs/" },
-  { label: "3D Lettering", href: "/3d-lettering/" },
-  { label: "LED Signs", href: "/led-signs/" },
-  { label: "Lightbox Signs", href: "/lightbox-signs/" },
-  { label: "3D Printed Signs", href: "/services/3d-printed-signs" },
-  { label: "Metal Signs", href: "/services/metal-signs" },
-  { label: "Acrylic Signs", href: "/acrylic-signs/" },
-  { label: "Neon Signs", href: "/neon-signs/" },
+  { label: "3D illuminated signs", href: "/illuminated-signs/" },
+  { label: "3D lettering", href: "/3d-lettering/" },
+  { label: "LED signs", href: "/led-signs/" },
+  { label: "Lightbox signs", href: "/lightbox-signs/" },
+  { label: "Metal signs", href: "/services/metal-signs/" },
+  { label: "Acrylic signs", href: "/acrylic-signs/" },
+  { label: "Neon signs", href: "/neon-signs/" },
 ];
 
-const industries = [
-  { label: "Corporate", href: "/signage-in-office/" },
-  { label: "Retail", href: "/industries/retail" },
-  { label: "Events & Exhibitions", href: "/industries/events" },
-  { label: "Logo & Reception", href: "/reception-signs/" },
-  { label: "Wayfinding", href: "/industries/wayfinding" },
+const sectors = [
+  { label: "Workplace & reception", href: "/signage-in-office/" },
+  { label: "Retail", href: "/industries/retail/" },
+  { label: "Events & exhibitions", href: "/industries/events/" },
+  { label: "Wayfinding", href: "/industries/wayfinding/" },
 ];
 
 export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
 
-  return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#e8e6e1]">
-      <div className="max-w-7xl mx-auto px-5 lg:px-8">
-        <div className="flex items-center justify-between h-[68px]">
+  const closeMenus = () => {
+    setMenuOpen(false);
+    setServicesOpen(false);
+  };
 
-          {/* Logo */}
-          <Link href="/" className="flex flex-col leading-tight shrink-0">
-            <span className="text-[#1c1c1e] font-bold text-[1.05rem] tracking-tight">3D Illuminated Signs</span>
-            <span className="text-[#c8960c] text-[0.65rem] font-semibold tracking-widest uppercase">by Platinum Signs</span>
+  return (
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-[#dcd9d0] bg-[#fbfaf6]/96 backdrop-blur-md">
+      <div className="section-shell">
+        <div className="flex h-[76px] items-center justify-between">
+          <Link href="/" className="flex items-center gap-3" onClick={closeMenus} aria-label="3D Illuminated Signs home">
+            <span className="grid h-9 w-9 place-items-center bg-[#2457f5] text-sm font-extrabold tracking-[-0.08em] text-white">3D</span>
+            <span className="leading-none">
+              <span className="block text-[0.96rem] font-extrabold tracking-[-0.035em] text-[#171815]">Illuminated Signs</span>
+              <span className="mt-1 block text-[0.57rem] font-bold uppercase tracking-[0.17em] text-[#77796f]">by Platinum Signs</span>
+            </span>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-7">
+          <nav className="hidden lg:flex items-center gap-8" aria-label="Primary navigation">
             <div
               className="relative"
               onMouseEnter={() => setServicesOpen(true)}
               onMouseLeave={() => setServicesOpen(false)}
             >
-              <button className="text-[#3d3d3f] hover:text-[#1c1c1e] text-sm font-medium flex items-center gap-1 transition-colors">
-                Services
-                <svg className="w-3.5 h-3.5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+              <button
+                type="button"
+                className="flex items-center gap-1.5 py-7 text-sm font-semibold text-[#4e5049] transition-colors hover:text-[#171815]"
+                aria-expanded={servicesOpen}
+                aria-controls="desktop-services-menu"
+                onClick={() => setServicesOpen((open) => !open)}
+                onFocus={() => setServicesOpen(true)}
+              >
+                Expertise
+                <svg className={`h-3.5 w-3.5 transition-transform ${servicesOpen ? "rotate-180" : ""}`} viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" />
                 </svg>
               </button>
 
               {servicesOpen && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[460px] bg-white border border-[#e8e6e1] rounded-2xl shadow-xl p-5 grid grid-cols-2 gap-x-6 gap-y-1">
-                  <div>
-                    <p className="eyebrow mb-3">Sign Types</p>
-                    {services.map((s) => (
-                      <Link key={s.href} href={s.href} className="block text-sm text-[#3d3d3f] hover:text-[#c8960c] py-1.5 transition-colors font-medium">
-                        {s.label}
-                      </Link>
-                    ))}
-                  </div>
-                  <div>
-                    <p className="eyebrow mb-3">By Industry</p>
-                    {industries.map((i) => (
-                      <Link key={i.href} href={i.href} className="block text-sm text-[#3d3d3f] hover:text-[#c8960c] py-1.5 transition-colors font-medium">
-                        {i.label}
-                      </Link>
-                    ))}
-                    <div className="mt-4 pt-4 border-t border-[#e8e6e1]">
-                      <Link href="/configurator/cut-letters" className="flex items-center gap-2 text-sm font-semibold text-[#c8960c] hover:text-[#a87b08] transition-colors">
-                        <span className="text-xs bg-[#fdf6e3] border border-[#c8960c]/20 rounded px-2 py-0.5">New</span>
-                        Price Calculator
-                      </Link>
+                <div id="desktop-services-menu" className="absolute left-1/2 top-full w-[700px] -translate-x-1/2 border border-[#dcd9d0] bg-[#fbfaf6] p-7 shadow-[0_22px_55px_rgba(23,24,21,0.12)]">
+                  <div className="grid grid-cols-[1fr_0.8fr] gap-9">
+                    <div className="grid grid-cols-2 gap-x-7">
+                      <div>
+                        <p className="eyebrow mb-4">Sign types</p>
+                        {services.slice(0, 4).map((service) => (
+                          <Link key={service.href} href={service.href} onClick={closeMenus} className="block border-t border-[#dcd9d0] py-3 text-sm font-semibold text-[#33342f] transition-colors hover:text-[#2457f5]">
+                            {service.label}
+                          </Link>
+                        ))}
+                      </div>
+                      <div className="pt-[1.85rem]">
+                        {services.slice(4).map((service) => (
+                          <Link key={service.href} href={service.href} onClick={closeMenus} className="block border-t border-[#dcd9d0] py-3 text-sm font-semibold text-[#33342f] transition-colors hover:text-[#2457f5]">
+                            {service.label}
+                          </Link>
+                        ))}
+                        <Link href="/configurator/cut-letters/" onClick={closeMenus} className="mt-3 block text-xs font-bold uppercase tracking-[0.12em] text-[#2457f5]">Letter price calculator ↗</Link>
+                      </div>
                     </div>
+
+                    <Link href="/gallery/" onClick={closeMenus} className="group relative min-h-64 overflow-hidden bg-[#e6e3dc]">
+                      <Image src="/images/gallery/img_5237.jpg" alt="Bupa Optical reception signage" fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="280px" />
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-4 pb-4 pt-16 text-white">
+                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-white/65">Selected work</p>
+                        <p className="mt-1 font-semibold">Explore the portfolio ↗</p>
+                      </div>
+                    </Link>
                   </div>
                 </div>
               )}
             </div>
 
-            <Link href="/gallery" className="text-[#3d3d3f] hover:text-[#1c1c1e] text-sm font-medium transition-colors">Gallery</Link>
-            <Link href="/about-platinum-signs/" className="text-[#3d3d3f] hover:text-[#1c1c1e] text-sm font-medium transition-colors">About</Link>
-            <Link href="/contact-us/" className="text-[#3d3d3f] hover:text-[#1c1c1e] text-sm font-medium transition-colors">Contact</Link>
+            <Link href="/gallery/" className="text-sm font-semibold text-[#4e5049] transition-colors hover:text-[#171815]">Work</Link>
+            <Link href="/about-platinum-signs/" className="text-sm font-semibold text-[#4e5049] transition-colors hover:text-[#171815]">Studio</Link>
+            <Link href="/contact-us/" className="text-sm font-semibold text-[#4e5049] transition-colors hover:text-[#171815]">Contact</Link>
           </nav>
 
-          {/* Right */}
-          <div className="hidden lg:flex items-center gap-4">
-            <a href="tel:1300448608" data-tracking-location="header" className="text-sm font-medium text-[#3d3d3f] hover:text-[#1c1c1e] transition-colors">
-              1300 448 608
-            </a>
-            <Link href="/contact-us/" data-tracking-location="header" className="btn-gold text-sm px-5 py-2.5">
-              Get a Quote
-            </Link>
+          <div className="hidden lg:flex items-center gap-5">
+            <a href="tel:1300448608" data-tracking-location="header" className="text-xs font-bold tracking-[-0.01em] text-[#4e5049] hover:text-[#171815]">1300 448 608</a>
+            <Link href="/contact-us/" data-tracking-location="header" className="btn-gold min-h-10 px-5">Get a quote <span aria-hidden="true">↗</span></Link>
           </div>
 
-          {/* Mobile toggle */}
-          <button className="lg:hidden text-[#1c1c1e] p-1" onClick={() => setMenuOpen(!menuOpen)}>
-            {menuOpen ? (
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
+          <button
+            type="button"
+            className="grid h-11 w-11 place-items-center border border-[#dcd9d0] text-[#171815] lg:hidden"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+          >
+            <span className="relative h-4 w-5" aria-hidden="true">
+              <span className={`absolute left-0 top-0.5 h-px w-5 bg-current transition-transform ${menuOpen ? "translate-y-[6px] rotate-45" : ""}`} />
+              <span className={`absolute left-0 top-[7px] h-px w-5 bg-current transition-opacity ${menuOpen ? "opacity-0" : ""}`} />
+              <span className={`absolute left-0 top-[13px] h-px w-5 bg-current transition-transform ${menuOpen ? "-translate-y-[6px] -rotate-45" : ""}`} />
+            </span>
           </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
       {menuOpen && (
-        <div className="lg:hidden bg-white border-t border-[#e8e6e1] px-5 py-5 space-y-1">
-          <p className="eyebrow mb-3 pt-1">Services</p>
-          {services.map((s) => (
-            <Link key={s.href} href={s.href} onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] hover:text-[#c8960c] py-2 font-medium">
-              {s.label}
-            </Link>
-          ))}
-          <hr className="divider my-3" />
-          <p className="eyebrow mb-3">Industries</p>
-          {industries.map((i) => (
-            <Link key={i.href} href={i.href} onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] hover:text-[#c8960c] py-2 font-medium">
-              {i.label}
-            </Link>
-          ))}
-          <hr className="divider my-3" />
-          <Link href="/gallery" onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] py-2 font-medium">Gallery</Link>
-          <Link href="/about-platinum-signs/" onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] py-2 font-medium">About</Link>
-          <Link href="/configurator/cut-letters" onClick={() => setMenuOpen(false)} className="block text-sm text-[#c8960c] py-2 font-semibold">✦ Price Calculator</Link>
-          <Link href="/contact-us/" onClick={() => setMenuOpen(false)} className="block text-sm text-[#3d3d3f] py-2 font-medium">Contact</Link>
-          <hr className="divider my-3" />
-          <a href="tel:1300448608" data-tracking-location="mobile_menu" className="block text-sm font-medium text-[#3d3d3f] py-2">1300 448 608</a>
-          <Link href="/contact-us/" data-tracking-location="mobile_menu" onClick={() => setMenuOpen(false)} className="btn-gold block text-center mt-2">Get a Quote</Link>
-        </div>
+        <nav id="mobile-navigation" className="max-h-[calc(100vh-76px)] overflow-y-auto border-t border-[#dcd9d0] bg-[#fbfaf6] lg:hidden" aria-label="Mobile navigation">
+          <div className="section-shell py-7">
+            <p className="eyebrow mb-3">Expertise</p>
+            <div className="grid sm:grid-cols-2 gap-x-8">
+              {services.map((service) => (
+                <Link key={service.href} href={service.href} onClick={closeMenus} className="border-t border-[#dcd9d0] py-3.5 text-base font-semibold text-[#33342f]">{service.label}</Link>
+              ))}
+            </div>
+            <p className="eyebrow mb-3 mt-8">By sector</p>
+            <div className="grid sm:grid-cols-2 gap-x-8">
+              {sectors.map((sector) => (
+                <Link key={sector.href} href={sector.href} onClick={closeMenus} className="border-t border-[#dcd9d0] py-3.5 text-base font-semibold text-[#33342f]">{sector.label}</Link>
+              ))}
+            </div>
+            <div className="mt-8 grid grid-cols-2 gap-3">
+              <Link href="/gallery/" onClick={closeMenus} className="btn-outline">View work</Link>
+              <Link href="/contact-us/" onClick={closeMenus} data-tracking-location="mobile_menu" className="btn-gold">Get a quote</Link>
+            </div>
+            <a href="tel:1300448608" data-tracking-location="mobile_menu" className="mt-6 block text-center text-sm font-bold text-[#4e5049]">Call 1300 448 608</a>
+          </div>
+        </nav>
       )}
     </header>
   );

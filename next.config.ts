@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
       { source: "/services/neon-signs", destination: "/neon-signs/", permanent: true },
       { source: "/industries/logo-reception", destination: "/reception-signs/", permanent: true },
       { source: "/industries/corporate", destination: "/signage-in-office/", permanent: true },
+      { source: "/category/blog", destination: "/blog/", permanent: true },
     ];
   },
   async headers() {

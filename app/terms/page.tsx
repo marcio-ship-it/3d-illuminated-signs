@@ -8,13 +8,18 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <div className="pt-16">
-      <section className="py-24 px-4">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-4xl font-bold text-white mb-8">Terms of Service</h1>
-          <p className="text-gray-400">Last updated: April 2026</p>
+    <div className="pt-[76px] bg-[#fbfaf6]">
+      <section className="border-b border-[#dcd9d0] bg-[#f1efe8] py-20 md:py-28">
+        <div className="section-shell max-w-5xl">
+          <p className="eyebrow mb-5">Website policy</p>
+          <h1 className="font-display text-6xl md:text-8xl leading-[0.88] tracking-[-0.05em]">Terms of service.</h1>
+          <p className="mt-6 text-[#77796f]">Last updated: April 2026</p>
+        </div>
+      </section>
+      <section className="py-20 md:py-28 bg-white">
+        <div className="section-shell max-w-5xl">
 
-          <div className="space-y-8 mt-8">
+          <div className="border-t border-[#b8b4a9]">
             {[
               { title: "1. Acceptance of Terms", body: "By using this website you agree to these Terms of Service. If you do not agree, please do not use our website." },
               { title: "2. Services", body: "3D Illuminated Signs by Platinum Signs provides custom signage design, fabrication and installation services. All projects are subject to a separate written agreement." },
@@ -25,10 +30,10 @@ export default function TermsPage() {
               { title: "7. Governing Law", body: "These terms are governed by the laws of New South Wales, Australia." },
               { title: "8. Contact", body: "For questions about these terms: contact@3dilluminatedsigns.com.au or 1300 448 608." },
             ].map((s) => (
-              <div key={s.title}>
-                <h2 className="text-xl font-semibold text-white mb-2">{s.title}</h2>
-                <p className="text-gray-400">{s.body}</p>
-              </div>
+              <article key={s.title} className="grid md:grid-cols-[0.45fr_1fr] gap-5 border-b border-[#dcd9d0] py-8">
+                <h2 className="text-lg font-semibold tracking-[-0.02em]">{s.title}</h2>
+                <p className="leading-8 text-[#4e5049]">{s.body}</p>
+              </article>
             ))}
           </div>
         </div>

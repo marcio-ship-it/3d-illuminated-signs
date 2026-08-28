@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Instrument_Serif, Manrope } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Analytics from "@/components/Analytics";
 import { SITE, absoluteUrl } from "@/lib/site";
 
-const inter = Inter({ subsets: ["latin"] });
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" });
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-display",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -62,7 +67,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${manrope.variable} ${instrumentSerif.variable}`}>
         <noscript>
           <iframe
             src={`https://www.googletagmanager.com/ns.html?id=${SITE.gtmId}`}

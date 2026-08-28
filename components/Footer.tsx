@@ -1,108 +1,69 @@
 import Link from "next/link";
 
 const serviceLinks = [
-  { label: "3D Illuminated Signs", href: "/illuminated-signs/" },
-  { label: "3D Lettering", href: "/3d-lettering/" },
-  { label: "LED Signs", href: "/led-signs/" },
-  { label: "Lightbox Signs", href: "/lightbox-signs/" },
-  { label: "3D Printed Signs", href: "/services/3d-printed-signs" },
-  { label: "Metal Signs", href: "/services/metal-signs" },
-  { label: "Acrylic Signs", href: "/acrylic-signs/" },
-  { label: "Neon Signs", href: "/neon-signs/" },
-];
+  ["3D illuminated signs", "/illuminated-signs/"],
+  ["3D lettering", "/3d-lettering/"],
+  ["LED signs", "/led-signs/"],
+  ["Lightbox signs", "/lightbox-signs/"],
+  ["Metal signs", "/services/metal-signs/"],
+  ["Acrylic signs", "/acrylic-signs/"],
+  ["Neon signs", "/neon-signs/"],
+] as const;
 
-const industryLinks = [
-  { label: "Corporate", href: "/signage-in-office/" },
-  { label: "Retail", href: "/industries/retail" },
-  { label: "Events & Exhibitions", href: "/industries/events" },
-  { label: "Logo & Reception", href: "/reception-signs/" },
-  { label: "Wayfinding", href: "/industries/wayfinding" },
-];
+const companyLinks = [
+  ["Selected work", "/gallery/"],
+  ["About the studio", "/about-platinum-signs/"],
+  ["Design service", "/design-service/"],
+  ["Installation", "/signage-installation/"],
+  ["Artwork specifications", "/artwork-specifications/"],
+] as const;
 
 export default function Footer() {
   return (
-    <footer className="bg-[#f9f8f6] border-t border-[#e8e6e1] pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-5 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-
-          {/* Brand */}
+    <footer className="bg-[#171815] text-white">
+      <div className="section-shell py-16 md:py-20">
+        <div className="grid lg:grid-cols-[1.35fr_0.65fr_0.65fr] gap-12 lg:gap-20">
           <div>
-            <div className="mb-4">
-              <p className="text-[#1c1c1e] font-bold text-[1.05rem] tracking-tight">3D Illuminated Signs</p>
-              <p className="text-[#c8960c] text-[0.65rem] font-semibold tracking-widest uppercase mt-0.5">by Platinum Signs</p>
-            </div>
-            <p className="text-[#8e8e93] text-sm leading-relaxed mb-5">
-              Australia&apos;s premier 3D illuminated signage specialists. Built in Sydney, installed nationwide.
-            </p>
-            <div className="space-y-2">
-              <a href="tel:1300448608" className="flex items-center gap-2 text-sm text-[#3d3d3f] hover:text-[#c8960c] transition-colors font-medium">
-                1300 448 608
-              </a>
-              <a href="mailto:contact@3dilluminatedsigns.com.au" data-tracking-location="footer" className="flex items-center gap-2 text-sm text-[#3d3d3f] hover:text-[#c8960c] transition-colors">
-                contact@3dilluminatedsigns.com.au
-              </a>
-              <p className="text-sm text-[#8e8e93]">Sydney, NSW — Nationwide installation</p>
-            </div>
-          </div>
-
-          {/* Services */}
-          <div>
-            <p className="eyebrow mb-4">Services</p>
-            <ul className="space-y-2.5">
-              {serviceLinks.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="text-sm text-[#3d3d3f] hover:text-[#c8960c] transition-colors">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Industries */}
-          <div>
-            <p className="eyebrow mb-4">Industries</p>
-            <ul className="space-y-2.5">
-              {industryLinks.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="text-sm text-[#3d3d3f] hover:text-[#c8960c] transition-colors">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Quick Links + CTA */}
-          <div>
-            <p className="eyebrow mb-4">Quick Links</p>
-            <ul className="space-y-2.5 mb-7">
-              {[
-                { label: "Our Work", href: "/gallery" },
-                { label: "About Us", href: "/about-platinum-signs/" },
-                { label: "Price Calculator", href: "/configurator/cut-letters" },
-                { label: "Contact", href: "/contact-us/" },
-              ].map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="text-sm text-[#3d3d3f] hover:text-[#c8960c] transition-colors">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <Link href="/contact-us/" data-tracking-location="footer" className="btn-gold text-sm">
-              Get a Free Quote
+            <Link href="/" className="inline-flex items-center gap-3" aria-label="3D Illuminated Signs home">
+              <span className="grid h-10 w-10 place-items-center bg-[#2457f5] text-sm font-extrabold tracking-[-0.08em]">3D</span>
+              <span>
+                <span className="block text-lg font-extrabold tracking-[-0.04em]">Illuminated Signs</span>
+                <span className="mt-0.5 block text-[0.6rem] font-bold uppercase tracking-[0.16em] text-white/48">by Platinum Signs</span>
+              </span>
             </Link>
+            <p className="mt-7 max-w-md text-base leading-7 text-white/58">Custom dimensional and illuminated signage, managed from Sydney and installed across Australia.</p>
+            <div className="mt-8 space-y-2 text-sm">
+              <a href="tel:1300448608" data-tracking-location="footer" className="block font-semibold hover:text-[#8ea8ff]">1300 448 608</a>
+              <a href="mailto:contact@3dilluminatedsigns.com.au" data-tracking-location="footer" className="block text-white/58 hover:text-[#8ea8ff]">contact@3dilluminatedsigns.com.au</a>
+              <p className="text-white/38">Sydney, NSW · Nationwide installation</p>
+            </div>
+          </div>
+
+          <div>
+            <p className="mb-5 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#8ea8ff]">Expertise</p>
+            <ul className="space-y-3">
+              {serviceLinks.map(([label, href]) => (
+                <li key={href}><Link href={href} className="text-sm text-white/58 transition-colors hover:text-white">{label}</Link></li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="mb-5 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#8ea8ff]">Studio</p>
+            <ul className="space-y-3">
+              {companyLinks.map(([label, href]) => (
+                <li key={href}><Link href={href} className="text-sm text-white/58 transition-colors hover:text-white">{label}</Link></li>
+              ))}
+            </ul>
+            <Link href="/contact-us/" data-tracking-location="footer" className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-white">Start a project <span className="text-[#8ea8ff]" aria-hidden="true">↗</span></Link>
           </div>
         </div>
 
-        <div className="border-t border-[#e8e6e1] pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p className="text-[#8e8e93] text-xs">
-            © {new Date().getFullYear()} 3D Illuminated Signs by Platinum Signs Pty Ltd. All rights reserved.
-          </p>
+        <div className="mt-16 flex flex-col gap-4 border-t border-white/15 pt-6 text-xs text-white/38 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} 3D Illuminated Signs by Platinum Signs Pty Ltd.</p>
           <div className="flex gap-5">
-            <Link href="/privacy" className="text-[#8e8e93] hover:text-[#3d3d3f] text-xs transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="text-[#8e8e93] hover:text-[#3d3d3f] text-xs transition-colors">Terms of Service</Link>
+            <Link href="/privacy/" className="hover:text-white">Privacy</Link>
+            <Link href="/terms/" className="hover:text-white">Terms</Link>
           </div>
         </div>
       </div>

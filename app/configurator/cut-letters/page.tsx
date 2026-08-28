@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Cut-Out Letters Price Calculator | 3D Illuminated Signs",
   description:
     "Instant pricing for laser-cut and CNC-cut letters in acrylic, aluminium, stainless steel, brass and copper. Configure your text, height, finish and mounting — get a price in seconds.",
+  alternates: { canonical: "/configurator/cut-letters/" },
 };
 
 export default function CutLettersPage() {

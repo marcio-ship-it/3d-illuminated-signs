@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+function releaseHeader(key: string, value: string | undefined) {
+  return value ? [{ key, value }] : [];
+}
+
 const nextConfig: NextConfig = {
   trailingSlash: true,
   poweredByHeader: false,
@@ -24,9 +28,14 @@ const nextConfig: NextConfig = {
       { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
       { key: "X-DNS-Prefetch-Control", value: "on" },
     ];
+    const releaseHeaders = [
+      ...releaseHeader("X-Release-Git-Sha", process.env.VERCEL_GIT_COMMIT_SHA),
+      ...releaseHeader("X-Release-Deployment-Id", process.env.VERCEL_DEPLOYMENT_ID),
+      ...releaseHeader("X-Release-Project-Id", process.env.VERCEL_PROJECT_ID),
+    ];
 
     return [
-      { source: "/:path*", headers: securityHeaders },
+      { source: "/:path*", headers: [...securityHeaders, ...releaseHeaders] },
       { source: "/embed/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
       { source: "/partners/embed-demo/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
     ];

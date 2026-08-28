@@ -31,11 +31,16 @@ export default function ContactPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [reference, setReference] = useState("");
   const [confirmationEmailed, setConfirmationEmailed] = useState(false);
+  const [dryRun, setDryRun] = useState(false);
   const startedAt = useRef(0);
   const formStarted = useRef(false);
+  const submissionId = useRef("");
+  const qaMode = useRef(false);
 
   useEffect(() => {
     startedAt.current = Date.now();
+    submissionId.current = crypto.randomUUID();
+    qaMode.current = window.__QA_MODE__ === true;
   }, []);
 
   function handleFormStart() {
@@ -50,32 +55,41 @@ export default function ContactPage() {
     setStatus("loading");
     setErrorMessage("");
     const form = e.currentTarget;
+    if (!submissionId.current) submissionId.current = crypto.randomUUID();
+    const qaRequested = qaMode.current || window.__QA_MODE__ === true;
     const data = {
       ...Object.fromEntries(new FormData(form)),
       startedAt: startedAt.current || Date.now(),
-      submissionId: crypto.randomUUID(),
+      submissionId: submissionId.current,
       sourcePath: window.location.pathname,
     };
 
     try {
       const res = await fetch("/api/contact/", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(qaRequested ? { "X-QA-Mode": "dry-run" } : {}),
+        },
         body: JSON.stringify(data),
       });
       if (res.ok) {
         const result = (await res.json()) as {
           reference?: string;
+          dryRun?: boolean;
           channels?: { acknowledgement?: boolean };
         };
         setReference(result.reference || "");
+        setDryRun(Boolean(result.dryRun));
         setConfirmationEmailed(Boolean(result.channels?.acknowledgement));
         setStatus("success");
         form.reset();
-        pushAnalyticsEvent("generate_lead", {
-          form_name: "3d_contact_quote",
-          lead_reference: result.reference || "accepted",
-        });
+        if (!result.dryRun) {
+          pushAnalyticsEvent("generate_lead", {
+            form_name: "3d_contact_quote",
+            lead_reference: result.reference || "accepted",
+          });
+        }
       } else {
         const result = (await res.json().catch(() => null)) as { error?: string } | null;
         setErrorMessage(result?.error || "Something went wrong. Please try again or call us.");
@@ -115,11 +129,17 @@ export default function ContactPage() {
             {status === "success" ? (
               <div className="text-center py-12">
                 <p className="text-5xl mb-4">✓</p>
-                <h3 className="text-[#171815] font-bold text-xl mb-2">Quote request received</h3>
-                <p className="text-[#77796f]">
-                  We&apos;ve received your enquiry and will review the project details.
-                  {confirmationEmailed ? " A confirmation has also been emailed to you." : ""}
-                </p>
+                <h3 className="text-[#171815] font-bold text-xl mb-2">
+                  {dryRun ? "QA dry run accepted" : "Quote request received"}
+                </h3>
+                {dryRun ? (
+                  <p className="text-[#77796f]">No CRM record or email was created.</p>
+                ) : (
+                  <p className="text-[#77796f]">
+                    We&apos;ve received your enquiry and will review the project details.
+                    {confirmationEmailed ? " A confirmation has also been emailed to you." : ""}
+                  </p>
+                )}
                 {reference && <p className="text-[#4e5049] text-sm mt-3">Reference: <strong>{reference}</strong></p>}
               </div>
             ) : (

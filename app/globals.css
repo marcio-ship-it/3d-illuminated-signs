@@ -27,6 +27,27 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+.qa-mode-banner {
+  display: none;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  padding: 0.55rem 1rem;
+  background: #7c2d12;
+  color: #fff7ed;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+html[data-qa-mode="true"] .qa-mode-banner {
+  display: block;
+}
+
 ::selection { background: var(--signal); color: white; }
 
 a,

@@ -1,0 +1,278 @@
+{
+  "schemaVersion": 1,
+  "siteUrl": "https://3dilluminatedsigns.com.au",
+  "publicOrigins": [
+    "https://3dilluminatedsigns.com.au",
+    "https://www.3dilluminatedsigns.com.au"
+  ],
+  "projectId": "prj_ZuPBD1Fq8IKGPR6tisulMaviONL2",
+  "productionRef": "main",
+  "robots": {
+    "path": "/robots.txt",
+    "sitemap": "https://3dilluminatedsigns.com.au/sitemap.xml",
+    "disallow": [
+      "/api/",
+      "/embed/",
+      "/partners/embed-demo/"
+    ]
+  },
+  "sitemapPath": "/sitemap.xml",
+  "notFoundPath": "/__lane0-not-found__/",
+  "routes": [
+    {
+      "path": "/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/",
+      "sitemap": true
+    },
+    {
+      "path": "/3d-lettering/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/3d-lettering/",
+      "sitemap": true
+    },
+    {
+      "path": "/signage-in-office/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/signage-in-office/",
+      "sitemap": true
+    },
+    {
+      "path": "/acrylic-signs/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/acrylic-signs/",
+      "sitemap": true
+    },
+    {
+      "path": "/illuminated-signs/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/illuminated-signs/",
+      "sitemap": true
+    },
+    {
+      "path": "/reception-signs/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/reception-signs/",
+      "sitemap": true
+    },
+    {
+      "path": "/neon-signs/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/neon-signs/",
+      "sitemap": true
+    },
+    {
+      "path": "/3d-signs/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/3d-signs/",
+      "sitemap": true
+    },
+    {
+      "path": "/lightbox-signs/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/lightbox-signs/",
+      "sitemap": true
+    },
+    {
+      "path": "/led-signs/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/led-signs/",
+      "sitemap": true
+    },
+    {
+      "path": "/about-platinum-signs/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/about-platinum-signs/",
+      "sitemap": true
+    },
+    {
+      "path": "/contact-us/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/contact-us/",
+      "sitemap": true
+    },
+    {
+      "path": "/artwork-specifications/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/artwork-specifications/",
+      "sitemap": true
+    },
+    {
+      "path": "/signage-installation/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/signage-installation/",
+      "sitemap": true
+    },
+    {
+      "path": "/design-service/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/design-service/",
+      "sitemap": true
+    },
+    {
+      "path": "/blog/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/blog/",
+      "sitemap": true
+    },
+    {
+      "path": "/signwriters-dont-actually-write-signs-they-create-them/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/signwriters-dont-actually-write-signs-they-create-them/",
+      "sitemap": true
+    },
+    {
+      "path": "/gallery/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/gallery/",
+      "sitemap": true
+    },
+    {
+      "path": "/services/3d-printed-signs/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/services/3d-printed-signs/",
+      "sitemap": true
+    },
+    {
+      "path": "/services/metal-signs/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/services/metal-signs/",
+      "sitemap": true
+    },
+    {
+      "path": "/industries/retail/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/industries/retail/",
+      "sitemap": true
+    },
+    {
+      "path": "/industries/events/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/industries/events/",
+      "sitemap": true
+    },
+    {
+      "path": "/industries/exhibitions/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/industries/exhibitions/",
+      "sitemap": true
+    },
+    {
+      "path": "/industries/wayfinding/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/industries/wayfinding/",
+      "sitemap": true
+    },
+    {
+      "path": "/configurator/cut-letters/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/configurator/cut-letters/",
+      "sitemap": true
+    },
+    {
+      "path": "/privacy/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/privacy/",
+      "sitemap": false
+    },
+    {
+      "path": "/terms/",
+      "kind": "indexable",
+      "canonical": "https://3dilluminatedsigns.com.au/terms/",
+      "sitemap": false
+    },
+    {
+      "path": "/thank-you/",
+      "kind": "noindex",
+      "sitemap": false,
+      "metaRobots": [
+        "noindex",
+        "nofollow"
+      ]
+    },
+    {
+      "path": "/embed/cut-letters/",
+      "kind": "noindex",
+      "sitemap": false,
+      "metaRobots": [
+        "noindex"
+      ],
+      "headerRobots": [
+        "noindex",
+        "nofollow"
+      ]
+    },
+    {
+      "path": "/partners/embed-demo/",
+      "kind": "noindex",
+      "sitemap": false,
+      "metaRobots": [
+        "noindex"
+      ],
+      "headerRobots": [
+        "noindex",
+        "nofollow"
+      ]
+    },
+    {
+      "path": "/contact",
+      "kind": "redirect",
+      "status": 308,
+      "location": "/contact-us/"
+    },
+    {
+      "path": "/about",
+      "kind": "redirect",
+      "status": 308,
+      "location": "/about-platinum-signs/"
+    },
+    {
+      "path": "/services/3d-illuminated-signs",
+      "kind": "redirect",
+      "status": 308,
+      "location": "/illuminated-signs/"
+    },
+    {
+      "path": "/services/led-signs",
+      "kind": "redirect",
+      "status": 308,
+      "location": "/led-signs/"
+    },
+    {
+      "path": "/services/lightbox-signs",
+      "kind": "redirect",
+      "status": 308,
+      "location": "/lightbox-signs/"
+    },
+    {
+      "path": "/services/acrylic-signs",
+      "kind": "redirect",
+      "status": 308,
+      "location": "/acrylic-signs/"
+    },
+    {
+      "path": "/services/neon-signs",
+      "kind": "redirect",
+      "status": 308,
+      "location": "/neon-signs/"
+    },
+    {
+      "path": "/industries/logo-reception",
+      "kind": "redirect",
+      "status": 308,
+      "location": "/reception-signs/"
+    },
+    {
+      "path": "/industries/corporate",
+      "kind": "redirect",
+      "status": 308,
+      "location": "/signage-in-office/"
+    },
+    {
+      "path": "/category/blog",
+      "kind": "redirect",
+      "status": 308,
+      "location": "/blog/"
+    }
+  ]
+}

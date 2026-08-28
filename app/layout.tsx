@@ -13,6 +13,15 @@ const instrumentSerif = Instrument_Serif({
   variable: "--font-display",
 });
 
+const qaModeBootstrap = `
+(function () {
+  var qaMode = document.cookie.split(";").some(function (cookie) {
+    return cookie.trim() === "__Host-3d-qa-ui=1";
+  });
+  window.__QA_MODE__ = qaMode;
+  if (qaMode) document.documentElement.dataset.qaMode = "true";
+})();`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
@@ -66,17 +75,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          id="qa-mode-bootstrap"
+          dangerouslySetInnerHTML={{ __html: qaModeBootstrap }}
+        />
+      </head>
       <body className={`${manrope.variable} ${instrumentSerif.variable}`}>
-        <noscript>
-          <iframe
-            src={`https://www.googletagmanager.com/ns.html?id=${SITE.gtmId}`}
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-            title="Google Tag Manager"
-          />
-        </noscript>
+        <div className="qa-mode-banner" role="status" aria-live="polite">
+          QA MODE — analytics disabled · form submissions are dry-run only
+        </div>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organisationSchema) }}

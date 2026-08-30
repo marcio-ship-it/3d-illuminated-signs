@@ -1,11 +1,13 @@
 export interface AnalyticsWindow {
   __QA_MODE__?: boolean;
+  __GTM_QUEUE_STARTED__?: boolean;
   dataLayer?: Array<Record<string, unknown>>;
 }
 
 declare global {
   interface Window {
     __QA_MODE__?: boolean;
+    __GTM_QUEUE_STARTED__?: boolean;
     dataLayer?: Array<Record<string, unknown>>;
   }
 }

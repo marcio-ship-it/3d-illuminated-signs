@@ -22,6 +22,15 @@ const organisationSchema = {
   },
 };
 
+const gtmQueueBootstrap = `
+if (!window.__QA_MODE__) {
+  window.dataLayer = window.dataLayer || [];
+  if (!window.__GTM_QUEUE_STARTED__) {
+    window.__GTM_QUEUE_STARTED__ = true;
+    window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+  }
+}`;
+
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
@@ -32,6 +41,10 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         id="organisation-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organisationSchema) }}
+      />
+      <script
+        id="gtm-queue-bootstrap"
+        dangerouslySetInnerHTML={{ __html: gtmQueueBootstrap }}
       />
       <Analytics releaseSha={process.env.VERCEL_GIT_COMMIT_SHA} />
       <Nav />

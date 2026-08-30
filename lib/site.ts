@@ -16,16 +16,13 @@ export const SITE = {
   // Microsoft Clarity. This site has its OWN project, deliberately not the
   // main Platinum Signs project (rkbo26qxda) — sharing one would blend a
   // 20-page microsite's session counts, scroll depth and rage-click rates
-  // into platinumsigns.com.au's dashboard, and that project's Google Ads and
-  // GA4 integrations are configured for the main site. Same separation as
+  // into platinumsigns.com.au's dashboard, where measurement is configured
+  // for the main site. Same separation as
   // Junk King and Laser Cutting Experts.
   clarityId: "xz2tfbpfhf",
   gaMeasurementId: "G-5BJSSTEVDG",
-  googleAdsId: "AW-11387816249",
-  googleAdsPhoneLabel: "hIkfCJnY6u8YELmSkbYq",
 } as const;
 
 export function absoluteUrl(path = "/") {
   return new URL(path, SITE.url).toString();
 }
-

@@ -33,7 +33,8 @@ test("site routes retain chrome, schema, and analytics", async ({ page }) => {
   await expect(page.locator("main")).toHaveCount(1);
   await expect(page.locator(".qa-mode-banner")).toHaveCount(1);
   await expect(page.locator("#organisation-schema")).toHaveCount(1);
-  await expect(page.locator("#gtm-bootstrap")).toHaveCount(1);
+  await expect(page.locator("#gtm-queue-bootstrap")).toHaveCount(1);
+  await expect(page.locator("#gtm-loader")).toHaveCount(1);
   await expect(page.locator("#clarity-bootstrap")).toHaveCount(1);
   await expect.poll(() => page.evaluate(() => {
     const event = window.dataLayer?.find((entry) => entry.event === "web_vital");
@@ -44,6 +45,27 @@ test("site routes retain chrome, schema, and analytics", async ({ page }) => {
         }
       : null;
   })).toEqual({ page_route: "/privacy/", has_metric: true });
+
+  const analyticsQueue = await page.evaluate(() => {
+    const entries = window.dataLayer ?? [];
+    const gtmIndexes = entries.flatMap((entry, index) => entry.event === "gtm.js" ? [index] : []);
+    const webVitalIndexes = entries.flatMap((entry, index) => entry.event === "web_vital" ? [index] : []);
+    const metricIds = entries
+      .filter((entry) => entry.event === "web_vital")
+      .map((entry) => entry.metric_id)
+      .filter((id): id is string => typeof id === "string");
+
+    return {
+      gtmEvents: gtmIndexes.length,
+      gtmPrecedesEveryWebVital: webVitalIndexes.every((index) => gtmIndexes[0] < index),
+      uniqueMetricIds: new Set(metricIds).size === metricIds.length,
+    };
+  });
+  expect(analyticsQueue).toEqual({
+    gtmEvents: 1,
+    gtmPrecedesEveryWebVital: true,
+    uniqueMetricIds: true,
+  });
 
   const metricCountBeforeNavigation = await page.evaluate(
     () => window.dataLayer?.filter((entry) => entry.event === "web_vital").length ?? 0,
@@ -122,7 +144,7 @@ test("embed routes exclude site chrome, schema, and analytics", async ({ page })
   await page.goto("/embed/cut-letters/");
   await expect(page.getByRole("heading", { name: "Cut-Out Letters — Instant Price Calculator" })).toBeVisible();
   await expect(page.locator("header, footer, main, .qa-mode-banner")).toHaveCount(0);
-  await expect(page.locator("#organisation-schema, #gtm-bootstrap, #clarity-bootstrap")).toHaveCount(0);
+  await expect(page.locator("#organisation-schema, #gtm-queue-bootstrap, #gtm-loader, #clarity-bootstrap")).toHaveCount(0);
   await page.waitForTimeout(250);
   expect(trackingRequests).toEqual([]);
 });
@@ -153,7 +175,8 @@ test("signed QA mode suppresses analytics and dry-runs the contact form", async 
   await page.goto("/contact-us/");
   await expect(page.locator("html")).toHaveAttribute("data-qa-mode", "true");
   await expect(page.getByRole("status")).toContainText("QA MODE");
-  await expect(page.locator("#gtm-bootstrap, #clarity-bootstrap")).toHaveCount(0);
+  await expect(page.locator("#gtm-queue-bootstrap")).toHaveCount(1);
+  await expect(page.locator("#gtm-loader, #clarity-bootstrap")).toHaveCount(0);
   expect(
     await page.evaluate(() => ({
       dataLayer: window.dataLayer,

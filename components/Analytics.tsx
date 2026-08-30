@@ -62,9 +62,11 @@ export default function Analytics({ releaseSha }: { releaseSha?: string }) {
   return (
     <>
       <WebVitals releaseSha={releaseSha} />
-      <Script id="gtm-bootstrap" strategy="afterInteractive">
-        {`if(!window.__QA_MODE__){(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${SITE.gtmId}');}`}
-      </Script>
+      <Script
+        id="gtm-loader"
+        src={`https://www.googletagmanager.com/gtm.js?id=${SITE.gtmId}`}
+        strategy="afterInteractive"
+      />
       {/*
         Microsoft Clarity — session recordings and heatmaps. Loaded here rather
         than as a GTM tag so it is in the repo and survives anyone editing the

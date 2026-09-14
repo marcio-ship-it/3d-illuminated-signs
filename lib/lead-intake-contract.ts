@@ -130,9 +130,16 @@ export function captureLeadAttribution(href: string, referrer = ""): {
 export function captureSessionLeadAttribution(
   href: string,
   referrer = "",
-  storage?: AttributionStorage,
+  storageSource?: AttributionStorage | (() => AttributionStorage | undefined),
 ): ReturnType<typeof captureLeadAttribution> {
   const current = captureLeadAttribution(href, referrer);
+  let storage: AttributionStorage | undefined;
+  try {
+    // Accessing window.sessionStorage itself can throw, before getItem is called.
+    storage = typeof storageSource === "function" ? storageSource() : storageSource;
+  } catch {
+    return current;
+  }
   if (!storage) return current;
 
   let previous: LeadAttribution = {};

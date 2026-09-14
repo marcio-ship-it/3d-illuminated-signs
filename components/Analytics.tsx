@@ -33,7 +33,7 @@ export default function Analytics({ releaseSha }: { releaseSha?: string }) {
 
   useEffect(() => {
     if (!analyticsEnabled) return;
-    captureSessionLeadAttribution(window.location.href, document.referrer, window.sessionStorage);
+    captureSessionLeadAttribution(window.location.href, document.referrer, () => window.sessionStorage);
   }, [analyticsEnabled, pathname]);
 
   useEffect(() => {

@@ -149,6 +149,38 @@ test("embed routes exclude site chrome, schema, and analytics", async ({ page })
   expect(trackingRequests).toEqual([]);
 });
 
+for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 }]) {
+  test(`blocked storage does not strand a signed enquiry at ${viewport.width}px`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    const issued = await page.context().request.post("/api/qa/session/", {
+      headers: { Authorization: `Bearer ${authToken}`, "X-QA-Run-Id": `storage-${randomUUID()}` },
+    });
+    expect(issued.status()).toBe(200);
+    await page.addInitScript(() => {
+      Object.defineProperty(window, "sessionStorage", {
+        configurable: true,
+        get() { throw new DOMException("Storage blocked for regression test", "SecurityError"); },
+      });
+    });
+    await page.goto("/contact-us/");
+    await page.getByLabel("Full name *").fill("Storage QA");
+    await page.getByLabel("Email *").fill("storage@example.invalid");
+    await page.getByLabel("Phone *").fill("0400000000");
+    await page.getByLabel("Project details *").fill("Signed QA only. No customer enquiry or email.");
+    await page.waitForTimeout(2_100);
+    const responsePromise = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/contact/");
+    await page.getByRole("button", { name: /send project enquiry/i }).click();
+    const response = await responsePromise;
+    expect(response.status()).toBe(200);
+    expect(await response.json()).toMatchObject({
+      dryRun: true,
+      channels: { crm: false, team_email: false, acknowledgement: false, downstream_adapter: false },
+    });
+    await expect(page.getByRole("heading", { name: "QA dry run accepted" })).toBeVisible();
+    await expect(page.getByText("No CRM record or email was created.")).toBeVisible();
+  });
+}
+
 test("signed QA mode suppresses analytics and dry-runs the contact form", async ({ page }) => {
   const trackingRequests: string[] = [];
   page.on("request", (request) => {

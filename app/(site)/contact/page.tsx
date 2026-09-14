@@ -56,23 +56,23 @@ export default function ContactPage() {
     setStatus("loading");
     setErrorMessage("");
     const form = e.currentTarget;
-    if (!submissionId.current) submissionId.current = crypto.randomUUID();
-    const qaRequested = qaMode.current || window.__QA_MODE__ === true;
-    const capturedAttribution = captureSessionLeadAttribution(
-      window.location.href,
-      document.referrer,
-      window.sessionStorage,
-    );
-    const data = {
-      ...Object.fromEntries(new FormData(form)),
-      startedAt: startedAt.current || Date.now(),
-      submissionId: submissionId.current,
-      sourcePath: window.location.pathname,
-      submittedPageUrl: capturedAttribution.submittedPageUrl,
-      attribution: capturedAttribution.attribution,
-    };
-
     try {
+      if (!submissionId.current) submissionId.current = crypto.randomUUID();
+      const qaRequested = qaMode.current || window.__QA_MODE__ === true;
+      const capturedAttribution = captureSessionLeadAttribution(
+        window.location.href,
+        document.referrer,
+        () => window.sessionStorage,
+      );
+      const data = {
+        ...Object.fromEntries(new FormData(form)),
+        startedAt: startedAt.current || Date.now(),
+        submissionId: submissionId.current,
+        sourcePath: window.location.pathname,
+        submittedPageUrl: capturedAttribution.submittedPageUrl,
+        attribution: capturedAttribution.attribution,
+      };
+
       const res = await fetch("/api/contact/", {
         method: "POST",
         headers: {

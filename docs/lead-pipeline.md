@@ -95,6 +95,12 @@ A privacy-safe read of `public.quote_requests` scoped by `coalesce(source_host, 
 
 A bounded Gmail search for that submission reference found four matching messages in the info mailbox. This corroborates that related email exists, not that all intended destinations received it or that a salesperson replied. The OAuth account registry returned one non-empty account; it is not the full domain-wide mailbox inventory and must not be presented as organisation-wide coverage.
 
-The current Vercel CLI credential returned HTTP 403 with `invalidToken: true`. Production signed QA and an expressly approved real delivery test remain outstanding. No production submission, email, CRM mutation, configuration change, rollback or deployment was performed in this investigation.
+The current Vercel CLI credential returned HTTP 403 with `invalidToken: true`, but the existing browser dashboard remained accessible. In the dashboard's last-week contact-endpoint logs, the 11 September submission returned HTTP 200 in approximately 1.4 seconds on production deployment `dpl_8bJitRQP97vL94wJv5JngadVmi66`; no console errors were shown for the filtered requests. The other retained contact POST was the prior 10 September diagnostic 403. Log retention and the absence of a server request cannot rule out client-side failures.
+
+Production signed QA and an expressly approved real delivery test remain outstanding. No production submission, email, CRM mutation, configuration change, rollback or production deployment was performed in this investigation. The PR branch triggered the normal Vercel preview only.
+
+### Required-check remediation
+
+[PR #5](https://github.com/marcio-ship-it/3d-illuminated-signs/pull/5) contains the repair. Its first [CI run](https://github.com/marcio-ship-it/3d-illuminated-signs/actions/runs/34847189626) passed `audit-regressions` but stopped `build` at the existing dependency security gate before browser tests. The committed August lockfile triggered advisories for Next.js, sharp and js-yaml. The gate was not weakened. A targeted within-range lockfile update selected Next.js/eslint-config-next 16.3.5 and sharp 0.35.4; `npm audit --audit-level=high` then reported zero vulnerabilities. Full checks must be evaluated on the updated PR head, not on the superseded run or initial manual build.
 
 Next release gate: reviewed PR, all required CI, normal Lane 0 deployment controls and public signed QA. Actual inbox delivery remains a separate acceptance condition; a dry run cannot prove it. Continue acquisition and lead-quality diagnosis independently rather than claiming this isolated defect explains the business outcome.

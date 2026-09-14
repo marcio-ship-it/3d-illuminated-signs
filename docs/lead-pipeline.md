@@ -67,3 +67,40 @@ The adapter sends a privacy-minimised `lead.accepted.v1` envelope containing onl
 ## Rollback and observability
 
 Rollback the application if durable intake returns sustained `503`, the idempotency constraint is missing, or QA produces any side effect. Do not roll back the database constraint while the new route is live. Monitor bounded error codes for `supabase_insert_*`, `supabase_lookup_*`, `resend_*`, and `adapter_*`, plus the count and age of unassigned leads and SLA breaches. Never add request bodies or authorisation headers to logs or release artifacts.
+
+## Enquiry incident investigation — 14 September 2026
+
+Owner reports that almost all submissions since the rebuild were spam, irrelevant or nonsensical, with perhaps one genuine enquiry. Raw database rows must not be reported as relevant leads, qualified opportunities or evidence of recovery. No commercial recovery is established by this repair.
+
+### Reproduced client-side failure
+
+The production source at `30fbd5c08588ad7186a447c40d76a5a343806903` reads `window.sessionStorage` while preparing the submission, outside the submission error handler. Browsers can throw `SecurityError` on the property getter itself. The helper previously caught only `getItem`/`setItem` errors. The analytics component also evaluated the getter before calling the helper. This access was introduced in the 28 August pipeline change, commit `735b3e24ede886355e78d231999902555163bc91`.
+
+In an isolated local copy of that source, a deliberately blocked session-storage getter caused the filled form to remain disabled on `Sending...`, with a browser `SecurityError`. This establishes a reproducible defect, not its prevalence among real visitors or the cause of the overall lead decline.
+
+The repair resolves storage lazily inside the helper's guarded boundary, preserves available URL attribution when storage is denied, updates both callers, and encloses submission preparation inside the form's error handler. URLs, visible copy, required fields, anti-spam checks, database writes and email routing are unchanged.
+
+### Local acceptance evidence
+
+- Original local form at `http://localhost:3107/contact-us/`, browser storage getter made to throw: submit left `Sending...` disabled and emitted `SecurityError`.
+- Repaired local form with no database credentials and the same blocked getter: request reached the API; the deliberate unavailable-database response appeared as an error with an enabled submit button. Test data remained in the form.
+- Repaired production build at `http://localhost:3108/contact-us/`: signed QA sessions, desktop and 390×844 mobile viewport, blocked storage, filled form and submit each displayed `QA dry run accepted` and `No CRM record or email was created`.
+- `npm run test:lead-intake`: 9 tests passed, including denied getter and denied storage-method cases.
+- `npm run test:audit`: 33 tests passed. `npm run lint`, `npm run typecheck` and `npm run build` exited successfully.
+- Automated signed-QA regression cases were added for desktop/mobile; their CI outcome must be checked separately. Manual browser checks do not substitute for the full release suite.
+
+### Commercial and delivery limits
+
+A privacy-safe read of `public.quote_requests` scoped by `coalesce(source_host, details->>'source_site') = '3dilluminatedsigns.com.au'` found 11 total rows, one since 31 August AEST, latest at `2026-09-10T21:42:20.642583Z` (11 September AEST). All were unassigned. The recent row has no recorded first-response milestone or linked internal deal; this is not proof of no human follow-up. Basic test-marker exclusions are not commercial qualification.
+
+A bounded Gmail search for that submission reference found four matching messages in the info mailbox. This corroborates that related email exists, not that all intended destinations received it or that a salesperson replied. The OAuth account registry returned one non-empty account; it is not the full domain-wide mailbox inventory and must not be presented as organisation-wide coverage.
+
+The current Vercel CLI credential returned HTTP 403 with `invalidToken: true`, but the existing browser dashboard remained accessible. In the dashboard's last-week contact-endpoint logs, the 11 September submission returned HTTP 200 in approximately 1.4 seconds on production deployment `dpl_8bJitRQP97vL94wJv5JngadVmi66`; no console errors were shown for the filtered requests. The other retained contact POST was the prior 10 September diagnostic 403. Log retention and the absence of a server request cannot rule out client-side failures.
+
+Production signed QA and an expressly approved real delivery test remain outstanding. No production submission, email, CRM mutation, configuration change, rollback or production deployment was performed in this investigation. The PR branch triggered the normal Vercel preview only.
+
+### Required-check remediation
+
+[PR #5](https://github.com/marcio-ship-it/3d-illuminated-signs/pull/5) contains the repair. Its first [CI run](https://github.com/marcio-ship-it/3d-illuminated-signs/actions/runs/34847189626) passed `audit-regressions` but stopped `build` at the existing dependency security gate before browser tests. The committed August lockfile triggered advisories for Next.js, sharp and js-yaml. The gate was not weakened. A targeted within-range lockfile update selected Next.js/eslint-config-next 16.3.5 and sharp 0.35.4; `npm audit --audit-level=high` then reported zero vulnerabilities. Full checks must be evaluated on the updated PR head, not on the superseded run or initial manual build.
+
+Next release gate: reviewed PR, all required CI, normal Lane 0 deployment controls and public signed QA. Actual inbox delivery remains a separate acceptance condition; a dry run cannot prove it. Continue acquisition and lead-quality diagnosis independently rather than claiming this isolated defect explains the business outcome.

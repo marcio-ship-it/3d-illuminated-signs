@@ -92,6 +92,26 @@ test("session capture preserves landing attribution across internal navigation",
   assert.equal(contact.submittedPageUrl, "https://3dilluminatedsigns.com.au/contact-us/");
 });
 
+test("blocked storage access keeps current attribution without blocking intake", () => {
+  const href = "https://3dilluminatedsigns.com.au/contact-us/?utm_source=organic&email=private";
+  const browser = Object.defineProperty({}, "sessionStorage", {
+    get() { throw new DOMException("Storage blocked", "SecurityError"); },
+  });
+  assert.deepEqual(
+    captureSessionLeadAttribution(href, "", () => browser.sessionStorage),
+    captureLeadAttribution(href),
+  );
+});
+
+test("lazy storage retains session attribution and tolerates read/write failures", () => {
+  const storage = memoryStorage();
+  captureSessionLeadAttribution("https://3dilluminatedsigns.com.au/?utm_source=organic", "", () => storage);
+  assert.deepEqual(captureSessionLeadAttribution("https://3dilluminatedsigns.com.au/contact-us/", "", () => storage).attribution, { utm_source: "organic" });
+  const blocked = { getItem() { throw new Error("blocked"); }, setItem() { throw new Error("quota"); } };
+  const href = "https://3dilluminatedsigns.com.au/contact-us/?utm_source=organic";
+  assert.deepEqual(captureSessionLeadAttribution(href, "", () => blocked), captureLeadAttribution(href));
+});
+
 test("referrers reveal only a foreign origin or a scrubbed same-origin URL", () => {
   assert.equal(
     sanitizeReferrer("https://search.example/results?q=private", "https://3dilluminatedsigns.com.au"),

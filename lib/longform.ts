@@ -291,6 +291,19 @@ export const longformContent: Record<string, LongFormContent> = {
     title: "Acrylic signage, in depth.",
     sections: [
       {
+        heading: "Choose a panel, cut letters or an illuminated logo",
+        paragraphs: [
+          "A printed acrylic panel carries your logo and information on one surface, often mounted on standoffs. Individually cut acrylic letters give a reception wall or shopfront a dimensional finish. An illuminated acrylic logo needs a suitable lighting and mounting arrangement as well as the visible face. Tell us which result you need so we can quote the right construction.",
+        ],
+      },
+      {
+        heading: "What to send for an acrylic sign quote",
+        paragraphs: [
+          "Send the quantity, approximate finished width and height, your logo or artwork, and the installation suburb. A photo of the wall, door or existing sign helps us assess mounting. Let us know whether you need supply only, removal of an old sign, or installation as well. If you do not have every detail yet, start with what you know.",
+          "Price depends on the material thickness, printing or cut-letter detail, finish, mounting and installation requirements. The quote should distinguish the sign itself from removal, access and installation so you can compare the same scope.",
+        ],
+      },
+      {
         heading: "Why acrylic",
         paragraphs: [
           "Acrylic is commonly used in place of glass in the signage industry. It is highly durable and versatile, yet offers excellent transparency. Acrylic is ideal for large-format printing: its smooth surface carries vivid imagery, precise colour matching and etching. Combine custom-crafted acrylic signs with backlighting or spotlights and the results are truly unique.",
@@ -364,6 +377,8 @@ export const longformContent: Record<string, LongFormContent> = {
       { label: "Lightbox Signs", href: "/lightbox-signs/" },
       { label: "3D Lettering", href: "/3d-lettering/" },
       { label: "Artwork Specifications", href: "/artwork-specifications/" },
+      { label: "Retail Signage", href: "/industries/retail/" },
+      { label: "Wayfinding Signage", href: "/industries/wayfinding/" },
     ],
   },
 
@@ -432,6 +447,20 @@ export const longformContent: Record<string, LongFormContent> = {
     title: "Custom lightboxes, built in Australia.",
     sections: [
       {
+        heading: "Fascia, projecting or indoor lightbox?",
+        paragraphs: [
+          "A fascia lightbox faces customers approaching your shopfront. A projecting, double-sided lightbox helps people see your business from either direction along the street. Indoor lightboxes can display a logo or promotional graphic. The viewing direction, available space, mounting surface and weather exposure determine the appropriate format.",
+          "Our selected work includes rectangular and round projecting lightboxes for Hali, shown in the project gallery. Use an example as a starting point, then tell us the dimensions and finish needed for your own premises.",
+        ],
+      },
+      {
+        heading: "What affects a lightbox sign quote?",
+        paragraphs: [
+          "The main variables are width, height and depth, one or two illuminated faces, frame finish, graphics, lighting and mounting. Please include your suburb, a site photo, logo and required date. Tell us whether you want supply only or installation, and whether an existing sign needs removal.",
+          "If you only need replacement graphics for an existing lightbox, send photos and face measurements so we can assess its construction. A replacement face and a complete new illuminated sign are different scopes; suitability and any electrical work need to be confirmed before manufacture.",
+        ],
+      },
+      {
         heading: "A specialty of ours",
         paragraphs: [
           "The design and manufacture of custom lightboxes is one of our specialties. Lightbox signs have many uses in business and can be installed inside and outside most buildings. We manufacture in our Australian workshop from the best-quality materials: internal lighting fully installed, an aluminium and steel body (unless noted), and panels in acrylic, polycarbonate or flex-face banner. Any design or text can be printed on the panel, built to your exact measurements — size is generally limited only by budget.",
@@ -486,6 +515,9 @@ export const longformContent: Record<string, LongFormContent> = {
       { label: "Illuminated Signs", href: "/illuminated-signs/" },
       { label: "Acrylic Signs", href: "/acrylic-signs/" },
       { label: "3D Signs", href: "/3d-signs/" },
+      { label: "Lightbox Project Gallery", href: "/gallery/" },
+      { label: "Retail Signage", href: "/industries/retail/" },
+      { label: "Exhibition Signage", href: "/industries/exhibitions/" },
     ],
   },
 
@@ -554,6 +586,7 @@ export const longformContent: Record<string, LongFormContent> = {
       { label: "LED Signs", href: "/led-signs/" },
       { label: "3D Lettering", href: "/3d-lettering/" },
       { label: "Sign Design Service", href: "/design-service/" },
+      { label: "Event Signage", href: "/industries/events/" },
     ],
   },
 

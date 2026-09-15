@@ -19,10 +19,15 @@ export const ATTRIBUTION_QUERY_KEYS = [
 
 const ATTRIBUTION_KEYS = new Set<string>(ATTRIBUTION_QUERY_KEYS);
 const ATTRIBUTION_VALUE_MAX = 300;
+const ARTWORK_URL_MAX = 2048;
 const DEFAULT_FIRST_RESPONSE_SLA_MINUTES = 60;
 const SESSION_ATTRIBUTION_STORAGE_KEY = "3d-signs:lead-attribution:v1";
 
 export type LeadAttribution = Record<string, string>;
+
+export type NormalizedArtworkUrl =
+  | { ok: true; value: string | null }
+  | { ok: false; value: null };
 
 export type PipelineMetadata = {
   schema_version: 1;
@@ -60,6 +65,28 @@ function safeWebUrl(value: unknown): URL | null {
     return url.protocol === "https:" || url.protocol === "http:" ? url : null;
   } catch {
     return null;
+  }
+}
+
+export function normalizeArtworkUrl(value: unknown): NormalizedArtworkUrl {
+  if (value === undefined || value === null || value === "") return { ok: true, value: null };
+  if (typeof value !== "string") return { ok: false, value: null };
+
+  const candidate = value.trim();
+  if (!candidate) return { ok: true, value: null };
+  if (candidate.length > ARTWORK_URL_MAX || /[\u0000-\u001f\u007f]/.test(candidate)) {
+    return { ok: false, value: null };
+  }
+
+  try {
+    const url = new URL(candidate);
+    if (url.protocol !== "https:" || url.username || url.password) return { ok: false, value: null };
+    const normalized = url.toString();
+    return normalized.length <= ARTWORK_URL_MAX
+      ? { ok: true, value: normalized }
+      : { ok: false, value: null };
+  } catch {
+    return { ok: false, value: null };
   }
 }
 

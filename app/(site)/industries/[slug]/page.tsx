@@ -42,13 +42,13 @@ export const industryData: Record<string, IndustryData> = {
     title: "Events Signage",
     description: "Create unforgettable experiences with custom event signage. Whether it's a product launch, gala dinner or brand activation — we deliver signs that photograph beautifully and get shared on social media.",
     applications: ["Stage backdrops", "Photo walls", "Neon installations", "Entrance arches", "Sponsor recognition boards", "Directional event signage"],
-    benefits: ["Instagram-worthy moments", "Rapid turnaround available", "Hire or purchase options", "Reusable and transportable"],
+    benefits: ["Branding for event photography", "Schedule assessed against your event date", "Size and finish tailored to your brief", "Transport and reuse requirements considered"],
   },
   exhibitions: {
     title: "Exhibition Signage",
     description: "Stand out on the trade show floor with custom exhibition signage. We design and build modular display systems, illuminated brand walls and custom neon that draw crowds to your stand.",
     applications: ["Exhibition stand headers", "Illuminated brand walls", "Hanging banners", "Counter displays", "Product display plinths", "Interactive installations"],
-    benefits: ["Modular and reusable", "Packs flat for transport", "Sets up without tools", "Maximum visual impact"],
+    benefits: ["Design coordinated with your stand", "Transport requirements assessed before manufacture", "Mounting and setup planned for the venue", "Visible branding for visitors"],
   },
   "logo-reception": {
     title: "Logo & Reception Signs",
@@ -60,7 +60,7 @@ export const industryData: Record<string, IndustryData> = {
     title: "Wayfinding Signage",
     description: "Help people navigate confidently with a clear, consistent wayfinding system. We design and install complete wayfinding programs for commercial buildings, hospitals, campuses and transport hubs.",
     applications: ["Directional signs", "Floor directories", "Room identification", "Exit and safety signs", "Parking guidance", "Campus maps"],
-    benefits: ["Reduces visitor confusion", "Consistent brand language", "Complies with Australian Standards", "Scalable system for large sites"],
+    benefits: ["Clear directions for visitors", "Consistent brand language", "Project-specific accessibility requirements reviewed", "Consistent formats across multiple locations"],
   },
 };
 

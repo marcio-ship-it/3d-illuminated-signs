@@ -3,6 +3,9 @@ import { expect, test } from "@playwright/test";
 
 const localAuthToken = "local-playwright-qa-auth-token-3d-signs-only";
 const authToken = process.env.QA_CANARY_AUTH_TOKEN || localAuthToken;
+const isLocalTarget = ["localhost", "127.0.0.1", "[::1]"].includes(
+  new URL(process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3100").hostname,
+);
 
 const trackingHostPattern =
   /(^|\.)(googletagmanager\.com|google-analytics\.com|googleadservices\.com|doubleclick\.net|clarity\.ms)$/;
@@ -22,6 +25,7 @@ function contactPayload(submissionId = randomUUID()) {
 }
 
 test("site routes retain chrome, schema, and analytics", async ({ page }) => {
+  test.skip(!isLocalTarget, "Normal analytics inspection is local-only; hosted QA must stay signed and measurement-free.");
   await page.route("**/*", (route) => {
     const hostname = new URL(route.request().url()).hostname;
     return trackingHostPattern.test(hostname) ? route.abort() : route.continue();
@@ -86,6 +90,7 @@ test("site routes retain chrome, schema, and analytics", async ({ page }) => {
 });
 
 test("campaign attribution survives internal navigation without a live submission", async ({ page }) => {
+  test.skip(!isLocalTarget, "Synthetic attribution and mocked success are local-only.");
   await page.route("**/*", async (route) => {
     const requestUrl = new URL(route.request().url());
     if (trackingHostPattern.test(requestUrl.hostname)) return route.abort();
@@ -115,7 +120,7 @@ test("campaign attribution survives internal navigation without a live submissio
   await page.waitForTimeout(2_100);
 
   const requestPromise = page.waitForRequest((request) => new URL(request.url()).pathname === "/api/contact/");
-  await page.getByRole("button", { name: /send project enquiry/i }).click();
+  await page.getByRole("button", { name: /send quote request/i }).click();
   const request = await requestPromise;
   const payload = request.postDataJSON() as {
     submittedPageUrl: string;
@@ -169,7 +174,7 @@ for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 
     await page.getByLabel("Project details *").fill("Signed QA only. No customer enquiry or email.");
     await page.waitForTimeout(2_100);
     const responsePromise = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/contact/");
-    await page.getByRole("button", { name: /send project enquiry/i }).click();
+    await page.getByRole("button", { name: /send quote request/i }).click();
     const response = await responsePromise;
     expect(response.status()).toBe(200);
     expect(await response.json()).toMatchObject({
@@ -234,7 +239,7 @@ test("signed QA mode suppresses analytics and dry-runs the contact form", async 
 
   const requestPromise = page.waitForRequest((request) => request.url().includes("/api/contact/"));
   const responsePromise = page.waitForResponse((response) => response.url().includes("/api/contact/"));
-  await page.getByRole("button", { name: /send project enquiry/i }).click();
+  await page.getByRole("button", { name: /send quote request/i }).click();
   const [contactRequest, contactResponse] = await Promise.all([requestPromise, responsePromise]);
   const submittedPayload = contactRequest.postDataJSON() as ReturnType<typeof contactPayload>;
   const responseBody = (await contactResponse.json()) as {

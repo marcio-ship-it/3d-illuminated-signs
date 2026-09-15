@@ -78,9 +78,11 @@ export const serviceData: Record<string, ServiceData> = {
   },
   "lightbox-signs": {
     title: "Lightbox Signs",
-    tagline: "Slim, vibrant and eye-catching",
+    tagline: "Shopfront, projecting and indoor lightboxes",
     description: "Our LED lightboxes deliver even, glare-free illumination for retail, hospitality and corporate environments. Available in standard and custom sizes with edge-lit or backlit configurations.",
     styles: [
+      { name: "Projecting Lightboxes", desc: "Double-sided signs viewed from both directions along a shopfront. Shape, bracket and site access are assessed for your premises." },
+      { name: "Shopfront Fascia Lightboxes", desc: "Illuminated graphics facing approaching customers, sized to the available frontage." },
       { name: "Slimline Lightboxes", desc: "As thin as 40mm — ideal for wall-mount or suspended ceiling applications." },
       { name: "Retail Lightboxes", desc: "Fabric or acrylic face options with quick-change graphic systems." },
     ],
@@ -91,9 +93,9 @@ export const serviceData: Record<string, ServiceData> = {
       { name: "Polycarbonate", desc: "Impact-resistant option for high-traffic areas." },
     ],
     faqs: [
-      { q: "Can I change the graphics myself?", a: "Yes — our snap-open frames allow tool-free graphic changes in minutes." },
+      { q: "Can I replace the graphics in an existing lightbox?", a: "Often the face or graphic can be replaced. Send a photo and measurements so we can check the frame, face material and access before quoting. Not every construction is designed for customer replacement." },
       { q: "What print quality do you achieve?", a: "We print at up to 1440 dpi on our Canon Colorado." },
-      { q: "Are they suitable for outdoor use?", a: "Yes — we offer weatherproof IP54 and IP65-rated outdoor lightbox options." },
+      { q: "Are they suitable for outdoor use?", a: "Outdoor lightboxes need materials, lighting and mounting suited to the site exposure. We confirm the specified components and installation requirements for your project; an indoor lightbox should not be assumed suitable outside." },
       { q: "What's the minimum order size?", a: "Single units welcome — no minimum order." },
       { q: "Can you match a specific depth?", a: "Yes — custom depths from 40mm to 200mm." },
     ],
@@ -143,9 +145,11 @@ export const serviceData: Record<string, ServiceData> = {
   },
   "acrylic-signs": {
     title: "Acrylic Signs",
-    tagline: "Precision laser-cut. Beautifully lit.",
-    description: "Our in-house laser cutter processes acrylic up to 40mm thick with ±0.1mm precision. From simple cut-out letters to fully illuminated 3D acrylic logo displays.",
+    tagline: "Custom panels, cut letters and illuminated logos",
+    description: "Custom acrylic signs for reception walls, shopfronts and business interiors. Choose a printed panel, individual cut letters or an illuminated logo, with material, finish and mounting specified for your project.",
     styles: [
+      { name: "Printed Acrylic Panels", desc: "A logo or information printed on a single panel, with mounting selected for your wall or entrance." },
+      { name: "Cut Acrylic Letters", desc: "Individual letters and logos for a dimensional, non-illuminated reception or shopfront sign." },
       { name: "Acrylic 3D LED Signs", desc: "Laser-cut acrylic letters and logos with integrated LED edge-lighting or backlighting." },
     ],
     materials: [

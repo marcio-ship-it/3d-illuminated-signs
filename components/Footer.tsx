@@ -16,6 +16,7 @@ const companyLinks = [
   ["Design service", "/design-service/"],
   ["Installation", "/signage-installation/"],
   ["Artwork specifications", "/artwork-specifications/"],
+  ["Signage guides", "/blog/"],
 ] as const;
 
 export default function Footer() {
@@ -55,7 +56,7 @@ export default function Footer() {
                 <li key={href}><Link href={href} className="text-sm text-white/58 transition-colors hover:text-white">{label}</Link></li>
               ))}
             </ul>
-            <Link href="/contact-us/" data-tracking-location="footer" className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-white">Start a project <span className="text-[#8ea8ff]" aria-hidden="true">↗</span></Link>
+            <Link href="/contact-us/" data-tracking-location="footer" className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-white">Request a quote <span className="text-[#8ea8ff]" aria-hidden="true">↗</span></Link>
           </div>
         </div>
 

@@ -4,6 +4,7 @@ import { after } from "next/server";
 import {
   buildPipelineMetadata,
   captureLeadAttribution,
+  normalizeArtworkUrl,
   parseFirstResponseSlaMinutes,
   readDownstreamAdapterConfig,
   sanitizeAssigneeId,
@@ -248,6 +249,7 @@ async function sendTeamNotification(data: {
   company: string;
   service: string;
   message: string;
+  artworkUrl: string | null;
   sourcePath: string;
 }): Promise<EmailResult> {
   const recipients = (process.env.LEAD_NOTIFICATION_TO || "contact@3dilluminatedsigns.com.au")
@@ -273,6 +275,7 @@ async function sendTeamNotification(data: {
         <p><strong>Phone:</strong> <a href="tel:${escapeHtml(data.phone)}">${escapeHtml(data.phone)}</a></p>
         <p><strong>Company:</strong> ${escapeHtml(data.company || "Not provided")}</p>
         <p><strong>Signage type:</strong> ${escapeHtml(data.service)}</p>
+        <p><strong>Artwork / site-photo link:</strong> ${escapeHtml(data.artworkUrl || "Not provided")}</p>
         <p><strong>Page:</strong> ${escapeHtml(data.sourcePath || "/contact-us/")}</p>
         <div style="margin-top:22px;padding:18px;background:#f9f8f6;border-left:4px solid #c8960c">${messageHtml}</div>
       </div>
@@ -285,6 +288,7 @@ async function sendTeamNotification(data: {
     `Phone: ${data.phone}`,
     `Company: ${data.company || "Not provided"}`,
     `Signage type: ${data.service}`,
+    `Artwork / site-photo link: ${data.artworkUrl || "Not provided"}`,
     `Page: ${data.sourcePath || "/contact-us/"}`,
     "",
     data.message,
@@ -362,6 +366,7 @@ export async function POST(req: NextRequest) {
   const company = cleanInline(body.company, 180);
   const service = cleanInline(body.service, 180) || "3D illuminated signage";
   const message = cleanMultiline(body.message, 5000);
+  const artworkUrl = normalizeArtworkUrl(body.artworkUrl);
   const suppliedReference = cleanInline(body.submissionId, 80);
   const reference = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(suppliedReference)
     ? suppliedReference
@@ -369,6 +374,9 @@ export async function POST(req: NextRequest) {
 
   if (!name || !validEmail(email) || !validPhone(phone) || message.length < 10) {
     return NextResponse.json({ error: "Please provide your name, a valid email and phone number, and project details." }, { status: 400 });
+  }
+  if (!artworkUrl.ok) {
+    return NextResponse.json({ error: "Please provide a valid HTTPS artwork or site-photo link, or leave it blank." }, { status: 400 });
   }
 
   const qaRequested = req.headers.get("x-qa-mode") === "dry-run";
@@ -419,6 +427,7 @@ export async function POST(req: NextRequest) {
     project_type: service,
     source_path: sourcePath,
     submission_reference: reference,
+    artwork_url: artworkUrl.value,
     ip_hash: privacySafeIpHash(ip),
     pipeline: {
       ...pipeline,
@@ -466,7 +475,7 @@ export async function POST(req: NextRequest) {
 
   after(async () => {
     const [teamEmail, acknowledgement, downstream] = await Promise.all([
-      sendTeamNotification({ reference, name, email, phone, company, service, message, sourcePath }),
+      sendTeamNotification({ reference, name, email, phone, company, service, message, artworkUrl: artworkUrl.value, sourcePath }),
       sendCustomerAcknowledgement({ name, email, reference }),
       notifyDownstreamAdapter(downstreamConfig, {
         reference,

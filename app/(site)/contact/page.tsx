@@ -17,12 +17,11 @@ const serviceOptions = [
 ];
 
 const whyChooseUs = [
-  "Free consultation & design",
-  "Fast turnaround times",
-  "Premium materials only",
-  "Nationwide installation",
-  "Electrical compliance planning",
-  "Written scope and warranty terms",
+  "Project details reviewed",
+  "Site and installation requirements checked",
+  "Follow-up questions sent if needed",
+  "Scope and quote prepared",
+  "Artwork and photos can be supplied by reply",
 ];
 
 const inputClass = "w-full bg-[#fbfaf6] border border-[#b8b4a9] rounded-[3px] px-4 py-3 text-[#171815] text-sm focus:outline-none focus:border-[#2457f5] transition-colors placeholder:text-[#96988f]";
@@ -114,26 +113,26 @@ export default function ContactPage() {
 
   return (
     <div className="pt-[76px] bg-[#fbfaf6]">
-      <section className="border-b border-[#dcd9d0] bg-[#f1efe8] py-20 md:py-28">
-        <div className="section-shell grid lg:grid-cols-[1fr_0.55fr] gap-12 lg:gap-24 items-end">
+      <section className="border-b border-[#dcd9d0] bg-[#f1efe8] py-8 md:py-28">
+        <div className="section-shell grid lg:grid-cols-[1fr_0.55fr] gap-6 md:gap-12 lg:gap-24 items-end">
           <div>
-            <p className="eyebrow mb-5">Start a project</p>
-            <h1 className="font-display text-balance text-6xl md:text-8xl leading-[0.88] tracking-[-0.05em]">Tell us what you&apos;re making.</h1>
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-[#4e5049]">A location, rough size, site photo and logo are enough to start. If the brief is still early, tell us the outcome you want and we&apos;ll help shape the next step.</p>
+            <p className="eyebrow mb-3 md:mb-5">Request a quote</p>
+            <h1 className="font-display text-balance text-5xl md:text-8xl leading-[0.88] tracking-[-0.05em]">Tell us about your sign.</h1>
+            <p className="mt-4 md:mt-7 max-w-2xl text-base md:text-lg leading-7 md:leading-8 text-[#4e5049]">Share the sign type, rough size, location and timing. Add an artwork or site-photo link if you have one.</p>
           </div>
-          <div className="border-l-2 border-[#2457f5] pl-6">
+          <div className="border-l-2 border-[#2457f5] pl-4 md:pl-6">
             <p className="text-sm font-semibold text-[#171815]">Prefer to talk first?</p>
-            <a href="tel:1300448608" className="font-display mt-2 block text-4xl tracking-[-0.03em] hover:text-[#2457f5]">1300 448 608</a>
-            <p className="mt-3 text-sm leading-6 text-[#77796f]">Sydney-based project support<br />Nationwide installation coordination</p>
+            <a href="tel:1300448608" className="font-display mt-1 md:mt-2 block text-3xl md:text-4xl tracking-[-0.03em] hover:text-[#2457f5]">1300 448 608</a>
+            <p className="mt-1 md:mt-3 text-sm leading-6 text-[#77796f]">Sydney-based project support</p>
           </div>
         </div>
       </section>
 
-      <section className="py-20 md:py-28 bg-white">
+      <section className="py-8 md:py-28 bg-white">
         <div className="section-shell grid lg:grid-cols-[1.08fr_0.72fr] gap-12 lg:gap-24">
-          <div className="border border-[#dcd9d0] bg-[#fbfaf6] p-6 md:p-10">
-            <p className="eyebrow mb-4">Project enquiry</p>
-            <h2 className="font-display text-4xl md:text-5xl tracking-[-0.03em] mb-8">Share the brief.</h2>
+          <div className="border border-[#dcd9d0] bg-[#fbfaf6] p-5 md:p-10">
+            <p className="eyebrow mb-2 md:mb-4">Quote details</p>
+            <h2 className="font-display text-3xl md:text-5xl tracking-[-0.03em] mb-4 md:mb-8">Request a quote.</h2>
 
             {status === "success" ? (
               <div className="text-center py-12">
@@ -201,6 +200,24 @@ export default function ContactPage() {
                   />
                 </div>
 
+                <div>
+                  <label htmlFor="artworkUrl" className="block text-sm text-[#33342f] mb-1.5 font-semibold">Artwork or site-photo link (optional)</label>
+                  <input
+                    id="artworkUrl"
+                    name="artworkUrl"
+                    type="url"
+                    inputMode="url"
+                    maxLength={2048}
+                    pattern="https://.*"
+                    placeholder="https://drive.google.com/..."
+                    aria-describedby="artwork-link-help"
+                    className={inputClass}
+                  />
+                  <p id="artwork-link-help" className="mt-1.5 text-xs leading-5 text-[#77796f]">
+                    Share only an HTTPS link you have permission to provide. We&apos;ll use it to assess this quote. You can also leave this blank and reply to our acknowledgement email with files.
+                  </p>
+                </div>
+
                 {status === "error" && (
                   <p id="form-status" role="alert" className="text-red-600 text-sm">{errorMessage}</p>
                 )}
@@ -210,7 +227,7 @@ export default function ContactPage() {
                   disabled={status === "loading"}
                   className="w-full btn-gold py-3.5 disabled:opacity-50"
                 >
-                  {status === "loading" ? "Sending..." : "Send project enquiry ↗"}
+                  {status === "loading" ? "Sending..." : "Send quote request ↗"}
                 </button>
                 <p className="text-xs text-[#77796f] text-center leading-5">
                   By submitting, you agree that we may contact you about this enquiry. See our <Link href="/privacy/" className="underline">privacy policy</Link>.

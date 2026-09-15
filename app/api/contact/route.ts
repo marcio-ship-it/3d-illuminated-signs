@@ -343,7 +343,13 @@ export async function POST(req: NextRequest) {
   if (contentLength > MAX_BODY_BYTES) return NextResponse.json({ error: "Request is too large" }, { status: 413 });
 
   const ip = requestIp(req);
-  if (!allowLocalRequest(rateLimitKey(ip))) {
+  // Only a cryptographically verified session receives its own bounded bucket.
+  // QA must not spend the customer quota; an unsigned marker grants no exception.
+  const qaSession = readQaSession(req.cookies);
+  const requestBucket = qaSession
+    ? rateLimitKey(`signed-qa:${qaSession.jti}:${ip}`)
+    : rateLimitKey(ip);
+  if (!allowLocalRequest(requestBucket)) {
     return NextResponse.json({ error: "Too many requests. Please wait before trying again." }, { status: 429 });
   }
 
@@ -380,7 +386,6 @@ export async function POST(req: NextRequest) {
   }
 
   const qaRequested = req.headers.get("x-qa-mode") === "dry-run";
-  const qaSession = readQaSession(req.cookies);
   if (qaRequested && !qaSession) {
     return NextResponse.json(
       { error: "QA session is missing or expired. No enquiry was submitted." },

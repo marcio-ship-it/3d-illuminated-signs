@@ -269,7 +269,6 @@ async function sendTeamNotification(data: {
         <h1 style="font-size:22px;margin:8px 0 0">3D Illuminated Signs</h1>
       </div>
       <div style="padding:26px;border:1px solid #e8e6e1;border-top:0">
-        <p><strong>Reference:</strong> ${escapeHtml(data.reference)}</p>
         <p><strong>Name:</strong> ${escapeHtml(data.name)}</p>
         <p><strong>Email:</strong> <a href="mailto:${escapeHtml(data.email)}">${escapeHtml(data.email)}</a></p>
         <p><strong>Phone:</strong> <a href="tel:${escapeHtml(data.phone)}">${escapeHtml(data.phone)}</a></p>
@@ -282,7 +281,6 @@ async function sendTeamNotification(data: {
     </div>`;
   const text = [
     "New 3D Illuminated Signs website enquiry",
-    `Reference: ${data.reference}`,
     `Name: ${data.name}`,
     `Email: ${data.email}`,
     `Phone: ${data.phone}`,
@@ -319,7 +317,6 @@ async function sendCustomerAcknowledgement(data: { name: string; email: string; 
       <div style="padding:28px;border:1px solid #e8e6e1;border-top:0">
         <p>Hi ${firstName},</p>
         <p>Thanks for getting in touch. We have received your signage enquiry and will review the project details.</p>
-        <p>Your reference is <strong>${escapeHtml(data.reference)}</strong>.</p>
         <p>If you need to add photos or artwork, reply to this email with the files or a Google Drive, Dropbox or WeTransfer link.</p>
         <p>3D Illuminated Signs by Platinum Signs<br>1300 448 608</p>
       </div>
@@ -329,9 +326,9 @@ async function sendCustomerAcknowledgement(data: { name: string; email: string; 
       from,
       to: [data.email],
       reply_to: "contact@3dilluminatedsigns.com.au",
-      subject: `We received your signage enquiry — ${data.reference}`,
+      subject: "We received your signage enquiry",
       html,
-      text: `Hi ${data.name.trim().split(/\s+/)[0] || "there"},\n\nThanks for getting in touch. We received your signage enquiry. Your reference is ${data.reference}.\n\nIf you need to add photos or artwork, reply with the files or a Drive, Dropbox or WeTransfer link.\n\n3D Illuminated Signs by Platinum Signs\n1300 448 608`,
+      text: `Hi ${data.name.trim().split(/\s+/)[0] || "there"},\n\nThanks for getting in touch. We received your signage enquiry.\n\nIf you need to add photos or artwork, reply with the files or a Drive, Dropbox or WeTransfer link.\n\n3D Illuminated Signs by Platinum Signs\n1300 448 608`,
     },
     `3d-ack/${data.reference}`,
   );

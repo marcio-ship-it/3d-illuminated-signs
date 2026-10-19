@@ -29,7 +29,6 @@ const inputClass = "w-full bg-[#fbfaf6] border border-[#b8b4a9] rounded-[3px] px
 export default function ContactPage() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
-  const [reference, setReference] = useState("");
   const [confirmationEmailed, setConfirmationEmailed] = useState(false);
   const [dryRun, setDryRun] = useState(false);
   const startedAt = useRef(0);
@@ -87,7 +86,6 @@ export default function ContactPage() {
           duplicate?: boolean;
           channels?: { acknowledgement?: boolean };
         };
-        setReference(result.reference || "");
         setDryRun(Boolean(result.dryRun));
         setConfirmationEmailed(Boolean(result.channels?.acknowledgement));
         setStatus("success");
@@ -148,7 +146,6 @@ export default function ContactPage() {
                     {confirmationEmailed ? " A confirmation has also been emailed to you." : ""}
                   </p>
                 )}
-                {reference && <p className="text-[#4e5049] text-sm mt-3">Reference: <strong>{reference}</strong></p>}
               </div>
             ) : (
               <form onSubmit={handleSubmit} onFocus={handleFormStart} className="space-y-4" aria-describedby="form-status">

@@ -132,6 +132,8 @@ test("campaign attribution survives internal navigation without a live submissio
     utm_source: "google",
     utm_campaign: "illuminated-signs",
     gclid: "test-click-123",
+    landing_page_url: `${new URL(page.url()).origin}/?utm_source=google&utm_campaign=illuminated-signs&gclid=test-click-123`,
+    referrer: "",
   });
 });
 

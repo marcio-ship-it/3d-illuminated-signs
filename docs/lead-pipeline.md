@@ -19,7 +19,8 @@ The canonical row remains `public.quote_requests` and now receives:
 - `lead_submission_id`: client UUID and durable idempotency key;
 - `source_host`: `3dilluminatedsigns.com.au`;
 - `submitted_page_url`: same-origin URL with fragments, credentials and non-attribution query parameters removed;
-- `attribution`: an allowlist of UTM fields and advertising click IDs only;
+- `attribution`: an allowlist of UTM fields and advertising click IDs, plus the session's first-touch `landing_page_url` (same-origin, scrubbed like `submitted_page_url`) and `referrer` (a foreign origin only, never a path or query; `""` when the browser sent none). Both context keys are recorded only when measured in the browser; a same-origin referrer with no stored first touch records neither, and the server never infers them;
+- `user_agent`: the request `User-Agent` header, at most 500 characters, so the shared lead classifier can recognise in-app browsers;
 - `assigned_to`: the configured valid UUID, or `NULL`;
 - `details.pipeline`: versioned acceptance time, response SLA, due time, assignment state, milestone placeholders, and adapter contract state.
 

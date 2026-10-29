@@ -17,6 +17,9 @@ export const ATTRIBUTION_QUERY_KEYS = [
   "twclid",
 ] as const;
 
+// First-touch context: where the visitor came from and which page they landed on.
+// `referrer` holds a foreign origin only, or "" when the browser sent none.
+const ATTRIBUTION_CONTEXT_KEYS = ["landing_page_url", "referrer"] as const;
 const ATTRIBUTION_KEYS = new Set<string>(ATTRIBUTION_QUERY_KEYS);
 const ATTRIBUTION_VALUE_MAX = 300;
 const ARTWORK_URL_MAX = 2048;
@@ -98,7 +101,21 @@ function copyAllowedQuery(source: URLSearchParams, target: LeadAttribution, over
   }
 }
 
-export function sanitizeAttribution(value: unknown): LeadAttribution {
+function sanitizeAttributionContext(value: Record<string, unknown>, siteOrigin?: string): LeadAttribution {
+  const origin = safeWebUrl(siteOrigin)?.origin;
+  const landing = safeWebUrl(value.landing_page_url);
+  if (!origin || !landing || landing.origin !== origin || typeof value.referrer !== "string") return {};
+
+  let referrer = "";
+  if (value.referrer) {
+    const referrerUrl = safeWebUrl(value.referrer);
+    if (!referrerUrl || referrerUrl.origin === origin) return {};
+    referrer = referrerUrl.origin;
+  }
+  return { landing_page_url: sanitizeSubmittedPageUrl(landing.toString(), origin), referrer };
+}
+
+export function sanitizeAttribution(value: unknown, siteOrigin?: string): LeadAttribution {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {};
 
   const sanitized: LeadAttribution = {};
@@ -107,7 +124,15 @@ export function sanitizeAttribution(value: unknown): LeadAttribution {
     const cleanValue = cleanAttributionValue(rawValue);
     if (cleanValue) sanitized[key] = cleanValue;
   }
-  return sanitized;
+  return { ...sanitized, ...sanitizeAttributionContext(value as Record<string, unknown>, siteOrigin) };
+}
+
+function pickAttributionContext(attribution: LeadAttribution): LeadAttribution {
+  const context: LeadAttribution = {};
+  for (const key of ATTRIBUTION_CONTEXT_KEYS) {
+    if (key in attribution) context[key] = attribution[key];
+  }
+  return context;
 }
 
 export function sanitizeSubmittedPageUrl(value: unknown, expectedOrigin: string): string {
@@ -135,7 +160,9 @@ export function sanitizeReferrer(value: unknown, expectedOrigin: string): string
   return sanitizeSubmittedPageUrl(url.toString(), origin);
 }
 
-export function captureLeadAttribution(href: string, referrer = ""): {
+// Pass `referrer` only when it was measured in the browser (document.referrer, "" included);
+// leave it undefined server-side so no landing/referrer context is invented.
+export function captureLeadAttribution(href: string, referrer?: string): {
   attribution: LeadAttribution;
   submittedPageUrl: string;
 } {
@@ -148,10 +175,14 @@ export function captureLeadAttribution(href: string, referrer = ""): {
   const referrerUrl = safeWebUrl(referrer);
   if (referrerUrl?.origin === page.origin) copyAllowedQuery(referrerUrl.searchParams, attribution, false);
 
-  return {
-    attribution,
-    submittedPageUrl: sanitizeSubmittedPageUrl(page.toString(), page.origin),
-  };
+  const submittedPageUrl = sanitizeSubmittedPageUrl(page.toString(), page.origin);
+  // A same-origin referrer means the landing page is already behind us; record no context.
+  if (typeof referrer === "string" && referrerUrl?.origin !== page.origin) {
+    attribution.landing_page_url = submittedPageUrl;
+    attribution.referrer = referrerUrl ? referrerUrl.origin : "";
+  }
+
+  return { attribution, submittedPageUrl };
 }
 
 export function captureSessionLeadAttribution(
@@ -160,6 +191,7 @@ export function captureSessionLeadAttribution(
   storageSource?: AttributionStorage | (() => AttributionStorage | undefined),
 ): ReturnType<typeof captureLeadAttribution> {
   const current = captureLeadAttribution(href, referrer);
+  if (!current.submittedPageUrl) return current;
   let storage: AttributionStorage | undefined;
   try {
     // Accessing window.sessionStorage itself can throw, before getItem is called.
@@ -172,12 +204,16 @@ export function captureSessionLeadAttribution(
   let previous: LeadAttribution = {};
   try {
     const raw = storage.getItem(SESSION_ATTRIBUTION_STORAGE_KEY);
-    previous = raw ? sanitizeAttribution(JSON.parse(raw)) : {};
+    previous = raw ? sanitizeAttribution(JSON.parse(raw), new URL(href).origin) : {};
   } catch {
     previous = {};
   }
 
-  const attribution = sanitizeAttribution({ ...previous, ...current.attribution });
+  // Campaign keys follow the latest touch; landing/referrer stay with the session's first touch.
+  const attribution = sanitizeAttribution(
+    { ...previous, ...current.attribution, ...pickAttributionContext(previous) },
+    new URL(href).origin,
+  );
   try {
     if (Object.keys(attribution).length) {
       storage.setItem(SESSION_ATTRIBUTION_STORAGE_KEY, JSON.stringify(attribution));

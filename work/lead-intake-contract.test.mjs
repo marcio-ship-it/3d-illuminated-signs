@@ -88,6 +88,8 @@ test("session capture preserves landing attribution across internal navigation",
     utm_source: "google",
     utm_campaign: "illuminated",
     gclid: "click-123",
+    landing_page_url: "https://3dilluminatedsigns.com.au/?utm_source=google&utm_campaign=illuminated&gclid=click-123",
+    referrer: "",
   });
   assert.equal(contact.submittedPageUrl, "https://3dilluminatedsigns.com.au/contact-us/");
 });
@@ -99,17 +101,67 @@ test("blocked storage access keeps current attribution without blocking intake",
   });
   assert.deepEqual(
     captureSessionLeadAttribution(href, "", () => browser.sessionStorage),
-    captureLeadAttribution(href),
+    captureLeadAttribution(href, ""),
   );
 });
 
 test("lazy storage retains session attribution and tolerates read/write failures", () => {
   const storage = memoryStorage();
   captureSessionLeadAttribution("https://3dilluminatedsigns.com.au/?utm_source=organic", "", () => storage);
-  assert.deepEqual(captureSessionLeadAttribution("https://3dilluminatedsigns.com.au/contact-us/", "", () => storage).attribution, { utm_source: "organic" });
+  assert.deepEqual(captureSessionLeadAttribution("https://3dilluminatedsigns.com.au/contact-us/", "", () => storage).attribution, {
+    utm_source: "organic",
+    landing_page_url: "https://3dilluminatedsigns.com.au/?utm_source=organic",
+    referrer: "",
+  });
   const blocked = { getItem() { throw new Error("blocked"); }, setItem() { throw new Error("quota"); } };
   const href = "https://3dilluminatedsigns.com.au/contact-us/?utm_source=organic";
-  assert.deepEqual(captureSessionLeadAttribution(href, "", () => blocked), captureLeadAttribution(href));
+  assert.deepEqual(captureSessionLeadAttribution(href, "", () => blocked), captureLeadAttribution(href, ""));
+});
+
+test("first touch records the foreign referrer origin and landing page across navigation", () => {
+  const storage = memoryStorage();
+  captureSessionLeadAttribution(
+    "https://3dilluminatedsigns.com.au/led-signs/?name=private",
+    "https://www.google.com/search?q=private",
+    storage,
+  );
+  const contact = captureSessionLeadAttribution(
+    "https://3dilluminatedsigns.com.au/contact-us/?utm_source=newsletter",
+    "https://www.google.com/",
+    storage,
+  );
+  assert.deepEqual(contact.attribution, {
+    utm_source: "newsletter",
+    landing_page_url: "https://3dilluminatedsigns.com.au/led-signs/",
+    referrer: "https://www.google.com",
+  });
+});
+
+test("a same-origin referrer without stored context records no landing guess", () => {
+  const captured = captureLeadAttribution(
+    "https://3dilluminatedsigns.com.au/contact-us/",
+    "https://3dilluminatedsigns.com.au/led-signs/",
+  );
+  assert.deepEqual(captured.attribution, {});
+});
+
+test("server-side capture never invents landing or referrer context", () => {
+  assert.deepEqual(captureLeadAttribution("https://3dilluminatedsigns.com.au/contact-us/").attribution, {});
+});
+
+test("sanitised context rejects forged landing pages and reduces referrers to an origin", () => {
+  const origin = "https://3dilluminatedsigns.com.au";
+  assert.deepEqual(sanitizeAttribution({ landing_page_url: "https://evil.example/", referrer: "" }, origin), {});
+  assert.deepEqual(sanitizeAttribution({ landing_page_url: `${origin}/`, referrer: `${origin}/led-signs/` }, origin), {});
+  assert.deepEqual(sanitizeAttribution({ landing_page_url: `${origin}/`, referrer: "javascript:alert(1)" }, origin), {});
+  assert.deepEqual(sanitizeAttribution({ landing_page_url: `${origin}/`, referrer: "" }), {});
+  assert.deepEqual(
+    sanitizeAttribution({
+      landing_page_url: `${origin}/led-signs/?email=private#top`,
+      referrer: "https://www.bing.com/search?q=private",
+    }, origin),
+    { landing_page_url: `${origin}/led-signs/`, referrer: "https://www.bing.com" },
+  );
 });
 
 test("referrers reveal only a foreign origin or a scrubbed same-origin URL", () => {

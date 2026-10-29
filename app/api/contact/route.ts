@@ -413,8 +413,8 @@ export async function POST(req: NextRequest) {
   const sourcePath = cleanInline(new URL(submittedPageUrl).pathname, 300) || "/contact-us/";
   const attribution = sanitizeAttribution({
     ...captureLeadAttribution(submittedPageUrl).attribution,
-    ...sanitizeAttribution(body.attribution),
-  });
+    ...sanitizeAttribution(body.attribution, req.nextUrl.origin),
+  }, req.nextUrl.origin);
   const acceptedAt = new Date();
   const slaMinutes = parseFirstResponseSlaMinutes(process.env.LEAD_FIRST_RESPONSE_SLA_MINUTES);
   const assigneeId = sanitizeAssigneeId(process.env.LEAD_DEFAULT_ASSIGNEE_ID);
@@ -451,6 +451,7 @@ export async function POST(req: NextRequest) {
     source_host: SOURCE_SITE,
     submitted_page_url: submittedPageUrl,
     attribution,
+    user_agent: cleanInline(req.headers.get("user-agent") || "", 500) || null,
     assigned_to: assigneeId,
     source_channel: "website_form",
     lead_verdict: "REVIEW",

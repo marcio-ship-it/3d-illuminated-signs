@@ -102,10 +102,10 @@ const legacyPages: Record<string, LegacyPage> = {
     kind: "service",
     source: "lightbox-signs",
     title: "Lightbox Signs",
-    tagline: "Even, efficient illumination in a custom-built format",
+    tagline: "Projecting, fascia and indoor LED lightboxes",
     metaTitle: "Lightbox Signs Sydney | Custom LED Lightboxes",
-    description: "Custom LED lightbox signs for shopfronts, retail, hospitality and corporate spaces. Made in Sydney with national delivery and installation options.",
-    image: "/images/gallery/sign_0070.jpg",
+    description: "Choose a double-sided projecting lightbox for people walking past, or a fascia lightbox for a front-on view. Send a site photo and dimensions for a Sydney-made sign.",
+    image: "/images/project-library/hali-rectangular-lightbox.webp",
   },
   "led-signs": {
     kind: "service",

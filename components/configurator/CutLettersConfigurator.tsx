@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useId, useState, useMemo } from "react";
 import {
   LETTER_MATERIALS,
   FINISH_OPTIONS,
@@ -58,6 +58,8 @@ export interface QuoteData {
 }
 
 export default function CutLettersConfigurator({ theme: themeProp, onQuote, embedMode = false }: Props) {
+  const textId = useId();
+  const heightId = useId();
   const theme = { ...DEFAULT_THEME, ...themeProp };
 
   const [material, setMaterial] = useState<LetterMaterial>("acrylic");
@@ -135,19 +137,19 @@ export default function CutLettersConfigurator({ theme: themeProp, onQuote, embe
       style={{ background: theme.bg, color: theme.text, fontFamily: "Inter, system-ui, sans-serif" }}
       className="min-h-screen"
     >
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "1.5rem" }}>
+      <div className="mx-auto max-w-[900px] p-4 sm:p-6">
 
         {/* Header */}
         <div style={{ marginBottom: "1.5rem" }}>
-          <h2 style={{ fontSize: "1.5rem", fontWeight: 700, color: theme.text, marginBottom: 4 }}>
+          <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: theme.text, marginBottom: 4 }}>
             Cut-Out Letters — Instant Price Calculator
-          </h2>
+          </h1>
           <p style={{ color: theme.muted, fontSize: "0.875rem" }}>
             Configure your letters below and get an instant estimate.
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1rem" }}>
+        <div className="grid min-w-0 grid-cols-1 gap-4">
 
           {/* Top row: text preview */}
           <div
@@ -185,14 +187,22 @@ export default function CutLettersConfigurator({ theme: themeProp, onQuote, embe
           </div>
 
           {/* Config grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1rem" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))",
+              gap: "1rem",
+              minWidth: 0,
+            }}
+          >
 
             {/* Text input */}
             <div style={{ background: theme.cardBg, border: `1px solid ${theme.border}`, borderRadius: "0.75rem", padding: "1.25rem" }}>
-              <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: p, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
+              <label htmlFor={textId} style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: p, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
                 Your Text
               </label>
               <input
+                id={textId}
                 value={text}
                 onChange={(e) => setText(e.target.value.slice(0, 40))}
                 placeholder="e.g. OPEN"
@@ -206,10 +216,11 @@ export default function CutLettersConfigurator({ theme: themeProp, onQuote, embe
 
             {/* Height */}
             <div style={{ background: theme.cardBg, border: `1px solid ${theme.border}`, borderRadius: "0.75rem", padding: "1.25rem" }}>
-              <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: p, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
+              <label htmlFor={heightId} style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: p, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
                 Letter Height: <span style={{ color: theme.text }}>{height}mm</span>
               </label>
               <input
+                id={heightId}
                 type="range"
                 min={matConfig.minHeight}
                 max={Math.min(matConfig.maxHeight, 600)}
@@ -351,11 +362,9 @@ export default function CutLettersConfigurator({ theme: themeProp, onQuote, embe
               border: `1px solid ${theme.border}`,
               borderRadius: "0.75rem",
               padding: "1.5rem",
-              display: "grid",
-              gridTemplateColumns: "auto 1fr auto",
-              alignItems: "center",
-              gap: "1.5rem",
+              minWidth: 0,
             }}
+            className="grid grid-cols-1 gap-6 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center"
           >
             {/* Qty */}
             <div>
@@ -409,6 +418,7 @@ export default function CutLettersConfigurator({ theme: themeProp, onQuote, embe
                 transition: "all 0.2s",
                 whiteSpace: "nowrap",
               }}
+              className="w-full sm:w-auto"
             >
               {submitted ? "✓ Sent!" : theme.ctaLabel}
             </button>
@@ -438,7 +448,7 @@ export default function CutLettersConfigurator({ theme: themeProp, onQuote, embe
           <div style={{ textAlign: "center", paddingTop: "0.5rem" }}>
             <p style={{ color: theme.muted, fontSize: "0.7rem" }}>
               Powered by{" "}
-              <a href="https://3d-illuminated-signs.vercel.app" target="_blank" rel="noopener noreferrer" style={{ color: p, textDecoration: "none" }}>
+              <a href="https://3dilluminatedsigns.com.au/" target="_blank" rel="noopener noreferrer" style={{ color: p, textDecoration: "none" }}>
                 {theme.brandName}
               </a>
               {" "}· Fabricated in Sydney · Nationwide delivery

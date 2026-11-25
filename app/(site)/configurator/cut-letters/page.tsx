@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import CutLettersConfigurator from "@/components/configurator/CutLettersConfigurator";
 
 export const metadata: Metadata = {
-  title: "Cut-Out Letters Price Calculator | 3D Illuminated Signs",
+  title: "Cut-Out Letters Price Calculator",
   description:
     "Instant pricing for laser-cut and CNC-cut letters in acrylic, aluminium, stainless steel, brass and copper. Configure your text, height, finish and mounting — get a price in seconds.",
   alternates: { canonical: "/configurator/cut-letters/" },

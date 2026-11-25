@@ -4,11 +4,11 @@ import type { Metadata } from "next";
 import CtaSection from "@/components/CtaSection";
 import { LongForm, PlatinumDifference } from "@/components/LongForm";
 import { homeLongform } from "@/lib/longform";
+import { homeSearchDescription, homeSearchTitle } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: { absolute: "3D Signs Sydney | Illuminated, LED & Neon Signage" },
-  description:
-    "Custom 3D illuminated signs, LED signage, lightboxes and neon signs made in Sydney and installed across Australia. Request a free signage consultation.",
+  title: { absolute: homeSearchTitle },
+  description: homeSearchDescription,
   alternates: { canonical: "/" },
 };
 
@@ -128,16 +128,16 @@ export default function HomePage() {
       <section className="border-b border-[#dcd9d0]">
         <div className="section-shell grid lg:grid-cols-[0.88fr_1.12fr] lg:min-h-[760px]">
           <div className="flex flex-col justify-center py-16 md:py-24 lg:py-28 lg:pr-14">
-            <p className="eyebrow mb-7">Sydney signage studio · Australia-wide projects</p>
-            <h1 className="font-display text-balance text-[clamp(4.25rem,8vw,8.4rem)] leading-[0.82] tracking-[-0.055em] text-[#171815]">
-              3D signage with real presence.
+            <p className="eyebrow mb-7">Custom business signage</p>
+            <h1 className="font-display text-balance text-[clamp(3rem,7vw,7rem)] leading-[0.82] tracking-[-0.055em] text-[#171815]">
+              3D &amp; illuminated signs in Sydney
             </h1>
             <p className="mt-9 max-w-xl text-base md:text-lg leading-8 text-[#4e5049]">
-              Custom illuminated, dimensional and LED signage for workplaces, retail spaces and buildings. Designed around the brief, managed from Sydney and installed nationwide.
+              We make <Link href="/illuminated-signs/" className="underline underline-offset-4">face-lit letters and halo-lit logos</Link> for shopfronts and reception walls, and <Link href="/lightbox-signs/" className="underline underline-offset-4">LED lightboxes</Link> for fascia and projecting signs. Our team makes your sign in Sydney and coordinates installation across Australia.
             </p>
             <div className="mt-9 flex flex-col sm:flex-row gap-3 sm:items-center">
               <Link href="/contact-us/" className="btn-gold px-7" data-tracking-location="hero">
-                Start a project <span aria-hidden="true">↗</span>
+                Request a sign quote <span aria-hidden="true">↗</span>
               </Link>
               <Link href="/gallery/" className="btn-outline px-7">
                 Explore selected work

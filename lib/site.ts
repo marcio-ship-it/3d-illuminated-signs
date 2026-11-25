@@ -23,6 +23,10 @@ export const SITE = {
   gaMeasurementId: "G-5BJSSTEVDG",
 } as const;
 
+export const homeSearchTitle = "3D & Illuminated Signs Sydney | Shopfront Signs & Lettering";
+export const homeSearchDescription =
+  "Custom face-lit letters, halo-lit logos and LED lightboxes for shopfronts and reception walls. Made in Sydney, with installation across Australia. Request a quote.";
+
 export function absoluteUrl(path = "/") {
   return new URL(path, SITE.url).toString();
 }

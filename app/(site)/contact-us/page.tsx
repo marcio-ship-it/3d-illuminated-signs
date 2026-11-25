@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import ContactPage from "../contact/page";
+import ContactPage from "@/components/ContactPage";
+import { contactPrefillFromSearchParams } from "@/lib/contact-prefill";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -13,7 +14,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ContactUsPage() {
-  return <ContactPage />;
+export default async function ContactUsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const prefill = contactPrefillFromSearchParams(await searchParams);
+  return <ContactPage {...prefill} />;
 }
 
